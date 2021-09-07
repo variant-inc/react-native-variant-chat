@@ -1,5 +1,5 @@
 import {CaseReducer, PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {filterNewMessages} from '../../../lib/Utils';
+import {filterNewMessages} from '../../../lib/Freshchat/Utils';
 import {FreshchatChannel} from '../../../types/FreshchatChannel.type';
 
 import {FreshchatConversation} from '../../../types/FreshchatConversation';

@@ -11,7 +11,7 @@ import {
   setFreshchatMessage,
 } from '../lib/Freshchat/Freshchat';
 import {getFreshchatConversations} from '../lib/Freshchat/FreshchatConversation';
-import {filterNewMessages} from '../lib/Utils';
+import {filterNewMessages} from '../lib/Freshchat/Utils';
 import {
   selectFreshchatConversation,
   selectFreshchatConversationUsers,

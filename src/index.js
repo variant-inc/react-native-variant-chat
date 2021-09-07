@@ -1,2 +1,2 @@
-export * from './hooks/useVariantChat';
+export * from './lib/VariantChat/VariantChat';
 export * from './components/VariantChat';
