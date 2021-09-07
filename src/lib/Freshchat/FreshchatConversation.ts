@@ -1,7 +1,7 @@
 import {
   DriverConversationQueryResponse,
   GET_DRIVER_CONVERSATION,
-} from 'graphql/queries/getDriverConversation';
+} from '../../graphql/queries/getDriverConversation';
 import {FreshchatConversationResponse} from '../../types/FreshchatConversationResponse.type';
 import {useApolloClient} from '../../hooks/useApolloClient';
 
