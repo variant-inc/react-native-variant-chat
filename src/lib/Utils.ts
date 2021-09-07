@@ -1,4 +1,4 @@
-import {FreshchatMessage} from 'types/FreshchatMessage';
+import {FreshchatMessage} from '../types/FreshchatMessage';
 
 export const filterNewMessages = (
   allMessages: FreshchatMessage[],

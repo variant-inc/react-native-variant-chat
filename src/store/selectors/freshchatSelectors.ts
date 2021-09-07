@@ -1,7 +1,7 @@
 import {createSelector} from '@reduxjs/toolkit';
-import {ChatState} from 'store/slices/chat/chat';
-import {FreshchatChannel} from 'types/FreshchatChannel.type';
-import {StoreState} from 'store/initialStoreState';
+import {ChatState} from '../slices/chat/chat';
+import {FreshchatChannel} from '../../types/FreshchatChannel.type';
+import {StoreState} from '../initialStoreState';
 
 import {FreshchatConversation} from '../../types/FreshchatConversation';
 import {

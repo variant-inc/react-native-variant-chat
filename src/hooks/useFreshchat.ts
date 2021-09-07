@@ -9,16 +9,16 @@ import {
   initFreshchat,
   realtimeMessagePerPage,
   setFreshchatMessage,
-} from 'lib/Freshchat/Freshchat';
-import {getFreshchatConversations} from 'lib/Freshchat/FreshchatConversation';
-import {filterNewMessages} from 'lib/Utils';
+} from '../lib/Freshchat/Freshchat';
+import {getFreshchatConversations} from '../lib/Freshchat/FreshchatConversation';
+import {filterNewMessages} from '../lib/Utils';
 import {
   selectFreshchatConversation,
   selectFreshchatConversationUsers,
   selectFreshchatCurrentUser,
   selectFreshchatMessages,
   selectFreshchatMoreMessage,
-} from 'store/selectors/freshchatSelectors';
+} from '../store/selectors/freshchatSelectors';
 import {
   freshchatAddMessage,
   freshchatAppendMessages,
@@ -28,8 +28,8 @@ import {
   freshchatSetConversationUser,
   freshchatSetCurrentUser,
   freshchatSetMessages,
-} from 'store/slices/chat/chat';
-import {FreshchatChannel} from 'types/FreshchatChannel.type';
+} from '../store/slices/chat/chat';
+import {FreshchatChannel} from '../types/FreshchatChannel.type';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {Alert, AppState, AppStateStatus} from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';

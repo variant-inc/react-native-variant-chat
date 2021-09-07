@@ -1,14 +1,14 @@
 import {CaseReducer, PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {filterNewMessages} from 'lib/Utils';
-import {FreshchatChannel} from 'types/FreshchatChannel.type';
+import {filterNewMessages} from '../../../lib/Utils';
+import {FreshchatChannel} from '../../../types/FreshchatChannel.type';
 
-import {FreshchatConversation} from 'types/FreshchatConversation';
+import {FreshchatConversation} from '../../../types/FreshchatConversation';
 import {
   FreshchatGetMessages,
   FreshchatMessage,
   FreshchatMessagesLink,
-} from 'types/FreshchatMessage';
-import {FreshchatUser} from 'types/FreshchatUser';
+} from '../../../types/FreshchatMessage';
+import {FreshchatUser} from '../../../types/FreshchatUser';
 
 export interface ChatState {
   currentUser: FreshchatUser | null;
