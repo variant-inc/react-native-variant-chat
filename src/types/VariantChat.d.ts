@@ -5,8 +5,18 @@ export interface VariantChatConfig {
   chatAccessToken: string;
 }
 
+export interface VariantApiConfig {
+  accessToken: string;
+  url: string;
+}
+
+export interface VariantConfig {
+  chat: VariantChatConfig;
+  api: VariantApiConfig;
+}
+
 export interface VariantChatProps {
-  config: VariantChatConfig;
+  config: VariantConfig;
   driverId: string;
   theme: ReactNativePaper.Theme;
   defaultAvatarUrl: string;

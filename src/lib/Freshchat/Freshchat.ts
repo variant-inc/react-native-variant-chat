@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, {AxiosInstance} from 'axios';
-import {FreshchatChannel} from 'types/FreshchatChannel.type';
+import {FreshchatChannel} from '../../types/FreshchatChannel.type';
 
 import {FreshchatConfig} from '../../types/Freshchat';
 import {FreshchatConversation} from '../../types/FreshchatConversation';

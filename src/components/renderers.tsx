@@ -1,4 +1,4 @@
-import {Button} from 'components/Button';
+import {Button} from './Button';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {

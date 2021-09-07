@@ -36,7 +36,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import {NotificationService} from 'react-native-platform-science';
 import Tts from 'react-native-tts';
 import {useSelector} from 'react-redux';
-import {AppDispatch, useAppDispatch} from 'store';
+import {AppDispatch, useAppDispatch} from '../store';
 
 import {
   accountNotSetup,
@@ -53,7 +53,7 @@ import {
   FreshchatMessage,
 } from '../types/FreshchatMessage';
 import {FreshchatUser} from '../types/FreshchatUser';
-import { VariantChatConfig } from 'types/VariantChat';
+import { VariantChatConfig } from '../types/VariantChat';
 
 export const useFreshchatInit = (driverId: string, channelName: string, config: VariantChatConfig): FreshchatInit => {
   const dispatch = useAppDispatch();

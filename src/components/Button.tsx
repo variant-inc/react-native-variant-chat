@@ -3,7 +3,7 @@ import {StyleSheet, ViewStyle} from 'react-native';
 import {Button as PaperButton, useTheme} from 'react-native-paper';
 import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
 
-import {UnknownObject} from 'types/Misc.types';
+import {UnknownObject} from '../types/Misc.types';
 import Font from '../theme/fonts';
 
 export interface ButtonContainedProps {

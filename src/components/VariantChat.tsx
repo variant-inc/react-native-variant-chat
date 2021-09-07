@@ -29,9 +29,9 @@ import {VariantChatProps} from '../types/VariantChat';
 import {FreshchatInit} from '../types/FreshchatInit.enum';
 import {FreshchatMessage} from 'types/FreshchatMessage';
 import {FreshchatMessagePart} from 'types/FreshchatMessagePart.type';
-import {FreshchatMessageParts} from 'types/FreshchatMessageParts.type';
-import {FreshchatUser} from 'types/FreshchatUser';
-import {IOpsMessage} from 'types/Message.interface';
+import {FreshchatMessageParts} from '../types/FreshchatMessageParts.type';
+import {FreshchatUser} from '../types/FreshchatUser';
+import {IOpsMessage} from '../types/Message.interface';
 import LoadingIndicator from './LoadingIndicator';
 import {
   renderAccessory,
