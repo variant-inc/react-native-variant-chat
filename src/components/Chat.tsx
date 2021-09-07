@@ -25,6 +25,7 @@ import {
   resolvedMessageMark,
   urgentMessageMark,
 } from '../theme/constants';
+import {useApolloClient} from '../hooks/useApolloClient';
 import {VariantChatProps} from '../types/VariantChat';
 import {FreshchatInit} from '../types/FreshchatInit.enum';
 import {FreshchatMessage} from 'types/FreshchatMessage';
@@ -64,6 +65,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   const freshchatInit = useFreshchatInit(driverId, 'Chat with Team', props.config.chat);
 
+  useApolloClient(props.config.api);
   useFreshchatGetNewMessages(driverId);
 
   useEffect(() => {
