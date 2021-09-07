@@ -1,9 +1,9 @@
-import iconAttachment from 'assets/img/icon-attachment.svg';
-import iconCamera from 'assets/img/icon-camera.svg';
-import iconError from 'assets/img/icon-error.svg';
-import iconMic from 'assets/img/icon-mic.svg';
-import iconReload from 'assets/img/icon-reload.svg';
-import variantLogo from 'assets/img/logo/variant.svg';
+import iconAttachment from '../assets/img/icon-attachment.svg';
+import iconCamera from '../assets/img/icon-camera.svg';
+import iconError from '../assets/img/icon-error.svg';
+import iconMic from '../assets/img/icon-mic.svg';
+import iconReload from '../assets/img/icon-reload.svg';
+import variantLogo from '../assets/img/logo/variant.svg';
 
 export type SvgName =
   | 'variantLogo'
