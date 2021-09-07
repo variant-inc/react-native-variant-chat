@@ -2,7 +2,7 @@
   "name": "react-native-variant-chat",
   "version": "0.0.0",
   "description": "A React Native chat component for Variant apps.",
-  "main": "index.js",
+  "main": "src/index.js",
   "homepage": "https://github.com/variant-inc/react-native-variant-chat",
   "author": {
     "name": "Variant, Inc.",

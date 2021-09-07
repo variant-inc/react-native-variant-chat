@@ -1,1 +1,1 @@
-export * from './VariantChat'
+export * from './components/VariantChat'
