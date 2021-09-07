@@ -1,0 +1,28 @@
+name: Node CI
+
+on: [push]
+
+jobs:
+  build_test_scan:
+    runs-on: eks
+    name: CI Pipeline
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: variant-inc/actions-setup@v1
+        id: lazy-setup
+
+      - name: Lazy action steps
+        id: lazy-action
+        uses: variant-inc/actions-nodejs@v1
+        env:
+          GITHUB_USER: variant-inc
+        with:
+          container_push_enabled: "false"
+          dockerfile_dir_path: unused
+          ecr_repository: unused
+          github_token: unused
+          npm_test_script_name: "test:ci"

@@ -1,0 +1,77 @@
+# OS X Finder
+#
+.DS_Store
+
+# Environment
+.env*
+
+# Xcode per-user config
+#
+*.mode1
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.perspective
+*.perspectivev3
+*.pbxuser
+*.xccheckout
+*.xcuserstate
+*.xcworkspace
+xcuserdata
+
+# XCode build products
+#
+build/
+DerivedData
+*.o
+*.LinkFileList
+*.hmap
+*.ipa
+
+# XCode automatic backup files
+#
+*~.nib/
+*.swp
+*~
+*.dat
+*.dep
+*.ipa
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+*.keystore
+!debug.keystore
+*/vendor/
+*/.vendor/
+*/fastlane/metadata/
+*/app/key.json
+*/app/keystore.properties
+/android/sentry.properties
+
+# node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK
+buck-out/
+\.buckd/
+
+# fastlane
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots
+
+# Bundle artifact
+*.jsbundle
+
+# Jest
+coverage/
+
+# Graphql
+shift.graphql

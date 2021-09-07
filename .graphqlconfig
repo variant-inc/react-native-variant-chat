@@ -1,0 +1,13 @@
+{
+  "name": "Shift Schema",
+  "schemaPath": "./shift.graphql",
+  "extensions": {
+    "endpoints": {
+      "Remote SWAPI GraphQL Endpoint": {
+        "url": "https://shift-api.apps.dev-drivevariant.com/graphql",
+        "headers": {},
+        "introspect": true
+      }
+    }
+  }
+}
