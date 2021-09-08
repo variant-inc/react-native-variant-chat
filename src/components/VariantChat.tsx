@@ -1,6 +1,6 @@
 import Chat from './Chat';
 import React, {ReactElement} from 'react';
-import {persistor, store} from 'store';
+import {persistor, store} from '../store';
 import {PersistGate as ReduxPersistGate} from 'redux-persist/integration/react';
 import {Provider as ReduxStoreProvider} from 'react-redux';
 import {VariantChatProps} from '../types/VariantChat';
