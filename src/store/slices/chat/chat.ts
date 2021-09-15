@@ -17,6 +17,7 @@ export interface ChatState {
   currentConversation: FreshchatConversation | null;
   messages: FreshchatMessage[];
   messagesLink: FreshchatMessagesLink | null; // for more meessages
+  isFullscreenVideo: boolean;
 }
 
 export const initialChatState = Object.freeze<ChatState>({
@@ -26,6 +27,7 @@ export const initialChatState = Object.freeze<ChatState>({
   currentConversation: null,
   messages: [],
   messagesLink: null,
+  isFullscreenVideo: false,
 });
 
 const handleSetCurrentUser: CaseReducer<
@@ -36,6 +38,16 @@ const handleSetCurrentUser: CaseReducer<
     ...state,
     currentUser: payload.user,
     conversationUsers: [payload.user, ...state.conversationUsers],
+  };
+};
+
+const handleIsFullscreenVideo: CaseReducer<
+  ChatState,
+  PayloadAction<{isFullscreen: boolean}>
+> = (state: ChatState, {payload}) => {
+  return {
+    ...state,
+    isFullscreenVideo: payload.isFullscreen,
   };
 };
 
@@ -156,6 +168,7 @@ const freshchatSlice = createSlice({
   initialState: initialChatState,
   reducers: {
     setCurrentUser: handleSetCurrentUser,
+    setIsFullscreenVideo: handleIsFullscreenVideo,
     setConversationUser: handleSetConversationUser,
     setChannel: handleSetChannel,
     setConversation: handleSetConversation,
@@ -169,6 +182,8 @@ const freshchatSlice = createSlice({
 
 export const chatReducer = freshchatSlice.reducer;
 export const freshchatSetCurrentUser = freshchatSlice.actions.setCurrentUser;
+export const freshchatSetIsFullscreenVideo =
+  freshchatSlice.actions.setIsFullscreenVideo;
 export const freshchatSetConversationUser =
   freshchatSlice.actions.setConversationUser;
 export const freshchatSetChannel = freshchatSlice.actions.setChannel;

@@ -16,6 +16,7 @@ import {
   selectFreshchatConversation,
   selectFreshchatConversationUsers,
   selectFreshchatCurrentUser,
+  selectFreshchatIsFullscreenVideo,
   selectFreshchatMessages,
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
@@ -27,6 +28,7 @@ import {
   freshchatSetConversation,
   freshchatSetConversationUser,
   freshchatSetCurrentUser,
+  freshchatSetIsFullscreenVideo,
   freshchatSetMessages,
 } from '../store/slices/chat/chat';
 import {FreshchatChannel} from '../types/FreshchatChannel.type';
@@ -100,7 +102,12 @@ export const useFreshchatInit = (driverId: string, channelName: string, config: 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.log('Fetching Conversations Error: ' + error.message);
-        showServiceError();
+        // ENOTFOUND indicates the messaging service could not find the specified driver id.
+        if (error.message.includes('ENOTFOUND')) {
+          showConversationError();
+        } else {
+          showServiceError();
+        }
         throw error; // Rethrow for caller to handle bad network request.
       }
 
@@ -278,6 +285,7 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
   const currentConversation = useSelector(selectFreshchatConversation);
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
   const allMessages = useSelector(selectFreshchatMessages);
+  const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
 
   const appState = useRef(AppState.currentState);
 
@@ -295,6 +303,8 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
       nextAppState === 'active'
     ) {
       console.log('App has come to the foreground!');
+    } else {
+      console.log('App has come to the background!');
     }
 
     appState.current = nextAppState;
@@ -318,7 +328,7 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
 
         let newMessage = newMessages[0].message_parts[0].text?.content || '';
 
-        if (appState.current === 'background') {
+        if (appState.current === 'background' && !isFullscreenVideo) {
           if (newMessage.includes(urgentMessageMark)) {
             // urgent message
             Tts.stop();
@@ -329,8 +339,8 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
           }
 
           if (
-            !newMessage.includes(resolvedMessageMark) &&
-            !newMessage.includes(reopenedMessageMark)
+            !resolvedMessageMark.some(s => newMessage.includes(s)) &&
+            !reopenedMessageMark.some(s => newMessage.includes(s))
           ) {
             NotificationService.addNotification(
               driverId,
@@ -387,4 +397,21 @@ const checkConversationUsers = (
       }
     });
   }
+};
+
+export const useFreshchatSetIsFullscreenVideo = (): ((
+  isFullscreenVideo: boolean,
+) => void) => {
+  const dispatch = useAppDispatch();
+
+  const setIsFullscreenVideo = useCallback(
+    async (isFullscreenVideo: boolean): Promise<void> => {
+      dispatch(
+        freshchatSetIsFullscreenVideo({isFullscreen: isFullscreenVideo}),
+      );
+    },
+    [dispatch],
+  );
+
+  return setIsFullscreenVideo;
 };

@@ -1,12 +1,12 @@
 import React, {ReactElement} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {IMessage, MessageVideoProps} from 'react-native-gifted-chat';
 import {useTheme} from 'react-native-paper';
 import Video from 'react-native-video';
+import {IOpsVideoMessage} from 'types/VideoMessage.interface';
 
-const CustomMessageVideo = (
-  props: MessageVideoProps<IMessage>,
-): ReactElement => {
+const CustomMessageVideo = (props: IOpsVideoMessage): ReactElement => {
+  const {onDidPresentFullscreen, onDidDismissFullscreen} = props;
+
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
@@ -17,6 +17,12 @@ const CustomMessageVideo = (
         controls
         paused
         style={styles.video}
+        onFullscreenPlayerDidPresent={() =>
+          onDidPresentFullscreen && onDidPresentFullscreen()
+        }
+        onFullscreenPlayerDidDismiss={() =>
+          onDidDismissFullscreen && onDidDismissFullscreen()
+        }
       />
     </View>
   );
