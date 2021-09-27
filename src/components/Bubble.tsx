@@ -6,6 +6,7 @@ import {
   Text,
   TextStyle,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
@@ -38,6 +39,8 @@ import {FreshchatMessagePart} from 'types/FreshchatMessagePart.type';
 import {FreshchatMessageParts} from 'types/FreshchatMessageParts.type';
 import {IOpsMessage} from 'types/Message.interface';
 
+import MessagePdf from './MessagePdf';
+
 export declare type RenderMessageImageProps<TMessage extends IMessage> = Omit<
   CustomBubbleProps<TMessage>,
   'containerStyle' | 'wrapperStyle'
@@ -48,6 +51,11 @@ export declare type RenderMessageVideoProps<TMessage extends IMessage> = Omit<
   'containerStyle' | 'wrapperStyle'
 > &
   MessageVideoProps<IMessage>;
+export declare type RenderMessagePdfProps<TMessage extends IMessage> = Omit<
+  CustomBubbleProps<TMessage>,
+  'containerStyle' | 'wrapperStyle'
+> &
+  MessageImage['props'];
 export declare type RenderMessageAudioProps<TMessage extends IMessage> = Omit<
   CustomBubbleProps<TMessage>,
   'containerStyle' | 'wrapperStyle'
@@ -87,6 +95,7 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
   renderMessageVideo?(
     props: RenderMessageVideoProps<TMessage>,
   ): React.ReactNode;
+  renderMessagePdf?(props: RenderMessagePdfProps<TMessage>): React.ReactNode;
   renderMessageAudio?(
     props: RenderMessageAudioProps<TMessage>,
   ): React.ReactNode;
@@ -97,6 +106,7 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
   renderUsername?(): React.ReactNode;
   renderQuickReplySend?(): React.ReactNode;
   renderQuickReplies?(quickReplies: QuickRepliesProps): React.ReactNode;
+  onSendFailedMessage?(message: TMessage): void;
 }
 
 const DEFAULT_OPTION_TITLES = ['Copy Text', 'Cancel'];
@@ -131,30 +141,31 @@ const CustomBubble = (
         item.image = messagePart.image.url;
       } else if (
         messagePart.file &&
-        messagePart.file.content_type.includes('image')
+        messagePart.file.content_type.toLowerCase().includes('image')
       ) {
         // image (attachment)
         item.text = messagePart.file.name;
         item.image = messagePart.file.url;
       } else if (
         messagePart.file &&
-        messagePart.file.content_type.includes('video')
+        messagePart.file.content_type.toLowerCase().includes('video')
       ) {
         // video (attachment)
         item.text = messagePart.file.name;
         item.video = messagePart.file.url;
+      } else if (
+        messagePart.file &&
+        messagePart.file.content_type.toLowerCase().includes('pdf')
+      ) {
+        // pdf document (attachment)
+        item.text = messagePart.file.name;
+        item.pdf = messagePart.file.url;
       }
 
       messageParts.push(item);
     });
 
     return messageParts;
-  };
-
-  const onLongPress = () => {
-    if (props.onLongPress) {
-      props.onLongPress(props.currentMessage);
-    }
   };
 
   const styledBubbleToNext = () => {
@@ -196,6 +207,19 @@ const CustomBubble = (
     return null;
   };
 
+  const handleLongPress = () => {
+    if (props.onLongPress) {
+      props.onLongPress(props.currentMessage);
+    }
+  };
+
+  const handleSendFailedMessage = () => {
+    const {currentMessage, onSendFailedMessage} = props;
+    if (currentMessage && onSendFailedMessage) {
+      onSendFailedMessage(currentMessage);
+    }
+  };
+
   const renderQuickReplies = () => {
     const {
       currentMessage,
@@ -204,105 +228,133 @@ const CustomBubble = (
       renderQuickReplySend,
       quickReplyStyle,
     } = props;
-    if (currentMessage && currentMessage.quickReplies) {
-      const {containerStyle, wrapperStyle, ...quickReplyProps} = props;
-      if (props.renderQuickReplies) {
-        return props.renderQuickReplies(quickReplyProps);
-      }
 
-      const replies = {
-        currentMessage,
-        onQuickReply,
-        nextMessage,
-        renderQuickReplySend,
-        quickReplyStyle,
-      };
-
-      return <QuickReplies {...replies} />;
+    if (!currentMessage || !currentMessage.quickReplies) {
+      return null;
     }
-    return null;
+
+    const {containerStyle, wrapperStyle, ...quickReplyProps} = props;
+
+    if (props.renderQuickReplies) {
+      return props.renderQuickReplies(quickReplyProps);
+    }
+
+    const replies = {
+      currentMessage,
+      onQuickReply,
+      nextMessage,
+      renderQuickReplySend,
+      quickReplyStyle,
+    };
+
+    return <QuickReplies {...replies} />;
   };
 
   const renderMessageText = (message: FreshchatMessagePart) => {
-    if (message && message.text) {
-      const {containerStyle, wrapperStyle, optionTitles, ...messageTextProps} =
-        props;
-      const textProps: any = {
-        ...messageTextProps,
-        currentMessage: {
-          ...messageTextProps.currentMessage,
-          text: message.text,
-          urgent: message.urgent,
-        },
-      };
-
-      if (props.renderMessageText) {
-        return props.renderMessageText(textProps);
-      }
-
-      return <MessageText {...textProps} />;
+    if (!message || !message.text) {
+      return null;
     }
-    return null;
+
+    const {containerStyle, wrapperStyle, optionTitles, ...messageTextProps} =
+      props;
+    const textProps: any = {
+      ...messageTextProps,
+      currentMessage: {
+        ...messageTextProps.currentMessage,
+        text: message.text,
+        urgent: message.urgent,
+      },
+    };
+
+    if (props.renderMessageText) {
+      return props.renderMessageText(textProps);
+    }
+
+    return <MessageText {...textProps} />;
   };
 
   const renderMessageImage = (message: FreshchatMessagePart) => {
-    if (message && message.image) {
-      const {containerStyle, wrapperStyle, ...messageImageProps} = props;
-
-      const imageProps: any = {
-        ...messageImageProps,
-        currentMessage: {
-          ...messageImageProps.currentMessage,
-          image: message.image,
-        },
-      };
-
-      if (props.renderMessageImage) {
-        return props.renderMessageImage(imageProps);
-      }
-      return <MessageImage {...imageProps} />;
+    if (!message || !message.image) {
+      return null;
     }
-    return null;
+
+    const {containerStyle, wrapperStyle, ...messageImageProps} = props;
+
+    const imageProps: any = {
+      ...messageImageProps,
+      currentMessage: {
+        ...messageImageProps.currentMessage,
+        image: message.image,
+      },
+    };
+
+    if (props.renderMessageImage) {
+      return props.renderMessageImage(imageProps);
+    }
+    return <MessageImage {...imageProps} />;
   };
 
   const renderMessageVideo = (message: FreshchatMessagePart) => {
-    if (message && message.video) {
-      const {containerStyle, wrapperStyle, ...messageVideoProps} = props;
-
-      const videoProps: any = {
-        ...messageVideoProps,
-        currentMessage: {
-          ...messageVideoProps.currentMessage,
-          video: message.video,
-        },
-      };
-
-      if (props.renderMessageVideo) {
-        return props.renderMessageVideo(videoProps);
-      }
-      return <MessageVideo {...videoProps} />;
+    if (!message || !message.video) {
+      return null;
     }
-    return null;
+
+    const {containerStyle, wrapperStyle, ...messageVideoProps} = props;
+
+    const videoProps: any = {
+      ...messageVideoProps,
+      currentMessage: {
+        ...messageVideoProps.currentMessage,
+        video: message.video,
+      },
+    };
+
+    if (props.renderMessageVideo) {
+      return props.renderMessageVideo(videoProps);
+    }
+    return <MessageVideo {...videoProps} />;
+  };
+
+  const renderMessagePdf = (message: FreshchatMessagePart) => {
+    if (!message || !message.pdf) {
+      return null;
+    }
+
+    const {containerStyle, wrapperStyle, ...messagePdfProps} = props;
+
+    const pdfProps: any = {
+      ...messagePdfProps,
+      currentMessage: {
+        ...messagePdfProps.currentMessage,
+        pdf: message.pdf,
+      },
+    };
+
+    if (props.renderMessagePdf) {
+      return props.renderMessagePdf(pdfProps);
+    }
+    return <MessagePdf {...pdfProps} />;
   };
 
   const renderMessageAudio = (message: FreshchatMessagePart) => {
-    if (message && message.audio) {
-      const {containerStyle, wrapperStyle, ...messageAudioProps} = props;
-
-      const audioProps: any = {
-        ...messageAudioProps,
-        currentMessage: {
-          ...messageAudioProps.currentMessage,
-          audio: message.audio,
-        },
-      };
-
-      if (props.renderMessageAudio) {
-        return props.renderMessageAudio(audioProps);
-      }
-      return <MessageAudio {...audioProps} />;
+    if (!message || !message.audio) {
+      return null;
     }
-    return null;
+
+    const {containerStyle, wrapperStyle, ...messageAudioProps} = props;
+
+    const audioProps: any = {
+      ...messageAudioProps,
+      currentMessage: {
+        ...messageAudioProps.currentMessage,
+        audio: message.audio,
+      },
+    };
+
+    if (props.renderMessageAudio) {
+      return props.renderMessageAudio(audioProps);
+    }
+    return <MessageAudio {...audioProps} />;
   };
 
   const renderTicks = () => {
@@ -329,42 +381,61 @@ const CustomBubble = (
       );
     }
 
-    return <Text style={styles.content.textTick}>Sent</Text>;
+    if (currentMessage?.sent) {
+      return <Text style={styles.content.textTick}>Sent</Text>;
+    }
+
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={() => handleSendFailedMessage()}>
+        <Text style={[styles.content.textTick, styles.content.textFailTick]}>
+          Failed to send
+        </Text>
+      </TouchableOpacity>
+    );
   };
 
   const renderTime = () => {
-    if (props.currentMessage && props.currentMessage.createdAt) {
-      const {containerStyle, wrapperStyle, textStyle, ...timeProps} = props;
-      if (props.renderTime) {
-        return props.renderTime(timeProps);
-      }
-      return <Time {...timeProps} />;
+    const {currentMessage} = props;
+
+    if (!currentMessage || !currentMessage.createdAt) {
+      return null;
     }
-    return null;
+
+    const {containerStyle, wrapperStyle, textStyle, ...timeProps} = props;
+
+    if (props.renderTime) {
+      return props.renderTime(timeProps);
+    }
+
+    return <Time {...timeProps} />;
   };
 
   const renderUsername = () => {
     const {currentMessage, user} = props;
-    if (props.renderUsernameOnMessage && currentMessage) {
-      if (user && currentMessage.user._id === user._id) {
-        return null;
-      }
-      return (
-        <View style={styles.content.usernameView}>
-          <Text style={[styles.content.username, props.usernameStyle]}>
-            ~ {currentMessage.user.name}
-          </Text>
-        </View>
-      );
+
+    if (!props.renderUsernameOnMessage || !currentMessage) {
+      return null;
+    } else if (user && currentMessage.user._id === user._id) {
+      return null;
     }
-    return null;
+
+    return (
+      <View style={styles.content.usernameView}>
+        <Text style={[styles.content.username, props.usernameStyle]}>
+          ~ {currentMessage.user.name}
+        </Text>
+      </View>
+    );
   };
 
   const renderCustomView = () => {
-    if (props.renderCustomView) {
-      return props.renderCustomView(props);
+    if (!props.renderCustomView) {
+      return null;
     }
-    return null;
+
+    return props.renderCustomView(props);
   };
 
   const renderBubbleContentItem = (
@@ -375,6 +446,7 @@ const CustomBubble = (
       <View key={index}>
         {renderMessageImage(message)}
         {renderMessageVideo(message)}
+        {renderMessagePdf(message)}
         {renderMessageAudio(message)}
         {renderMessageText(message)}
         {renderCustomView()}
@@ -384,6 +456,7 @@ const CustomBubble = (
         {renderCustomView()}
         {renderMessageImage(message)}
         {renderMessageVideo(message)}
+        {renderMessagePdf(message)}
         {renderMessageAudio(message)}
         {renderMessageText(message)}
       </View>
@@ -419,7 +492,7 @@ const CustomBubble = (
           wrapperStyle && wrapperStyle[position],
         ]}>
         <TouchableWithoutFeedback
-          onLongPress={onLongPress}
+          onLongPress={handleLongPress}
           accessibilityTraits="text"
           {...props.touchableProps}>
           <View>
@@ -572,6 +645,9 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         letterSpacing: 0.4,
         color: theme.colors.gray.dark,
         opacity: 0.75,
+      },
+      textFailTick: {
+        color: theme.colors.traffic.red,
       },
     }),
   };

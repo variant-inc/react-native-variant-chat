@@ -28,23 +28,26 @@ export const useApolloClient = (apiConfig: VariantApiConfig | void): ApolloClien
   });
 
   const errorLink = onError(({operation, graphQLErrors, networkError}) => {
-    const headers = operation.getContext().headers;
-    const requestId = headers[REQ_ID_HEADER];
-
     if (graphQLErrors) {
-      //graphQLErrors.map(({message}) => log.error({requestId, message}));
-      graphQLErrors.map(({message}) => console.log({requestId, message}));
+      graphQLErrors.map(({message}) => {
+        if (
+          !(
+            operation.operationName === 'GetDriverStatus' &&
+            message === 'Not authenticated'
+          )
+        ) {
+          console.error(`GraphQL error: ${operation.operationName} - ${message}`);
+        }
+      });
     }
-
+  
     if (networkError) {
-      if (networkError.message.includes('User is not authenticated')) {
-        //log.debug({requestId, message: networkError.message});
-      } else {
-        //log.error({requestId, message: networkError.message});
-      }
+      console.error(
+        `GraphQL network error: ${operation.operationName} - ${networkError.message}`,
+      );
     }
   });
-
+  
   const authLink = setContext(async (_, {headers = {}}) => {
     headers.authorization = `Bearer ${config?.accessToken}`;
     return {

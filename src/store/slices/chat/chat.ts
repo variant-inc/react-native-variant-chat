@@ -119,6 +119,20 @@ const handleAddMessage: CaseReducer<
   };
 };
 
+const handleRemoveMessage: CaseReducer<
+  ChatState,
+  PayloadAction<{id: string | number}>
+> = (state: ChatState, {payload}) => {
+  const filteredMessages = state.messages.filter(
+    (item: FreshchatMessage) => item.id !== payload.id,
+  );
+
+  return {
+    ...state,
+    messages: filteredMessages,
+  };
+};
+
 const handleAppendMessages: CaseReducer<
   ChatState,
   PayloadAction<{message: FreshchatGetMessages}>
@@ -176,6 +190,7 @@ const freshchatSlice = createSlice({
     appendMessages: handleAppendMessages,
     appendNewMessages: handleAppendNewMessages,
     addMessage: handleAddMessage,
+    removeMessage: handleRemoveMessage,
   },
   extraReducers: {},
 });
@@ -193,3 +208,4 @@ export const freshchatAppendMessages = freshchatSlice.actions.appendMessages;
 export const freshchatAppendNewMessages =
   freshchatSlice.actions.appendNewMessages;
 export const freshchatAddMessage = freshchatSlice.actions.addMessage;
+export const freshchatRemoveMessage = freshchatSlice.actions.removeMessage;

@@ -27,11 +27,11 @@ export const renderMessage = (
 ): JSX.Element => <Message {...props} />;
 
 export const renderMessageText = (
-  props: MessageTextProps<IMessage>,
+  props: MessageTextProps<IOpsMessage>,
 ): JSX.Element => <MessageText {...props} />;
 
 export const renderMessageVideo = (
-  props: MessageVideoProps<IMessage>,
+  props: MessageVideoProps<IOpsMessage>,
 ): JSX.Element => <MessageVideo {...props} />;
 
 export const renderComposer = (props: ComposerProps): JSX.Element => (
@@ -42,20 +42,20 @@ export const renderActions = (props: ActionsProps): JSX.Element => (
   <Actions {...props} />
 );
 
-export const renderSend = (props: SendProps<IMessage>): JSX.Element => (
+export const renderSend = (props: SendProps<IOpsMessage>): JSX.Element => (
   <Send {...props} />
 );
 
-export const renderImageClose = (close: () => void): JSX.Element => {
+
+export const renderLightBoxClose = (close: () => void) => {
   const styles = localStyleSheet();
   return (
-    <View style={styles.closeButtonContainer}>
-      <Button style={styles.closeButton} color="primary" onPress={close}>
-        Close
-      </Button>
-    </View>
+    <Button style={styles.closeButton} color="primary" onPress={close}>
+      Close
+    </Button>
   );
 };
+
 
 function localStyleSheet() {
   return StyleSheet.create({
@@ -63,8 +63,8 @@ function localStyleSheet() {
       height: 150,
     },
     closeButton: {
-      right: 10,
-      top: 60,
+      marginRight: 10,
+      marginTop: 74,
       alignSelf: 'flex-end',
     },
   });

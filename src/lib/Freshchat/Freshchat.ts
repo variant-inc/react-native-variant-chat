@@ -12,6 +12,7 @@ import {FreshchatUser} from '../../types/FreshchatUser';
 
 const FRESHCHAT_USER_ID = '@ps-freshchat-user-id';
 const FRESHCHAT_CONVERSATION_ID = '@ps-freshchat-conversation-id';
+const FRESHCHAT_FAILED_MESSAGES = '@ps-freshchat-failed-messages';
 const MESSAGES_PER_PAGE = 50;
 
 export const realtimeMessagePerPage = 10;
@@ -41,7 +42,7 @@ export async function getFreshchatUser(
     // console.log('Freshchat User: ', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    //log.error('could not get freshchat user', error);
+    //log.error(`Could not get freshchat user: ${error.message}`);
   }
 
   return null;
@@ -55,7 +56,7 @@ export async function getFreshchatAgent(
     // console.log('Freshchat Agent: ', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    //log.error('could not get freshchat agnet', error);
+    //log.error(`Could not get freshchat agent: ${error.message}`);
   }
 
   return null;
@@ -67,7 +68,7 @@ export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
     // console.log('Freshchat channels: ', JSON.stringify(response.data));
     return response.data && response.data.channels;
   } catch (error) {
-    //log.error('could not get freshchat channels', error);
+    //log.error(`Could not get freshchat channels: ${error.message}`);
   }
   return [];
 }
@@ -80,7 +81,7 @@ export async function getFreshchatConversation(
     // console.log('Freshchat Conversations: ', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    //log.error('could not get freshchat conversation', error);
+    //log.error(`Could not get freshchat conversation: ${error.message}`);
   }
   return null;
 }
@@ -104,7 +105,7 @@ export async function setFreshchatMessage(
     // console.log('Freshchat Message: ', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    //log.error('could not set freshchat message', error);
+    //log.error(`Could not set freshchat message: ${error.message}`);
   }
   return null;
 }
@@ -122,7 +123,7 @@ export async function getFreshchatMessages(
     // console.log('Freshchat Messages: ', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    //log.error('could not get freshchat messages', error);
+    //log.error(`Could not get freshchat messages: ${error.message}`);
   }
   return null;
 }
@@ -136,7 +137,7 @@ export async function getFreshchatMoreMessages(
     // console.log('Freshchat Messages: ', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    //log.error('could not get more freshchat messages', error);
+    //log.error(`Could not more freshchat messages: ${error.message}`);
   }
   return null;
 }
@@ -148,7 +149,7 @@ export const setFreshchatUserId = async (
   try {
     await AsyncStorage.setItem(`${FRESHCHAT_USER_ID}-${driverId}`, userId);
   } catch (error) {
-    //log.error('could not save freshchat user id', error);
+    //log.error(`Could not get freshchat user id: ${error.message}`);
   }
 };
 
@@ -161,7 +162,7 @@ export const getFreshchatUserId = async (
     );
     return userId;
   } catch (error) {
-    //log.error('could not get freshchat user id', error);
+    //log.error(`Could not get freshchat user: ${error.message}`);
     return null;
   }
 };
@@ -180,7 +181,7 @@ export const setFreshchatConversationId = async (
       conversationId,
     );
   } catch (error) {
-    //log.error('could not save freshchat conversation id', error);
+    //log.error(`Could not save freshchat conversation id: ${error.message}`);
   }
 };
 
@@ -193,11 +194,67 @@ export const getFreshchatConversationId = async (
     );
     return conversationId;
   } catch (error) {
-    //log.error('could not get freshchat conversation id', error);
+    //log.error(`Could not get freshchat conversation id: ${error.message}`);
     return null;
   }
 };
 
 export const clearFreshchatConversationId = (driverId: string): void => {
   AsyncStorage.removeItem(`${FRESHCHAT_CONVERSATION_ID}-${driverId}`);
+};
+
+
+export const setFreshchatFailedMessage = async (
+  failedMessage: FreshchatMessage,
+): Promise<void> => {
+  try {
+    const freshchatFailedMessages = await getFreshchatFailedMessages();
+    freshchatFailedMessages.push(failedMessage);
+
+    await AsyncStorage.setItem(
+      FRESHCHAT_FAILED_MESSAGES,
+      JSON.stringify(freshchatFailedMessages),
+    );
+  } catch (error) {
+    // log.error('could not save freshchat failed message', error);
+  }
+};
+
+export const getFreshchatFailedMessages = async (): Promise<
+  FreshchatMessage[]
+> => {
+  try {
+    const freshchatMessages = await AsyncStorage.getItem(
+      FRESHCHAT_FAILED_MESSAGES,
+    );
+
+    if (freshchatMessages) {
+      return JSON.parse(freshchatMessages);
+    }
+  } catch (error) {
+    // log.error('could not get freshchat failed message', error);
+  }
+  return [];
+};
+
+export const removeFreshchatFailedMessage = async (
+  messageId: string | number,
+): Promise<void> => {
+  try {
+    const freshchatFailedMessages = await getFreshchatFailedMessages();
+    const filteredFailedMessages = freshchatFailedMessages?.filter(
+      (message: FreshchatMessage) => message.id !== messageId,
+    );
+
+    await AsyncStorage.setItem(
+      FRESHCHAT_FAILED_MESSAGES,
+      JSON.stringify(filteredFailedMessages),
+    );
+  } catch (error) {
+    // log.error('could not save freshchat failed message', error);
+  }
+};
+
+export const clearFreshchatFailedMessages = (): void => {
+  AsyncStorage.removeItem(FRESHCHAT_FAILED_MESSAGES);
 };

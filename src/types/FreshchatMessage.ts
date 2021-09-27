@@ -33,6 +33,7 @@ export type FreshchatMessage = {
   meta_data?: {
     isResolved: true;
   };
+  not_sent?: boolean;
 };
 
 export type FreshchatGetMessages = {

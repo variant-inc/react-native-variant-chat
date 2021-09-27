@@ -24,7 +24,7 @@ export async function getFreshchatConversations(
     return null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    //log.error('Freshchat Conversations Error: ' + error.message);
+    //log.error(`Freshchat conversations error: ${error.message}`);
     throw error; // Rethrow for caller to handle bad network request.
   }
 }

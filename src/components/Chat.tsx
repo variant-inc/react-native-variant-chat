@@ -10,6 +10,7 @@ import {
   useFreshchatGetMoreMessages,
   useFreshchatGetNewMessages,
   useFreshchatInit,
+  useFreshchatSendFailedMessage,
   useFreshchatSendMessage,
   useFreshchatSetIsFullscreenVideo,
 } from '../hooks/useFreshchat';
@@ -36,7 +37,7 @@ import {
   renderAccessory,
   renderActions,
   renderComposer,
-  renderImageClose,
+  renderLightBoxClose,
   renderMessage,
   renderMessageText,
   renderSend,
@@ -57,6 +58,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const [isDidShowKeyboard, setIsDidShowKeyboard] = useState(false);
 
   const sendMessage = useFreshchatSendMessage();
+  const sendFailedMessage = useFreshchatSendFailedMessage();
   const getMoreMessages = useFreshchatGetMoreMessages();
   const setIsFullscreenVideo = useFreshchatSetIsFullscreenVideo();
 
@@ -129,6 +131,17 @@ const Chat = (props: VariantChatProps): ReactElement => {
     [currentUser, currentChannel, conversation],
   );
 
+  const handleFailedSend = useCallback(
+    (sendMessages: IOpsMessage) => {
+      Keyboard.dismiss();
+
+      if (conversation) {
+        sendFailedMessage(sendMessages);
+      }
+    },
+    [currentUser, currentChannel, conversation],
+  );
+
   const handleLoadEarlier = useCallback(() => {
     getMoreMessages();
   }, [conversation, moreMessages]);
@@ -174,10 +187,22 @@ const Chat = (props: VariantChatProps): ReactElement => {
         renderComposer={renderComposer}
         renderSend={renderSend}
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
+        onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
+        label={'Loading messages'}
+        textStyle={{paddingHorizontal: 15}}
         lightboxProps={{
-          renderHeader: renderImageClose,
+          renderHeader: renderLightBoxClose,
           backgroundColor: styles.lightbox.backgroundColor,
+          underlayColor: styles.lightbox.backgroundColor,
+          swipeToDismiss: false,
+          activeProps: {
+            style: styles.lightboxActive,
+          },
+          springConfig: {
+            speed: 2147483647,
+            bounciness: 0,
+          },
         }}
       />
     </View>
@@ -204,13 +229,10 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
     lightbox: {
       backgroundColor: theme.colors.chat.bubbleReceive,
     },
-    closeButtonContainer: {
-      height: 150,
-    },
-    closeButton: {
-      right: 10,
-      top: 60,
-      alignSelf: 'flex-end',
+    lightboxActive: {
+      flex: 1,
+      resizeMode: 'contain',
+      marginTop: 74,
     },
   });
 }

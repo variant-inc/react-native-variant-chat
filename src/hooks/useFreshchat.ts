@@ -3,11 +3,14 @@ import {
   getFreshchatAgent,
   getFreshchatChannels,
   getFreshchatConversation,
+  getFreshchatFailedMessages,
   getFreshchatMessages,
   getFreshchatMoreMessages,
   getFreshchatUser,
   initFreshchat,
   realtimeMessagePerPage,
+  removeFreshchatFailedMessage,
+  setFreshchatFailedMessage,
   setFreshchatMessage,
 } from '../lib/Freshchat/Freshchat';
 import {getFreshchatConversations} from '../lib/Freshchat/FreshchatConversation';
@@ -24,6 +27,7 @@ import {
   freshchatAddMessage,
   freshchatAppendMessages,
   freshchatAppendNewMessages,
+  freshchatRemoveMessage,
   freshchatSetChannel,
   freshchatSetConversation,
   freshchatSetConversationUser,
@@ -53,9 +57,12 @@ import {
   ActorType,
   FreshchatGetMessages,
   FreshchatMessage,
+  MessageType,
 } from '../types/FreshchatMessage';
 import {FreshchatUser} from '../types/FreshchatUser';
 import { VariantChatConfig } from '../types/VariantChat';
+import {IOpsMessage} from 'types/Message.interface';
+import {v4 as uuidv4} from 'uuid';
 
 export const useFreshchatInit = (driverId: string, channelName: string, config: VariantChatConfig): FreshchatInit => {
   const dispatch = useAppDispatch();
@@ -84,7 +91,10 @@ export const useFreshchatInit = (driverId: string, channelName: string, config: 
       // get conversation from backend
       try {
         const conversationInfo = await getFreshchatConversations(driverId);
-        console.log('VMA conversation info: ' + JSON.stringify(conversationInfo));
+        console.debug(
+          'Messaging service conversation info: ' +
+            JSON.stringify(conversationInfo),
+        );
 
         if (conversationInfo) {
           userId = conversationInfo.userId;
@@ -101,14 +111,13 @@ export const useFreshchatInit = (driverId: string, channelName: string, config: 
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        console.log('Fetching Conversations Error: ' + error.message);
         // ENOTFOUND indicates the messaging service could not find the specified driver id.
         if (error.message.includes('ENOTFOUND')) {
           showConversationError();
         } else {
           showServiceError();
         }
-        throw error; // Rethrow for caller to handle bad network request.
+        throw error;
       }
 
       // Getting user, conversation, and messages must be done synchonously.
@@ -132,6 +141,12 @@ export const useFreshchatInit = (driverId: string, channelName: string, config: 
         checkConversationUsers(dispatch, [], messageResponse.messages);
       }
 
+      // Check and Append the failed messages
+      const failedMessages = await getFreshchatFailedMessages();
+      if (failedMessages && failedMessages.length) {
+        dispatch(freshchatAppendNewMessages({messages: failedMessages}));
+      }
+      
       setInitialized(FreshchatInit.Success);
     }
 
@@ -155,7 +170,7 @@ export const useFreshchatInit = (driverId: string, channelName: string, config: 
     } catch (error: any) {
       setInitialized(FreshchatInit.Fail);
       Alert.alert(/*appConfig.appName*/'TBD', appNotAvailable, [], {cancelable: false});
-      console.log('Freshchat init failed: ' + error.message);
+      console.log(`Freshchat init failed: ${error.message}`);
     }
   }, [driverId, config]);
 
@@ -219,21 +234,94 @@ export const useFreshchatSendMessage = (): ((message: string) => void) => {
 
   const sendMessage = useCallback(
     async (message: string): Promise<void> => {
-      if (currentUser && currentConversation) {
-        const response = await setFreshchatMessage(
-          currentUser.id,
-          currentConversation.conversation_id,
-          message,
-        );
-        if (response) {
-          dispatch(freshchatAddMessage({message: response}));
-        }
+      if (!currentUser || !currentConversation) {
+        return;
+      }
+
+      const response = await setFreshchatMessage(
+        currentUser.id,
+        currentConversation.conversation_id,
+        message,
+      );
+
+      if (response) {
+        // Success
+        dispatch(freshchatAddMessage({message: response}));
+      } else {
+        // Fail
+        const failedMessage = {
+          message_parts: [{text: {content: message}}],
+          actor_id: currentUser.id,
+          id: uuidv4(),
+          conversation_id: currentConversation.conversation_id,
+          message_type: MessageType.Normal,
+          actor_type: ActorType.User,
+          created_time: new Date().toISOString(),
+          user_id: currentUser.id,
+          not_sent: true,
+        };
+
+        setFreshchatFailedMessage(failedMessage);
+        dispatch(freshchatAddMessage({message: failedMessage}));
       }
     },
     [currentUser, currentConversation, dispatch],
   );
 
   return sendMessage;
+};
+
+export const useFreshchatSendFailedMessage = (): ((
+  message: IOpsMessage,
+) => void) => {
+  const dispatch = useAppDispatch();
+  const currentUser = useSelector(selectFreshchatCurrentUser);
+  const currentConversation = useSelector(selectFreshchatConversation);
+  const isSending = useRef(false);
+
+  const sendFailedMessage = useCallback(
+    async (sendMessage: IOpsMessage): Promise<void> => {
+      if (!currentUser || !currentConversation) {
+        return;
+      }
+
+      if (!sendMessage.messages || !sendMessage.messages.length) {
+        return;
+      }
+
+      // only text message for now
+      if (!sendMessage.messages[0].text) {
+        return;
+      }
+
+      const message = sendMessage.messages[0].text.content;
+
+      isSending.current = true;
+
+      const response = await setFreshchatMessage(
+        currentUser.id,
+        currentConversation.conversation_id,
+        message,
+      );
+
+      if (response) {
+        // Success
+
+        // remove the failed message
+        dispatch(freshchatRemoveMessage({id: sendMessage._id}));
+
+        dispatch(freshchatAddMessage({message: response}));
+
+        // Remove the failed messages from storage
+        removeFreshchatFailedMessage(sendMessage._id);
+      }
+
+      isSending.current = false;
+    },
+    [currentUser, currentConversation, dispatch],
+  );
+
+  return sendFailedMessage;
 };
 
 export const useFreshchatGetMessages = (page = 1): void => {
@@ -265,10 +353,16 @@ export const useFreshchatGetMoreMessages = (): (() => void) => {
   const currentConversation = useSelector(selectFreshchatConversation);
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
   const moreMessages = useSelector(selectFreshchatMoreMessage);
+  const isFetching = useRef(false);
 
   const getMoreMessages = useCallback(async (): Promise<void> => {
-    if (currentConversation && moreMessages) {
+    if (currentConversation && moreMessages && !isFetching.current) {
+      isFetching.current = true;
+
       const response = await getFreshchatMoreMessages(moreMessages?.href);
+
+      isFetching.current = false;
+
       if (response) {
         dispatch(freshchatAppendMessages({message: response}));
 
