@@ -1,10 +1,9 @@
 import {Button} from './Button';
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   ActionsProps,
   ComposerProps,
-  IMessage,
   MessageProps,
   MessageTextProps,
   MessageVideoProps,
