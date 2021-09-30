@@ -28,7 +28,8 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "types:check": "tsc",
     "release": "release-it",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:ci": "NODE_ENV=test jest --ci --coverage --passWithNoTests"
   },
   "bundleDependencies": false,
   "deprecated": false,
