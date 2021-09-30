@@ -1,4 +1,4 @@
-import {Fonts} from 'react-native-paper/lib/typescript/types';
+import { Fonts } from 'react-native-paper/lib/typescript/types';
 
 export enum Weight {
   normal = 'normal',

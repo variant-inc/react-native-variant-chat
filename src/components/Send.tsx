@@ -1,7 +1,7 @@
-import React, {ReactElement} from 'react';
-import {StyleSheet} from 'react-native';
-import {IMessage, Send, SendProps} from 'react-native-gifted-chat';
-import {useTheme} from 'react-native-paper';
+import React, { ReactElement } from 'react';
+import { StyleSheet } from 'react-native';
+import { IMessage, Send, SendProps } from 'react-native-gifted-chat';
+import { useTheme } from 'react-native-paper';
 
 import Font from '../theme/fonts';
 

@@ -1,12 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import {Keyboard, StyleSheet, View} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
-import {IMessage, MessageVideoProps} from 'react-native-gifted-chat/lib/Models';
-import {useSelector} from 'react-redux';
-import Font from '../theme/fonts';
+import { Keyboard, StyleSheet, View } from 'react-native';
+import { GiftedChat } from 'react-native-gifted-chat';
+import {
+  IMessage,
+  MessageVideoProps,
+} from 'react-native-gifted-chat/lib/Models';
+import { useSelector } from 'react-redux';
+import { FreshchatMessage } from 'types/FreshchatMessage';
 
-import { 
+import { useApolloClient } from '../hooks/useApolloClient';
+import {
   useFreshchatGetMoreMessages,
   useFreshchatGetNewMessages,
   useFreshchatInit,
@@ -22,17 +26,14 @@ import {
   selectFreshchatMessages,
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
-import {
-  reopenedMessageMark,
-  resolvedMessageMark,
-} from '../theme/constants';
-import {useApolloClient} from '../hooks/useApolloClient';
-import {VariantChatProps} from '../types/VariantChat';
-import {FreshchatInit} from '../types/FreshchatInit.enum';
-import {FreshchatMessage} from 'types/FreshchatMessage';
-import {FreshchatUser} from '../types/FreshchatUser';
-import {IOpsMessage} from '../types/Message.interface';
+import { reopenedMessageMark, resolvedMessageMark } from '../theme/constants';
+import Font from '../theme/fonts';
+import { FreshchatInit } from '../types/FreshchatInit.enum';
+import { FreshchatUser } from '../types/FreshchatUser';
+import { IOpsMessage } from '../types/Message.interface';
+import { VariantChatProps } from '../types/VariantChat';
 import LoadingIndicator from './LoadingIndicator';
+import MessageVideo from './MessageVideo';
 import {
   renderAccessory,
   renderActions,
@@ -42,7 +43,6 @@ import {
   renderMessageText,
   renderSend,
 } from './renderers';
-import MessageVideo from './MessageVideo';
 
 const Chat = (props: VariantChatProps): ReactElement => {
   const theme = props.theme;
@@ -64,7 +64,11 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
 
-  const freshchatInit = useFreshchatInit(driverId, 'Chat with Team', props.config.chat);
+  const freshchatInit = useFreshchatInit(
+    driverId,
+    'Chat with Team',
+    props.config.chat
+  );
 
   useApolloClient(props.config.api);
   useFreshchatGetNewMessages(driverId);
@@ -85,15 +89,17 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
     messages.forEach((message: FreshchatMessage) => {
       const messageUser = conversationUsers.find(
-        (user: FreshchatUser) => user.id === message.actor_id,
+        (user: FreshchatUser) => user.id === message.actor_id
       );
 
       const currentMessage = message.message_parts[0];
       if (
-        !resolvedMessageMark.some(s =>
-          currentMessage.text?.content?.includes(s),
+        !resolvedMessageMark.some((s) =>
+          currentMessage.text?.content?.includes(s)
         ) &&
-        !reopenedMessageMark.some(s => currentMessage.text?.content?.includes(s))
+        !reopenedMessageMark.some((s) =>
+          currentMessage.text?.content?.includes(s)
+        )
       ) {
         allMessages.push({
           _id: message.id,
@@ -128,7 +134,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         sendMessage(newMessage);
       }
     },
-    [currentUser, currentChannel, conversation],
+    [currentUser, currentChannel, conversation]
   );
 
   const handleFailedSend = useCallback(
@@ -139,7 +145,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         sendFailedMessage(sendMessages);
       }
     },
-    [currentUser, currentChannel, conversation],
+    [currentUser, currentChannel, conversation]
   );
 
   const handleLoadEarlier = useCallback(() => {
@@ -190,7 +196,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
         label={'Loading messages'}
-        textStyle={{paddingHorizontal: 15}}
+        textStyle={{ paddingHorizontal: 15 }}
         lightboxProps={{
           renderHeader: renderLightBoxClose,
           backgroundColor: styles.lightbox.backgroundColor,

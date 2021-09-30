@@ -1,10 +1,10 @@
-import React, {FC} from 'react';
-import {StyleSheet, ViewStyle} from 'react-native';
-import {Button as PaperButton, useTheme} from 'react-native-paper';
-import {IconSource} from 'react-native-paper/lib/typescript/components/Icon';
+import React, { FC } from 'react';
+import { StyleSheet, ViewStyle } from 'react-native';
+import { Button as PaperButton, useTheme } from 'react-native-paper';
+import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 
-import {UnknownObject} from '../types/Misc.types';
 import Font from '../theme/fonts';
+import { UnknownObject } from '../types/Misc.types';
 
 export interface ButtonContainedProps {
   mode?: 'contained' | 'outlined';
@@ -37,8 +37,8 @@ export const Button: FC<ButtonContainedProps> = ({
     theme.colors[palette === 'light' ? 'bright' : 'brand'][color];
   const styles = localStyleSheet(
     theme,
-    {fullWidth, palette, color},
-    resolvedColor,
+    { fullWidth, palette, color },
+    resolvedColor
   );
 
   let container = [styles.root, style];
@@ -54,7 +54,8 @@ export const Button: FC<ButtonContainedProps> = ({
       color={resolvedColor}
       style={container}
       labelStyle={label}
-      {...restProps}>
+      {...restProps}
+    >
       {children}
     </PaperButton>
   );
@@ -68,8 +69,8 @@ interface ButtonContainedStyleProps {
 
 function localStyleSheet(
   theme: ReactNativePaper.Theme,
-  {fullWidth, palette, color}: ButtonContainedStyleProps,
-  resolvedColor?: string,
+  { fullWidth, palette, color }: ButtonContainedStyleProps,
+  resolvedColor?: string
 ) {
   return StyleSheet.create({
     root: {

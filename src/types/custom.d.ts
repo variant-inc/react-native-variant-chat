@@ -38,18 +38,18 @@ declare let __DEV__: boolean;
 type transportFunctionType = (props: {
   msg: any;
   rawMsg: any;
-  level: {severity: number; text: string};
+  level: { severity: number; text: string };
   extension?: string | null;
   options?: any;
 }) => any;
-type levelsType = {[key: string]: number};
+type levelsType = { [key: string]: number };
 type logMethodType = (
   level: string,
   extension: string | null,
   ...msgs: any[]
 ) => boolean;
 type levelLogMethodType = (...msgs: any[]) => boolean;
-type extendedLogType = {[key: string]: levelLogMethodType | any};
+type extendedLogType = { [key: string]: levelLogMethodType | any };
 type configLoggerType = {
   severity?: string;
   transport?: transportFunctionType;

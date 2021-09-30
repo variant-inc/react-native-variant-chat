@@ -1,9 +1,9 @@
-import React, {ReactElement} from 'react';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
-import {useTheme} from 'react-native-paper';
+import React, { ReactElement } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 import Font from '../theme/fonts';
-import {screenHeight} from '../theme/screenSizes';
+import { screenHeight } from '../theme/screenSizes';
 
 interface LoadingIndicatorProps {
   isLoading: boolean;
@@ -11,9 +11,9 @@ interface LoadingIndicatorProps {
 }
 
 const LoadingIndicator = (
-  props: LoadingIndicatorProps,
+  props: LoadingIndicatorProps
 ): ReactElement | null => {
-  const {isLoading, message} = props;
+  const { isLoading, message } = props;
 
   const theme = useTheme();
   const styles = localStyleSheet(theme);

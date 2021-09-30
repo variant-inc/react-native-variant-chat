@@ -2,29 +2,25 @@ import {
   DriverConversationQueryResponse,
   GET_DRIVER_CONVERSATION,
 } from '../../graphql/queries/getDriverConversation';
-import {FreshchatConversationResponse} from '../../types/FreshchatConversationResponse.type';
-import {useApolloClient} from '../../hooks/useApolloClient';
+import { useApolloClient } from '../../hooks/useApolloClient';
+import { FreshchatConversationResponse } from '../../types/FreshchatConversationResponse.type';
 
 export async function getFreshchatConversations(
-  currentDriverId: string,
+  currentDriverId: string
 ): Promise<FreshchatConversationResponse | null> {
-  try {
-    const apolloClient = useApolloClient();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const apolloClient = useApolloClient();
 
-    if (apolloClient) {
-    const {data} = await apolloClient.query<DriverConversationQueryResponse>({
+  if (apolloClient) {
+    const { data } = await apolloClient.query<DriverConversationQueryResponse>({
       query: GET_DRIVER_CONVERSATION,
-      variables: {driverId: currentDriverId},
+      variables: { driverId: currentDriverId },
     });
 
     const conversations: FreshchatConversationResponse =
       data?.driver?.conversations ?? null;
-      return conversations;
-    }
-    return null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    //log.error(`Freshchat conversations error: ${error.message}`);
-    throw error; // Rethrow for caller to handle bad network request.
+    return conversations;
   }
+
+  return null;
 }

@@ -1,4 +1,4 @@
-import {FreshchatMessageParts} from './FreshchatMessageParts.type';
+import { FreshchatMessageParts } from './FreshchatMessageParts.type';
 
 export enum ActorType {
   Agent = 'agent',

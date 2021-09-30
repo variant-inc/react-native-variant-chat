@@ -5,8 +5,8 @@ import {
   StyleSheet,
   Text,
   TextStyle,
-  TouchableWithoutFeedback,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
   ViewStyle,
 } from 'react-native';
@@ -29,15 +29,15 @@ import {
   User,
 } from 'react-native-gifted-chat/lib/Models';
 import QuickReplies from 'react-native-gifted-chat/lib/QuickReplies';
-import {isSameDay, isSameUser} from 'react-native-gifted-chat/lib/utils';
-import {useTheme} from 'react-native-paper';
-import {SvgXml} from 'react-native-svg';
-import {urgentMessageMark} from 'theme/constants';
+import { isSameDay, isSameUser } from 'react-native-gifted-chat/lib/utils';
+import { useTheme } from 'react-native-paper';
+import { SvgXml } from 'react-native-svg';
+import { urgentMessageMark } from 'theme/constants';
 import Font from 'theme/fonts';
-import {getSvg} from 'theme/Svg';
-import {FreshchatMessagePart} from 'types/FreshchatMessagePart.type';
-import {FreshchatMessageParts} from 'types/FreshchatMessageParts.type';
-import {IOpsMessage} from 'types/Message.interface';
+import { getSvg } from 'theme/Svg';
+import { FreshchatMessagePart } from 'types/FreshchatMessagePart.type';
+import { FreshchatMessageParts } from 'types/FreshchatMessageParts.type';
+import { IOpsMessage } from 'types/Message.interface';
 
 import MessagePdf from './MessagePdf';
 
@@ -90,14 +90,14 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
   onLongPress?(context?: any, message?: any): void;
   onQuickReply?(replies: Reply[]): void;
   renderMessageImage?(
-    props: RenderMessageImageProps<TMessage>,
+    props: RenderMessageImageProps<TMessage>
   ): React.ReactNode;
   renderMessageVideo?(
-    props: RenderMessageVideoProps<TMessage>,
+    props: RenderMessageVideoProps<TMessage>
   ): React.ReactNode;
   renderMessagePdf?(props: RenderMessagePdfProps<TMessage>): React.ReactNode;
   renderMessageAudio?(
-    props: RenderMessageAudioProps<TMessage>,
+    props: RenderMessageAudioProps<TMessage>
   ): React.ReactNode;
   renderMessageText?(props: RenderMessageTextProps<TMessage>): React.ReactNode;
   renderCustomView?(bubbleProps: CustomBubbleProps<TMessage>): React.ReactNode;
@@ -112,13 +112,13 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
 const DEFAULT_OPTION_TITLES = ['Copy Text', 'Cancel'];
 
 const CustomBubble = (
-  props: CustomBubbleProps<IOpsMessage>,
+  props: CustomBubbleProps<IOpsMessage>
 ): React.ReactElement => {
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
   const parseMessage = () => {
-    const {currentMessage} = props;
+    const { currentMessage } = props;
     const messageParts: FreshchatMessagePart[] = [];
 
     currentMessage?.messages?.forEach((messagePart: FreshchatMessageParts) => {
@@ -169,7 +169,8 @@ const CustomBubble = (
   };
 
   const styledBubbleToNext = () => {
-    const {currentMessage, nextMessage, position, containerToNextStyle} = props;
+    const { currentMessage, nextMessage, position, containerToNextStyle } =
+      props;
     if (
       currentMessage &&
       nextMessage &&
@@ -214,7 +215,7 @@ const CustomBubble = (
   };
 
   const handleSendFailedMessage = () => {
-    const {currentMessage, onSendFailedMessage} = props;
+    const { currentMessage, onSendFailedMessage } = props;
     if (currentMessage && onSendFailedMessage) {
       onSendFailedMessage(currentMessage);
     }
@@ -233,7 +234,7 @@ const CustomBubble = (
       return null;
     }
 
-    const {containerStyle, wrapperStyle, ...quickReplyProps} = props;
+    const { containerStyle, wrapperStyle, ...quickReplyProps } = props;
 
     if (props.renderQuickReplies) {
       return props.renderQuickReplies(quickReplyProps);
@@ -255,7 +256,7 @@ const CustomBubble = (
       return null;
     }
 
-    const {containerStyle, wrapperStyle, optionTitles, ...messageTextProps} =
+    const { containerStyle, wrapperStyle, optionTitles, ...messageTextProps } =
       props;
     const textProps: any = {
       ...messageTextProps,
@@ -278,7 +279,7 @@ const CustomBubble = (
       return null;
     }
 
-    const {containerStyle, wrapperStyle, ...messageImageProps} = props;
+    const { containerStyle, wrapperStyle, ...messageImageProps } = props;
 
     const imageProps: any = {
       ...messageImageProps,
@@ -299,7 +300,7 @@ const CustomBubble = (
       return null;
     }
 
-    const {containerStyle, wrapperStyle, ...messageVideoProps} = props;
+    const { containerStyle, wrapperStyle, ...messageVideoProps } = props;
 
     const videoProps: any = {
       ...messageVideoProps,
@@ -320,7 +321,7 @@ const CustomBubble = (
       return null;
     }
 
-    const {containerStyle, wrapperStyle, ...messagePdfProps} = props;
+    const { containerStyle, wrapperStyle, ...messagePdfProps } = props;
 
     const pdfProps: any = {
       ...messagePdfProps,
@@ -341,7 +342,7 @@ const CustomBubble = (
       return null;
     }
 
-    const {containerStyle, wrapperStyle, ...messageAudioProps} = props;
+    const { containerStyle, wrapperStyle, ...messageAudioProps } = props;
 
     const audioProps: any = {
       ...messageAudioProps,
@@ -358,7 +359,7 @@ const CustomBubble = (
   };
 
   const renderTicks = () => {
-    const {currentMessage} = props;
+    const { currentMessage } = props;
 
     if (props.renderTicks && currentMessage) {
       return props.renderTicks(currentMessage);
@@ -388,7 +389,8 @@ const CustomBubble = (
     return (
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => handleSendFailedMessage()}>
+        onPress={() => handleSendFailedMessage()}
+      >
         <Text style={[styles.content.textTick, styles.content.textFailTick]}>
           Failed to send
         </Text>
@@ -397,13 +399,13 @@ const CustomBubble = (
   };
 
   const renderTime = () => {
-    const {currentMessage} = props;
+    const { currentMessage } = props;
 
     if (!currentMessage || !currentMessage.createdAt) {
       return null;
     }
 
-    const {containerStyle, wrapperStyle, textStyle, ...timeProps} = props;
+    const { containerStyle, wrapperStyle, textStyle, ...timeProps } = props;
 
     if (props.renderTime) {
       return props.renderTime(timeProps);
@@ -413,7 +415,7 @@ const CustomBubble = (
   };
 
   const renderUsername = () => {
-    const {currentMessage, user} = props;
+    const { currentMessage, user } = props;
 
     if (!props.renderUsernameOnMessage || !currentMessage) {
       return null;
@@ -440,7 +442,7 @@ const CustomBubble = (
 
   const renderBubbleContentItem = (
     index: number,
-    message: FreshchatMessagePart,
+    message: FreshchatMessagePart
   ) => {
     return props.isCustomViewBottom ? (
       <View key={index}>
@@ -463,7 +465,8 @@ const CustomBubble = (
     );
   };
 
-  const {position, containerStyle, wrapperStyle, bottomContainerStyle} = props;
+  const { position, containerStyle, wrapperStyle, bottomContainerStyle } =
+    props;
   const messages = parseMessage();
   const isHasUrgent =
     messages.findIndex((message: FreshchatMessagePart) => message.urgent) > -1;
@@ -482,7 +485,8 @@ const CustomBubble = (
       style={[
         styles[position].container,
         containerStyle && containerStyle[position],
-      ]}>
+      ]}
+    >
       <View
         style={[
           styles[position].wrapper,
@@ -490,20 +494,23 @@ const CustomBubble = (
           styledBubbleToNext(),
           styledBubbleToPrevious(),
           wrapperStyle && wrapperStyle[position],
-        ]}>
+        ]}
+      >
         <TouchableWithoutFeedback
           onLongPress={handleLongPress}
           accessibilityTraits="text"
-          {...props.touchableProps}>
+          {...props.touchableProps}
+        >
           <View>
             {messages.map((message: FreshchatMessagePart, index: number) =>
-              renderBubbleContentItem(index, message),
+              renderBubbleContentItem(index, message)
             )}
             <View
               style={[
                 styles[position].bottom,
                 bottomContainerStyle && bottomContainerStyle[position],
-              ]}>
+              ]}
+            >
               {renderUsername()}
               {renderTime()}
               {renderTicks()}

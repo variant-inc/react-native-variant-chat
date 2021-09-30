@@ -1,5 +1,5 @@
-import {FreshchatMessage} from './FreshchatMessage';
-import {FreshchatUser} from './FreshchatUser';
+import { FreshchatMessage } from './FreshchatMessage';
+import { FreshchatUser } from './FreshchatUser';
 
 export enum ConversationStatus {
   Assigned = 'assigned',

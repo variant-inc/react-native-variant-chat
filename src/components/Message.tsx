@@ -1,15 +1,15 @@
-import React, {ReactElement} from 'react';
-import {StyleProp, Text, TextStyle, View, ViewStyle} from 'react-native';
+import React, { ReactElement } from 'react';
+import { StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import {
   BubbleProps,
   LeftRightStyle,
   Message,
   MessageProps,
 } from 'react-native-gifted-chat';
-import {useTheme} from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 
 import Font from '../theme/fonts';
-import {IOpsMessage} from '../types/Message.interface';
+import { IOpsMessage } from '../types/Message.interface';
 import Bubble from './Bubble';
 
 const CustomMessage = (props: MessageProps<IOpsMessage>): ReactElement => {
@@ -23,7 +23,8 @@ const CustomMessage = (props: MessageProps<IOpsMessage>): ReactElement => {
           <Text
             style={
               styles.textUserName[bubbleProps.position] as StyleProp<TextStyle>
-            }>
+            }
+          >
             {props.currentMessage?.user?.name}
           </Text>
           <Bubble {...bubbleProps} />

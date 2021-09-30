@@ -1,9 +1,9 @@
-import React, {ReactElement} from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import React, { ReactElement } from 'react';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Lightbox from 'react-native-lightbox';
-import {useTheme} from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 import Pdf from 'react-native-pdf';
-import {IOpsMessage} from 'types/Message.interface';
+import { IOpsMessage } from 'types/Message.interface';
 
 type MessagePdfProps<IOpsMessage> = {
   currentMessage?: IOpsMessage;
@@ -13,9 +13,9 @@ type MessagePdfProps<IOpsMessage> = {
 };
 
 const MessagePdf = (
-  props: MessagePdfProps<IOpsMessage>,
+  props: MessagePdfProps<IOpsMessage>
 ): ReactElement | null => {
-  const {containerStyle, lightboxProps, pdfStyle, currentMessage} = props;
+  const { containerStyle, lightboxProps, pdfStyle, currentMessage } = props;
 
   const theme = useTheme();
   const styles = localStyleSheet(theme);
@@ -30,10 +30,11 @@ const MessagePdf = (
         {...lightboxProps}
         activeProps={{
           style: styles.pdfActive,
-        }}>
+        }}
+      >
         <Pdf
           style={[styles.pdf, pdfStyle]}
-          source={{uri: currentMessage.pdf}}
+          source={{ uri: currentMessage.pdf }}
         />
       </Lightbox>
     </View>

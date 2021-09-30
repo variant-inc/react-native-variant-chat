@@ -1,6 +1,5 @@
-import {Button} from './Button';
-import React from 'react';
-import {StyleSheet} from 'react-native';
+import React, { ReactElement } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   ActionsProps,
   ComposerProps,
@@ -10,9 +9,10 @@ import {
   SendProps,
 } from 'react-native-gifted-chat/lib/Models';
 
-import {IOpsMessage} from '../types/Message.interface';
+import { IOpsMessage } from '../types/Message.interface';
 import Accessory from './Accessory';
 import Actions from './Actions';
+import { Button } from './Button';
 import Composer from './Composer';
 import Message from './Message';
 import MessageText from './MessageText';
@@ -22,15 +22,15 @@ import Send from './Send';
 export const renderAccessory = (): JSX.Element => <Accessory />;
 
 export const renderMessage = (
-  props: MessageProps<IOpsMessage>,
+  props: MessageProps<IOpsMessage>
 ): JSX.Element => <Message {...props} />;
 
 export const renderMessageText = (
-  props: MessageTextProps<IOpsMessage>,
+  props: MessageTextProps<IOpsMessage>
 ): JSX.Element => <MessageText {...props} />;
 
 export const renderMessageVideo = (
-  props: MessageVideoProps<IOpsMessage>,
+  props: MessageVideoProps<IOpsMessage>
 ): JSX.Element => <MessageVideo {...props} />;
 
 export const renderComposer = (props: ComposerProps): JSX.Element => (
@@ -45,8 +45,7 @@ export const renderSend = (props: SendProps<IOpsMessage>): JSX.Element => (
   <Send {...props} />
 );
 
-
-export const renderLightBoxClose = (close: () => void) => {
+export const renderLightBoxClose = (close: () => void): ReactElement => {
   const styles = localStyleSheet();
   return (
     <Button style={styles.closeButton} color="primary" onPress={close}>
@@ -54,7 +53,6 @@ export const renderLightBoxClose = (close: () => void) => {
     </Button>
   );
 };
-
 
 function localStyleSheet() {
   return StyleSheet.create({

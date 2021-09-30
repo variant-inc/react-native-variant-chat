@@ -1,14 +1,14 @@
-import {CaseReducer, PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {filterNewMessages} from '../../../lib/Freshchat/Utils';
-import {FreshchatChannel} from '../../../types/FreshchatChannel.type';
+import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import {FreshchatConversation} from '../../../types/FreshchatConversation';
+import { filterNewMessages } from '../../../lib/Freshchat/Utils';
+import { FreshchatChannel } from '../../../types/FreshchatChannel.type';
+import { FreshchatConversation } from '../../../types/FreshchatConversation';
 import {
   FreshchatGetMessages,
   FreshchatMessage,
   FreshchatMessagesLink,
 } from '../../../types/FreshchatMessage';
-import {FreshchatUser} from '../../../types/FreshchatUser';
+import { FreshchatUser } from '../../../types/FreshchatUser';
 
 export interface ChatState {
   currentUser: FreshchatUser | null;
@@ -32,8 +32,8 @@ export const initialChatState = Object.freeze<ChatState>({
 
 const handleSetCurrentUser: CaseReducer<
   ChatState,
-  PayloadAction<{user: FreshchatUser}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ user: FreshchatUser }>
+> = (state: ChatState, { payload }) => {
   return {
     ...state,
     currentUser: payload.user,
@@ -43,8 +43,8 @@ const handleSetCurrentUser: CaseReducer<
 
 const handleIsFullscreenVideo: CaseReducer<
   ChatState,
-  PayloadAction<{isFullscreen: boolean}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ isFullscreen: boolean }>
+> = (state: ChatState, { payload }) => {
   return {
     ...state,
     isFullscreenVideo: payload.isFullscreen,
@@ -53,11 +53,11 @@ const handleIsFullscreenVideo: CaseReducer<
 
 const handleSetConversationUser: CaseReducer<
   ChatState,
-  PayloadAction<{user: FreshchatUser}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ user: FreshchatUser }>
+> = (state: ChatState, { payload }) => {
   if (
     state.conversationUsers.findIndex(
-      (user: FreshchatUser) => user.id === payload.user.id,
+      (user: FreshchatUser) => user.id === payload.user.id
     ) !== -1
   ) {
     return state;
@@ -71,8 +71,8 @@ const handleSetConversationUser: CaseReducer<
 
 const handleSetChannel: CaseReducer<
   ChatState,
-  PayloadAction<{channel: FreshchatChannel}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ channel: FreshchatChannel }>
+> = (state: ChatState, { payload }) => {
   return {
     ...state,
     currentChannel: payload.channel,
@@ -81,8 +81,8 @@ const handleSetChannel: CaseReducer<
 
 const handleSetConversation: CaseReducer<
   ChatState,
-  PayloadAction<{conversation: FreshchatConversation}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ conversation: FreshchatConversation }>
+> = (state: ChatState, { payload }) => {
   return {
     ...state,
     currentConversation: payload.conversation,
@@ -92,8 +92,8 @@ const handleSetConversation: CaseReducer<
 
 const handleSetMessages: CaseReducer<
   ChatState,
-  PayloadAction<{message: FreshchatGetMessages}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ message: FreshchatGetMessages }>
+> = (state: ChatState, { payload }) => {
   return {
     ...state,
     messages: payload.message.messages,
@@ -103,10 +103,10 @@ const handleSetMessages: CaseReducer<
 
 const handleAddMessage: CaseReducer<
   ChatState,
-  PayloadAction<{message: FreshchatMessage}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ message: FreshchatMessage }>
+> = (state: ChatState, { payload }) => {
   const findIndex = state.messages.findIndex(
-    (item: FreshchatMessage) => item.id === payload.message.id,
+    (item: FreshchatMessage) => item.id === payload.message.id
   );
 
   if (findIndex > -1) {
@@ -121,10 +121,10 @@ const handleAddMessage: CaseReducer<
 
 const handleRemoveMessage: CaseReducer<
   ChatState,
-  PayloadAction<{id: string | number}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ id: string | number }>
+> = (state: ChatState, { payload }) => {
   const filteredMessages = state.messages.filter(
-    (item: FreshchatMessage) => item.id !== payload.id,
+    (item: FreshchatMessage) => item.id !== payload.id
   );
 
   return {
@@ -135,11 +135,11 @@ const handleRemoveMessage: CaseReducer<
 
 const handleAppendMessages: CaseReducer<
   ChatState,
-  PayloadAction<{message: FreshchatGetMessages}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ message: FreshchatGetMessages }>
+> = (state: ChatState, { payload }) => {
   const newMessages = filterNewMessages(
     state.messages,
-    payload.message.messages,
+    payload.message.messages
   );
 
   if (newMessages.length === 0) {
@@ -158,8 +158,8 @@ const handleAppendMessages: CaseReducer<
 
 const handleAppendNewMessages: CaseReducer<
   ChatState,
-  PayloadAction<{messages: FreshchatMessage[]}>
-> = (state: ChatState, {payload}) => {
+  PayloadAction<{ messages: FreshchatMessage[] }>
+> = (state: ChatState, { payload }) => {
   const newMessages = filterNewMessages(state.messages, payload.messages);
 
   if (newMessages.length === 0) {

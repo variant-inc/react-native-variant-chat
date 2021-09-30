@@ -1,6 +1,7 @@
-import {DefaultTheme, configureFonts} from 'react-native-paper';
+import { DefaultTheme, configureFonts } from 'react-native-paper';
+
 import * as colors from './colors';
-import {fontConfig} from './fonts';
+import { fontConfig } from './fonts';
 
 // https://callstack.github.io/react-native-paper/theming.html
 export const paperTheme: ReactNativePaper.Theme = {

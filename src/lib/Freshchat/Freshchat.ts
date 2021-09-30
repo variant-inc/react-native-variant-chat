@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, {AxiosInstance} from 'axios';
-import {FreshchatChannel} from '../../types/FreshchatChannel.type';
+import axios, { AxiosInstance } from 'axios';
 
-import {FreshchatConfig} from '../../types/Freshchat';
-import {FreshchatConversation} from '../../types/FreshchatConversation';
+import { FreshchatConfig } from '../../types/Freshchat';
+import { FreshchatChannel } from '../../types/FreshchatChannel.type';
+import { FreshchatConversation } from '../../types/FreshchatConversation';
 import {
   FreshchatGetMessages,
   FreshchatMessage,
 } from '../../types/FreshchatMessage';
-import {FreshchatUser} from '../../types/FreshchatUser';
+import { FreshchatUser } from '../../types/FreshchatUser';
 
 const FRESHCHAT_USER_ID = '@ps-freshchat-user-id';
 const FRESHCHAT_CONVERSATION_ID = '@ps-freshchat-conversation-id';
@@ -28,14 +28,14 @@ export async function initFreshchat(config: FreshchatConfig): Promise<void> {
     baseURL: config.freshchatBaseUrl,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      accept: 'application/json',
-      Authorization: `Bearer ${config.freshchatAccessToken}`,
+      'accept': 'application/json',
+      'Authorization': `Bearer ${config.freshchatAccessToken}`,
     },
   });
 }
 
 export async function getFreshchatUser(
-  userId: string,
+  userId: string
 ): Promise<FreshchatUser | null> {
   try {
     const response = await instance.get(`/v2/users/${userId}`);
@@ -49,7 +49,7 @@ export async function getFreshchatUser(
 }
 
 export async function getFreshchatAgent(
-  agentId: string,
+  agentId: string
 ): Promise<FreshchatUser | null> {
   try {
     const response = await instance.get(`/v2/agents/${agentId}`);
@@ -74,7 +74,7 @@ export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
 }
 
 export async function getFreshchatConversation(
-  conversationId: string,
+  conversationId: string
 ): Promise<FreshchatConversation | null> {
   try {
     const response = await instance.get(`/v2/conversations/${conversationId}`);
@@ -89,7 +89,7 @@ export async function getFreshchatConversation(
 export async function setFreshchatMessage(
   userId: string,
   conversationId: string,
-  message: string,
+  message: string
 ): Promise<FreshchatMessage | null> {
   try {
     const response = await instance.post(
@@ -98,8 +98,8 @@ export async function setFreshchatMessage(
         actor_type: 'user',
         actor_id: userId,
         message_type: 'normal',
-        message_parts: [{text: {content: message}}],
-      },
+        message_parts: [{ text: { content: message } }],
+      }
     );
 
     // console.log('Freshchat Message: ', JSON.stringify(response.data));
@@ -113,11 +113,11 @@ export async function setFreshchatMessage(
 export async function getFreshchatMessages(
   conversationId: string,
   page = 1,
-  itemsPerPage = MESSAGES_PER_PAGE,
+  itemsPerPage = MESSAGES_PER_PAGE
 ): Promise<FreshchatGetMessages | null> {
   try {
     const response = await instance.get(
-      `/v2/conversations/${conversationId}/messages?page=${page}&items_per_page=${itemsPerPage}`,
+      `/v2/conversations/${conversationId}/messages?page=${page}&items_per_page=${itemsPerPage}`
     );
 
     // console.log('Freshchat Messages: ', JSON.stringify(response.data));
@@ -129,7 +129,7 @@ export async function getFreshchatMessages(
 }
 
 export async function getFreshchatMoreMessages(
-  moreLink: string,
+  moreLink: string
 ): Promise<FreshchatGetMessages | null> {
   try {
     const response = await instance.get(moreLink);
@@ -144,7 +144,7 @@ export async function getFreshchatMoreMessages(
 
 export const setFreshchatUserId = async (
   driverId: string,
-  userId: string,
+  userId: string
 ): Promise<void> => {
   try {
     await AsyncStorage.setItem(`${FRESHCHAT_USER_ID}-${driverId}`, userId);
@@ -154,11 +154,11 @@ export const setFreshchatUserId = async (
 };
 
 export const getFreshchatUserId = async (
-  driverId: string,
+  driverId: string
 ): Promise<string | null> => {
   try {
     const userId = await AsyncStorage.getItem(
-      `${FRESHCHAT_USER_ID}-${driverId}`,
+      `${FRESHCHAT_USER_ID}-${driverId}`
     );
     return userId;
   } catch (error) {
@@ -173,12 +173,12 @@ export const clearFreshchatUserId = (driverId: string): void => {
 
 export const setFreshchatConversationId = async (
   driverId: string,
-  conversationId: string,
+  conversationId: string
 ): Promise<void> => {
   try {
     await AsyncStorage.setItem(
       `${FRESHCHAT_CONVERSATION_ID}-${driverId}`,
-      conversationId,
+      conversationId
     );
   } catch (error) {
     //log.error(`Could not save freshchat conversation id: ${error.message}`);
@@ -186,11 +186,11 @@ export const setFreshchatConversationId = async (
 };
 
 export const getFreshchatConversationId = async (
-  driverId: string,
+  driverId: string
 ): Promise<string | null> => {
   try {
     const conversationId = await AsyncStorage.getItem(
-      `${FRESHCHAT_CONVERSATION_ID}-${driverId}`,
+      `${FRESHCHAT_CONVERSATION_ID}-${driverId}`
     );
     return conversationId;
   } catch (error) {
@@ -203,9 +203,8 @@ export const clearFreshchatConversationId = (driverId: string): void => {
   AsyncStorage.removeItem(`${FRESHCHAT_CONVERSATION_ID}-${driverId}`);
 };
 
-
 export const setFreshchatFailedMessage = async (
-  failedMessage: FreshchatMessage,
+  failedMessage: FreshchatMessage
 ): Promise<void> => {
   try {
     const freshchatFailedMessages = await getFreshchatFailedMessages();
@@ -213,7 +212,7 @@ export const setFreshchatFailedMessage = async (
 
     await AsyncStorage.setItem(
       FRESHCHAT_FAILED_MESSAGES,
-      JSON.stringify(freshchatFailedMessages),
+      JSON.stringify(freshchatFailedMessages)
     );
   } catch (error) {
     // log.error('could not save freshchat failed message', error);
@@ -225,7 +224,7 @@ export const getFreshchatFailedMessages = async (): Promise<
 > => {
   try {
     const freshchatMessages = await AsyncStorage.getItem(
-      FRESHCHAT_FAILED_MESSAGES,
+      FRESHCHAT_FAILED_MESSAGES
     );
 
     if (freshchatMessages) {
@@ -238,17 +237,17 @@ export const getFreshchatFailedMessages = async (): Promise<
 };
 
 export const removeFreshchatFailedMessage = async (
-  messageId: string | number,
+  messageId: string | number
 ): Promise<void> => {
   try {
     const freshchatFailedMessages = await getFreshchatFailedMessages();
     const filteredFailedMessages = freshchatFailedMessages?.filter(
-      (message: FreshchatMessage) => message.id !== messageId,
+      (message: FreshchatMessage) => message.id !== messageId
     );
 
     await AsyncStorage.setItem(
       FRESHCHAT_FAILED_MESSAGES,
-      JSON.stringify(filteredFailedMessages),
+      JSON.stringify(filteredFailedMessages)
     );
   } catch (error) {
     // log.error('could not save freshchat failed message', error);

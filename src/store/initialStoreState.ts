@@ -1,4 +1,4 @@
-import {ChatState, initialChatState} from './slices/chat/chat';
+import { ChatState, initialChatState } from './slices/chat/chat';
 
 export interface StoreState {
   chat: ChatState;
