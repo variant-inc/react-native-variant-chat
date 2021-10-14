@@ -32,6 +32,7 @@ import QuickReplies from 'react-native-gifted-chat/lib/QuickReplies';
 import { isSameDay, isSameUser } from 'react-native-gifted-chat/lib/utils';
 import { useTheme } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
+import { useSelector } from 'react-redux';
 import { urgentMessageMark } from 'theme/constants';
 import Font from 'theme/fonts';
 import { getSvg } from 'theme/Svg';
@@ -39,6 +40,7 @@ import { FreshchatMessagePart } from 'types/FreshchatMessagePart.type';
 import { FreshchatMessageParts } from 'types/FreshchatMessageParts.type';
 import { IOpsMessage } from 'types/Message.interface';
 
+import { selectFreshchatSendingMessageId } from '../store/selectors/freshchatSelectors';
 import MessagePdf from './MessagePdf';
 
 export declare type RenderMessageImageProps<TMessage extends IMessage> = Omit<
@@ -114,6 +116,8 @@ const DEFAULT_OPTION_TITLES = ['Copy Text', 'Cancel'];
 const CustomBubble = (
   props: CustomBubbleProps<IOpsMessage>
 ): React.ReactElement => {
+  const sendingMessageId = useSelector(selectFreshchatSendingMessageId);
+
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
@@ -251,6 +255,29 @@ const CustomBubble = (
     return <QuickReplies {...replies} />;
   };
 
+  const renderResendFailedMessage = () => {
+    const { currentMessage } = props;
+
+    if (currentMessage?.sent) {
+      return null;
+    }
+
+    const isSending = currentMessage?._id === sendingMessageId;
+
+    return (
+      <TouchableOpacity
+        style={styles.content.trySendingButton}
+        activeOpacity={0.8}
+        onPress={() => handleSendFailedMessage()}
+      >
+        <SvgXml xml={getSvg('iconWarning')} accessibilityLabel="warning" />
+        <Text style={[styles.content.textTrySending]}>
+          {isSending ? 'Sending...' : 'Tap to try sending again'}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderMessageText = (message: FreshchatMessagePart) => {
     if (!message || !message.text) {
       return null;
@@ -382,20 +409,13 @@ const CustomBubble = (
       );
     }
 
-    if (currentMessage?.sent) {
-      return <Text style={styles.content.textTick}>Sent</Text>;
+    let status = 'Sent';
+
+    if (!currentMessage?.sent) {
+      status = 'Not Sent';
     }
 
-    return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => handleSendFailedMessage()}
-      >
-        <Text style={[styles.content.textTick, styles.content.textFailTick]}>
-          Failed to send
-        </Text>
-      </TouchableOpacity>
-    );
+    return <Text style={styles.content.textTick}>{status}</Text>;
   };
 
   const renderTime = () => {
@@ -519,6 +539,7 @@ const CustomBubble = (
         </TouchableWithoutFeedback>
       </View>
       {renderQuickReplies()}
+      {renderResendFailedMessage()}
     </View>
   );
 };
@@ -653,8 +674,18 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         color: theme.colors.gray.dark,
         opacity: 0.75,
       },
-      textFailTick: {
-        color: theme.colors.traffic.red,
+      trySendingButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 9,
+      },
+      textTrySending: {
+        fontFamily: Font.Family.regular,
+        fontSize: Font.Size.tiny,
+        lineHeight: Font.LineHeight.small,
+        letterSpacing: 0.4,
+        color: theme.colors.common.white,
+        marginLeft: 8,
       },
     }),
   };

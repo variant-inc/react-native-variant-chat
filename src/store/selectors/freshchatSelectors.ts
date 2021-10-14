@@ -69,3 +69,11 @@ export const selectFreshchatIsFullscreenVideo = createSelector<
 >(selectFreshchatState, (freshchatState) => {
   return freshchatState?.isFullscreenVideo;
 });
+
+export const selectFreshchatSendingMessageId = createSelector<
+  StoreState,
+  ChatState,
+  string | number | null
+>(selectFreshchatState, (freshchatState) => {
+  return freshchatState?.sendingMessageId;
+});

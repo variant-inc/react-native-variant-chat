@@ -18,6 +18,7 @@ export interface ChatState {
   messages: FreshchatMessage[];
   messagesLink: FreshchatMessagesLink | null; // for more meessages
   isFullscreenVideo: boolean;
+  sendingMessageId: string | number | null;
 }
 
 export const initialChatState = Object.freeze<ChatState>({
@@ -28,6 +29,7 @@ export const initialChatState = Object.freeze<ChatState>({
   messages: [],
   messagesLink: null,
   isFullscreenVideo: false,
+  sendingMessageId: null,
 });
 
 const handleSetCurrentUser: CaseReducer<
@@ -177,6 +179,16 @@ const handleAppendNewMessages: CaseReducer<
   };
 };
 
+const handleSetSendingMessageId: CaseReducer<
+  ChatState,
+  PayloadAction<{ id: string | number | null }>
+> = (state: ChatState, { payload }) => {
+  return {
+    ...state,
+    sendingMessageId: payload.id,
+  };
+};
+
 const freshchatSlice = createSlice({
   name: 'freshchat',
   initialState: initialChatState,
@@ -191,6 +203,7 @@ const freshchatSlice = createSlice({
     appendNewMessages: handleAppendNewMessages,
     addMessage: handleAddMessage,
     removeMessage: handleRemoveMessage,
+    setSendingMessageId: handleSetSendingMessageId,
   },
   extraReducers: {},
 });
@@ -209,3 +222,5 @@ export const freshchatAppendNewMessages =
   freshchatSlice.actions.appendNewMessages;
 export const freshchatAddMessage = freshchatSlice.actions.addMessage;
 export const freshchatRemoveMessage = freshchatSlice.actions.removeMessage;
+export const freshchatSetSendingMessageId =
+  freshchatSlice.actions.setSendingMessageId;

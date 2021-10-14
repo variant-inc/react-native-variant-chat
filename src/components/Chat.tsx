@@ -195,7 +195,6 @@ const Chat = (props: VariantChatProps): ReactElement => {
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
-        label={'Loading messages'}
         textStyle={{ paddingHorizontal: 15 }}
         lightboxProps={{
           renderHeader: renderLightBoxClose,

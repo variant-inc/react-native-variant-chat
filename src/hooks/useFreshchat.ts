@@ -44,6 +44,7 @@ import {
   freshchatSetCurrentUser,
   freshchatSetIsFullscreenVideo,
   freshchatSetMessages,
+  freshchatSetSendingMessageId,
 } from '../store/slices/chat/chat';
 import {
   accountNotSetup,
@@ -304,9 +305,15 @@ export const useFreshchatSendFailedMessage = (): ((
         return;
       }
 
+      if (isSending.current) {
+        return;
+      }
+
       const message = sendMessage.messages[0].text.content;
 
       isSending.current = true;
+
+      dispatch(freshchatSetSendingMessageId({ id: sendMessage._id }));
 
       const response = await setFreshchatMessage(
         currentUser.id,
@@ -325,6 +332,8 @@ export const useFreshchatSendFailedMessage = (): ((
         // Remove the failed messages from storage
         removeFreshchatFailedMessage(sendMessage._id);
       }
+
+      dispatch(freshchatSetSendingMessageId({ id: null }));
 
       isSending.current = false;
     },
@@ -392,6 +401,7 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
 
   const appState = useRef(AppState.currentState);
+  const lastBackgroundMessage = useRef<string | null>(null);
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
@@ -430,9 +440,19 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
         dispatch(freshchatAppendNewMessages({ messages: newMessages }));
         checkConversationUsers(dispatch, conversationUsers, response.messages);
 
-        let newMessage = newMessages[0].message_parts[0].text?.content || '';
-
         if (appState.current === 'background' && !isFullscreenVideo) {
+          if (lastBackgroundMessage.current === newMessages[0].id) {
+            console.log(
+              `Freshchat repeating message: ${newMessages[0]?.message_parts[0]?.text?.content}`
+            );
+            return;
+          }
+
+          lastBackgroundMessage.current = newMessages[0]?.id;
+
+          let newMessage =
+            newMessages[0]?.message_parts[0]?.text?.content || '';
+
           if (newMessage.includes(urgentMessageMark)) {
             // urgent message
             Tts.stop();
@@ -458,14 +478,14 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
   };
 
   useEffect(() => {
-    BackgroundTimer.runBackgroundTimer(() => {
+    const backgroundIntervalId = BackgroundTimer.setInterval(() => {
       getNewMessages();
-    }, 5000);
+    }, 10000);
 
     return () => {
-      BackgroundTimer.stopBackgroundTimer();
+      BackgroundTimer.clearInterval(backgroundIntervalId);
     };
-  }, [currentConversation, conversationUsers, allMessages]);
+  }, [currentConversation, conversationUsers, allMessages, isFullscreenVideo]);
 };
 
 const checkConversationUsers = (
