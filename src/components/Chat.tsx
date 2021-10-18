@@ -45,10 +45,10 @@ import {
 } from './renderers';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const theme = props.theme;
+  const { config, driverId, theme, defaultAvatarUrl } = props;
+
   const styles = localStyleSheet(theme);
 
-  const driverId = props.driverId;
   const conversation = useSelector(selectFreshchatConversation);
   const messages = useSelector(selectFreshchatMessages);
   const currentUser = useSelector(selectFreshchatCurrentUser);
@@ -67,10 +67,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const freshchatInit = useFreshchatInit(
     driverId,
     'Chat with Team',
-    props.config.chat
+    config.chat
   );
 
-  useApolloClient(props.config.api);
+  useApolloClient(config.api);
   useFreshchatGetNewMessages(driverId);
 
   useEffect(() => {
@@ -112,7 +112,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
             name: messageUser?.first_name,
             avatar:
               currentUser?.id !== messageUser?.id
-                ? props.defaultAvatarUrl
+                ? defaultAvatarUrl
                 : messageUser?.avatar.url,
           },
         });
