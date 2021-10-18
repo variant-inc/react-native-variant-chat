@@ -4,6 +4,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import { NotificationService } from 'react-native-platform-science';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
+import { SECOND } from 'time-constants';
 import { IOpsMessage } from 'types/Message.interface';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -64,6 +65,8 @@ import {
 } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { VariantChatConfig } from '../types/VariantChat';
+
+const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
 
 export const useFreshchatInit = (
   driverId: string,
@@ -442,9 +445,6 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
 
         if (appState.current === 'background' && !isFullscreenVideo) {
           if (lastBackgroundMessage.current === newMessages[0].id) {
-            console.log(
-              `Freshchat repeating message: ${newMessages[0]?.message_parts[0]?.text?.content}`
-            );
             return;
           }
 
@@ -480,7 +480,7 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
   useEffect(() => {
     const backgroundIntervalId = BackgroundTimer.setInterval(() => {
       getNewMessages();
-    }, 10000);
+    }, NEW_MESSAGES_POLL_INTERVAL);
 
     return () => {
       BackgroundTimer.clearInterval(backgroundIntervalId);

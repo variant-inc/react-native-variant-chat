@@ -409,13 +409,16 @@ const CustomBubble = (
       );
     }
 
-    let status = 'Sent';
-
-    if (!currentMessage?.sent) {
-      status = 'Not Sent';
-    }
-
-    return <Text style={styles.content.textTick}>{status}</Text>;
+    return (
+      <Text
+        style={[
+          styles.content.textTick,
+          currentMessage?.sent ? styles.content.textTickError : null,
+        ]}
+      >
+        {currentMessage?.sent ? 'Sent' : 'Not Sent'}
+      </Text>
+    );
   };
 
   const renderTime = () => {
@@ -673,6 +676,9 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         letterSpacing: 0.4,
         color: theme.colors.gray.dark,
         opacity: 0.75,
+      },
+      textTickError: {
+        color: theme.colors.error,
       },
       trySendingButton: {
         flexDirection: 'row',
