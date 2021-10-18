@@ -413,7 +413,7 @@ const CustomBubble = (
       <Text
         style={[
           styles.content.textTick,
-          currentMessage?.sent ? styles.content.textTickError : null,
+          !currentMessage?.sent ? styles.content.textTickError : null,
         ]}
       >
         {currentMessage?.sent ? 'Sent' : 'Not Sent'}

@@ -105,6 +105,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
           _id: message.id,
           messages: message.message_parts,
           text: '',
+          sent: !message.not_sent,
           createdAt: new Date(message.created_time),
           user: {
             _id: messageUser?.id || 0,
