@@ -33,14 +33,14 @@ import { isSameDay, isSameUser } from 'react-native-gifted-chat/lib/utils';
 import { useTheme } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
 import { useSelector } from 'react-redux';
-import { urgentMessageMark } from 'theme/constants';
-import Font from 'theme/fonts';
-import { getSvg } from 'theme/Svg';
-import { FreshchatMessagePart } from 'types/FreshchatMessagePart.type';
-import { FreshchatMessageParts } from 'types/FreshchatMessageParts.type';
-import { IOpsMessage } from 'types/Message.interface';
 
 import { selectFreshchatSendingMessageId } from '../store/selectors/freshchatSelectors';
+import { urgentMessageMark } from '../theme/constants';
+import Font from '../theme/fonts';
+import { getSvg } from '../theme/Svg';
+import { FreshchatMessagePart } from '../types/FreshchatMessagePart.type';
+import { FreshchatMessageParts } from '../types/FreshchatMessageParts.type';
+import { IOpsMessage } from '../types/Message.interface';
 import MessagePdf from './MessagePdf';
 
 export declare type RenderMessageImageProps<TMessage extends IMessage> = Omit<

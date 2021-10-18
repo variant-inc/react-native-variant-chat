@@ -7,7 +7,6 @@ import {
   MessageVideoProps,
 } from 'react-native-gifted-chat/lib/Models';
 import { useSelector } from 'react-redux';
-import { FreshchatMessage } from 'types/FreshchatMessage';
 
 import { useApolloClient } from '../hooks/useApolloClient';
 import {
@@ -29,6 +28,7 @@ import {
 import { reopenedMessageMark, resolvedMessageMark } from '../theme/constants';
 import Font from '../theme/fonts';
 import { FreshchatInit } from '../types/FreshchatInit.enum';
+import { FreshchatMessage } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatProps } from '../types/VariantChat';

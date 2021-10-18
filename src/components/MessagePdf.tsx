@@ -3,7 +3,8 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Lightbox from 'react-native-lightbox';
 import { useTheme } from 'react-native-paper';
 import Pdf from 'react-native-pdf';
-import { IOpsMessage } from 'types/Message.interface';
+
+import { IOpsMessage } from '../types/Message.interface';
 
 type MessagePdfProps<IOpsMessage> = {
   currentMessage?: IOpsMessage;

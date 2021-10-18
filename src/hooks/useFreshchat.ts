@@ -5,7 +5,6 @@ import { NotificationService } from 'react-native-platform-science';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
 import { SECOND } from 'time-constants';
-import { IOpsMessage } from 'types/Message.interface';
 import { v4 as uuidv4 } from 'uuid';
 
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -64,6 +63,7 @@ import {
   MessageType,
 } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
+import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatConfig } from '../types/VariantChat';
 
 const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;

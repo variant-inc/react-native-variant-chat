@@ -2,7 +2,8 @@ import React, { ReactElement } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Video from 'react-native-video';
-import { IOpsVideoMessage } from 'types/VideoMessage.interface';
+
+import { IOpsVideoMessage } from '../types/VideoMessage.interface';
 
 const CustomMessageVideo = (props: IOpsVideoMessage): ReactElement => {
   const { onDidPresentFullscreen, onDidDismissFullscreen } = props;
