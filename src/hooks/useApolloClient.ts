@@ -10,18 +10,16 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import fetch from 'cross-fetch';
-import { useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { VariantApiConfig } from '../types/VariantChat';
 
 const REQ_ID_HEADER = 'X-CORRELATION-ID';
+let configRef: VariantApiConfig;
 
 export const useApolloClient = (
   apiConfig: VariantApiConfig | void
 ): ApolloClient<NormalizedCacheObject> | void => {
-  const configRef = useRef<VariantApiConfig>()
-
   const requestIdLink = setContext(async (_, { headers = {} }) => {
     headers[REQ_ID_HEADER] = uuidv4();
     return {
@@ -53,19 +51,19 @@ export const useApolloClient = (
   });
 
   const authLink = setContext(async (_, { headers = {} }) => {
-    headers.authorization = `Bearer ${configRef.current?.accessToken}`;
+    headers.authorization = `Bearer ${configRef?.accessToken}`;
     return {
       headers,
     };
   });
 
   const httpLink = createHttpLink({
-    uri: configRef.current?.url,
+    uri: configRef?.url,
     fetch,
   });
 
   if (apiConfig) {
-    configRef.current = apiConfig;
+    configRef = apiConfig;
   } else {
     return new ApolloClient({
       link: ApolloLink.from([requestIdLink, errorLink, authLink, httpLink]),
