@@ -179,6 +179,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         infiniteScroll
         showAvatarForEveryMessage
         showUserAvatar
+        alwaysShowSend
         messages={chatMessages}
         user={{
           _id: currentUser?.id || 1,
