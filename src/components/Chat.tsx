@@ -71,7 +71,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
   );
 
   useApolloClient(config.api);
-  useFreshchatGetNewMessages(driverId);
+  useFreshchatGetNewMessages();
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);

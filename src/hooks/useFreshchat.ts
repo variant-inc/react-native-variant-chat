@@ -400,7 +400,7 @@ export const useFreshchatGetMoreMessages = (): (() => void) => {
   return getMoreMessages;
 };
 
-export const useFreshchatGetNewMessages = (driverId: string): void => {
+export const useFreshchatGetNewMessages = (): void => {
   const dispatch = useAppDispatch();
   const currentConversation = useSelector(selectFreshchatConversation);
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
