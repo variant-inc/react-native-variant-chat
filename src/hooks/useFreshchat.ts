@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, AppStateStatus } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
+import DeviceInfo from 'react-native-device-info';
 import { NotificationService } from 'react-native-platform-science';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
@@ -67,6 +68,9 @@ import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatConfig } from '../types/VariantChat';
 
 const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
+
+const bundleId = DeviceInfo.getBundleId();
+const appName = DeviceInfo.getApplicationName();
 
 export const useFreshchatInit = (
   driverId: string,
@@ -163,14 +167,14 @@ export const useFreshchatInit = (
 
   const showConversationError = () => {
     setInitialized(FreshchatInit.Fail);
-    Alert.alert(/*appConfig.appName*/ 'TBD', accountNotSetup, [], {
+    Alert.alert(appName, accountNotSetup, [], {
       cancelable: false,
     });
   };
 
   const showServiceError = () => {
     setInitialized(FreshchatInit.Fail);
-    Alert.alert(/*appConfig.appName*/ 'TBD', appNotAvailable, [], {
+    Alert.alert(appName, appNotAvailable, [], {
       cancelable: false,
     });
   };
@@ -181,7 +185,7 @@ export const useFreshchatInit = (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setInitialized(FreshchatInit.Fail);
-      Alert.alert(/*appConfig.appName*/ 'TBD', appNotAvailable, [], {
+      Alert.alert(appName, appNotAvailable, [], {
         cancelable: false,
       });
       console.log(`Freshchat init failed: ${error.message}`);
@@ -466,9 +470,14 @@ export const useFreshchatGetNewMessages = (driverId: string): void => {
             !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
             !reopenedMessageMark.some((s) => newMessage.includes(s))
           ) {
+            const now = new Date();
+            const dateTime = `${now.getFullYear()}-${
+              now.getMonth() + 1
+            }-${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
+
             NotificationService.addNotification(
-              driverId,
-              /*appConfig.appName*/ 'TBD',
+              `${bundleId}-${dateTime}`,
+              appName,
               newMessage
             );
           }

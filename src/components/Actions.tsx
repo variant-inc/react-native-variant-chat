@@ -7,10 +7,13 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import { ActionsProps } from 'react-native-gifted-chat';
 import { SvgXml } from 'react-native-svg';
 
 import { getSvg } from '../theme/Svg';
+
+const appName = DeviceInfo.getApplicationName();
 
 type CustomActionProps = {
   style?: StyleProp<ViewStyle>;
@@ -29,7 +32,7 @@ const CustomAction = (
       onOpenCamera();
     }
 
-    Alert.alert(/*appConfig.appName*/ 'TBD', 'Take a picture coming soon.');
+    Alert.alert(appName, 'Take a picture coming soon.');
   };
 
   const handleOpenAttachment = () => {
@@ -37,7 +40,7 @@ const CustomAction = (
       onOpenAttachment();
     }
 
-    Alert.alert(/*appConfig.appName*/ 'TBD', 'Add attachments coming soon.');
+    Alert.alert(appName, 'Add attachments coming soon.');
   };
 
   return (
