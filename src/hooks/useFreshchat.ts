@@ -85,10 +85,10 @@ export const useFreshchatInit = (
     if (driverId) {
       // init axios
       await initFreshchat({
-        freshchatAppId: configValue.chatAppId,
-        freshchatAppKey: configValue.chatAppKey,
-        freshchatBaseUrl: configValue.chatBaseUrl,
-        freshchatAccessToken: configValue.chatAccessToken,
+        freshchatAppId: configValue.appId,
+        freshchatAppKey: configValue.appKey,
+        freshchatBaseUrl: configValue.baseUrl,
+        freshchatAccessToken: configValue.accessToken,
       });
 
       // channel

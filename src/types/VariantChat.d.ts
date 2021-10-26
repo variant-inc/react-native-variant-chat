@@ -1,8 +1,9 @@
 export interface VariantChatConfig {
-  chatAppId: string;
-  chatAppKey: string;
-  chatBaseUrl: string;
-  chatAccessToken: string;
+  appId: string;
+  appKey: string;
+  baseUrl: string;
+  accessToken: string;
+  channelName: string;
 }
 
 export interface VariantApiConfig {
