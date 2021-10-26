@@ -66,7 +66,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   const freshchatInit = useFreshchatInit(
     driverId,
-    'Chat with Team',
+    config.chat.channelName,
     config.chat
   );
 
