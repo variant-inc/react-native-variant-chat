@@ -1,4 +1,4 @@
-import {FreshchatMessageParts} from './FreshchatMessageParts.type';
+import { FreshchatMessageParts } from './FreshchatMessageParts.type';
 
 export enum ActorType {
   Agent = 'agent',
@@ -33,6 +33,7 @@ export type FreshchatMessage = {
   meta_data?: {
     isResolved: true;
   };
+  not_sent?: boolean;
 };
 
 export type FreshchatGetMessages = {

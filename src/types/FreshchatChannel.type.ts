@@ -1,4 +1,4 @@
-import {FreshchatMessageParts} from './FreshchatMessageParts.type';
+import { FreshchatMessageParts } from './FreshchatMessageParts.type';
 
 export type FreshchatChannelWelcomeMessage = {
   message_parts: FreshchatMessageParts[];

@@ -1,4 +1,4 @@
-import React, {ReactElement} from 'react';
+import React, { ReactElement } from 'react';
 import {
   Alert,
   StyleProp,
@@ -7,10 +7,13 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {ActionsProps} from 'react-native-gifted-chat';
-import {SvgXml} from 'react-native-svg';
+import DeviceInfo from 'react-native-device-info';
+import { ActionsProps } from 'react-native-gifted-chat';
+import { SvgXml } from 'react-native-svg';
 
-import {getSvg} from '../theme/Svg';
+import { getSvg } from '../theme/Svg';
+
+const appName = DeviceInfo.getApplicationName();
 
 type CustomActionProps = {
   style?: StyleProp<ViewStyle>;
@@ -19,9 +22,9 @@ type CustomActionProps = {
 };
 
 const CustomAction = (
-  props: ActionsProps & CustomActionProps,
+  props: ActionsProps & CustomActionProps
 ): ReactElement => {
-  const {style, onOpenCamera, onOpenAttachment} = props;
+  const { style, onOpenCamera, onOpenAttachment } = props;
   const styles = localStyleSheet();
 
   const handleOpenCamera = () => {
@@ -29,7 +32,7 @@ const CustomAction = (
       onOpenCamera();
     }
 
-    Alert.alert(/*appConfig.appName*/'TBD', 'Take a picture coming soon.');
+    Alert.alert(appName, 'Take a picture coming soon.');
   };
 
   const handleOpenAttachment = () => {
@@ -37,7 +40,7 @@ const CustomAction = (
       onOpenAttachment();
     }
 
-    Alert.alert(/*appConfig.appName*/'TBD', 'Add attachments coming soon.');
+    Alert.alert(appName, 'Add attachments coming soon.');
   };
 
   return (
@@ -45,13 +48,15 @@ const CustomAction = (
       <TouchableOpacity
         style={styles.actionButton}
         activeOpacity={0.8}
-        onPress={handleOpenCamera}>
+        onPress={handleOpenCamera}
+      >
         <SvgXml xml={getSvg('iconCamera')} accessibilityLabel="camera" />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.actionButton}
         activeOpacity={0.8}
-        onPress={handleOpenAttachment}>
+        onPress={handleOpenAttachment}
+      >
         <SvgXml
           xml={getSvg('iconAttachment')}
           accessibilityLabel="attachment"

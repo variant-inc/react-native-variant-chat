@@ -3,6 +3,7 @@ import iconCamera from '../assets/img/icon-camera.svg';
 import iconError from '../assets/img/icon-error.svg';
 import iconMic from '../assets/img/icon-mic.svg';
 import iconReload from '../assets/img/icon-reload.svg';
+import iconWarning from '../assets/img/icon-warning.svg';
 import variantLogo from '../assets/img/logo/variant.svg';
 
 export type SvgName =
@@ -11,7 +12,8 @@ export type SvgName =
   | 'iconReload'
   | 'iconCamera'
   | 'iconAttachment'
-  | 'iconMic';
+  | 'iconMic'
+  | 'iconWarning';
 
 const svgImages: Record<SvgName, string> = {
   variantLogo,
@@ -20,6 +22,7 @@ const svgImages: Record<SvgName, string> = {
   iconCamera,
   iconAttachment,
   iconMic,
+  iconWarning,
 };
 
 export const getSvg = (svgName: SvgName): string => {

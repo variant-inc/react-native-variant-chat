@@ -1,6 +1,12 @@
-import React, {ReactElement} from 'react';
-import {Keyboard, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useTheme} from 'react-native-paper';
+import React, { ReactElement } from 'react';
+import {
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 const Accessory = (): ReactElement => {
   const theme = useTheme();
@@ -11,7 +17,8 @@ const Accessory = (): ReactElement => {
       <TouchableOpacity
         style={styles.dismissButton}
         activeOpacity={0.8}
-        onPress={() => Keyboard.dismiss()}>
+        onPress={() => Keyboard.dismiss()}
+      >
         <Text style={styles.textAccessory}>Dismiss Keyboard</Text>
       </TouchableOpacity>
     </View>

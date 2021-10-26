@@ -1,19 +1,18 @@
-import {Button} from './Button';
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, { ReactElement } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   ActionsProps,
   ComposerProps,
-  IMessage,
   MessageProps,
   MessageTextProps,
   MessageVideoProps,
   SendProps,
 } from 'react-native-gifted-chat/lib/Models';
 
-import {IOpsMessage} from '../types/Message.interface';
+import { IOpsMessage } from '../types/Message.interface';
 import Accessory from './Accessory';
 import Actions from './Actions';
+import { Button } from './Button';
 import Composer from './Composer';
 import Message from './Message';
 import MessageText from './MessageText';
@@ -23,15 +22,15 @@ import Send from './Send';
 export const renderAccessory = (): JSX.Element => <Accessory />;
 
 export const renderMessage = (
-  props: MessageProps<IOpsMessage>,
+  props: MessageProps<IOpsMessage>
 ): JSX.Element => <Message {...props} />;
 
 export const renderMessageText = (
-  props: MessageTextProps<IMessage>,
+  props: MessageTextProps<IOpsMessage>
 ): JSX.Element => <MessageText {...props} />;
 
 export const renderMessageVideo = (
-  props: MessageVideoProps<IMessage>,
+  props: MessageVideoProps<IOpsMessage>
 ): JSX.Element => <MessageVideo {...props} />;
 
 export const renderComposer = (props: ComposerProps): JSX.Element => (
@@ -42,18 +41,16 @@ export const renderActions = (props: ActionsProps): JSX.Element => (
   <Actions {...props} />
 );
 
-export const renderSend = (props: SendProps<IMessage>): JSX.Element => (
+export const renderSend = (props: SendProps<IOpsMessage>): JSX.Element => (
   <Send {...props} />
 );
 
-export const renderImageClose = (close: () => void): JSX.Element => {
+export const renderLightBoxClose = (close: () => void): ReactElement => {
   const styles = localStyleSheet();
   return (
-    <View style={styles.closeButtonContainer}>
-      <Button style={styles.closeButton} color="primary" onPress={close}>
-        Close
-      </Button>
-    </View>
+    <Button style={styles.closeButton} color="primary" onPress={close}>
+      Close
+    </Button>
   );
 };
 
@@ -63,8 +60,8 @@ function localStyleSheet() {
       height: 150,
     },
     closeButton: {
-      right: 10,
-      top: 60,
+      marginRight: 10,
+      marginTop: 74,
       alignSelf: 'flex-end',
     },
   });

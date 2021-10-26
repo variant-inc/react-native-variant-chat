@@ -1,16 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import {Keyboard, StyleSheet, View} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
-import {IMessage} from 'react-native-gifted-chat/lib/Models';
-import {useSelector} from 'react-redux';
-import Font from '../theme/fonts';
+import { Keyboard, StyleSheet, View } from 'react-native';
+import { GiftedChat } from 'react-native-gifted-chat';
+import {
+  IMessage,
+  MessageVideoProps,
+} from 'react-native-gifted-chat/lib/Models';
+import { useSelector } from 'react-redux';
 
-import { 
+import { useApolloClient } from '../hooks/useApolloClient';
+import {
   useFreshchatGetMoreMessages,
   useFreshchatGetNewMessages,
   useFreshchatInit,
+  useFreshchatSendFailedMessage,
   useFreshchatSendMessage,
+  useFreshchatSetIsFullscreenVideo,
 } from '../hooks/useFreshchat';
 import {
   selectFreshchatChannel,
@@ -20,36 +25,30 @@ import {
   selectFreshchatMessages,
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
-import {
-  reopenedMessageMark,
-  resolvedMessageMark,
-  urgentMessageMark,
-} from '../theme/constants';
-import {useApolloClient} from '../hooks/useApolloClient';
-import {VariantChatProps} from '../types/VariantChat';
-import {FreshchatInit} from '../types/FreshchatInit.enum';
-import {FreshchatMessage} from 'types/FreshchatMessage';
-import {FreshchatMessagePart} from '../types/FreshchatMessagePart.type';
-import {FreshchatMessageParts} from '../types/FreshchatMessageParts.type';
-import {FreshchatUser} from '../types/FreshchatUser';
-import {IOpsMessage} from '../types/Message.interface';
+import { reopenedMessageMark, resolvedMessageMark } from '../theme/constants';
+import Font from '../theme/fonts';
+import { FreshchatInit } from '../types/FreshchatInit.enum';
+import { FreshchatMessage } from '../types/FreshchatMessage';
+import { FreshchatUser } from '../types/FreshchatUser';
+import { IOpsMessage } from '../types/Message.interface';
+import { VariantChatProps } from '../types/VariantChat';
 import LoadingIndicator from './LoadingIndicator';
+import MessageVideo from './MessageVideo';
 import {
   renderAccessory,
   renderActions,
   renderComposer,
-  renderImageClose,
+  renderLightBoxClose,
   renderMessage,
   renderMessageText,
-  renderMessageVideo,
   renderSend,
 } from './renderers';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const theme = props.theme;
+  const { config, driverId, theme, defaultAvatarUrl } = props;
+
   const styles = localStyleSheet(theme);
 
-  const driverId = props.driverId;
   const conversation = useSelector(selectFreshchatConversation);
   const messages = useSelector(selectFreshchatMessages);
   const currentUser = useSelector(selectFreshchatCurrentUser);
@@ -59,14 +58,20 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const [isDidShowKeyboard, setIsDidShowKeyboard] = useState(false);
 
   const sendMessage = useFreshchatSendMessage();
+  const sendFailedMessage = useFreshchatSendFailedMessage();
   const getMoreMessages = useFreshchatGetMoreMessages();
+  const setIsFullscreenVideo = useFreshchatSetIsFullscreenVideo();
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
 
-  const freshchatInit = useFreshchatInit(driverId, 'Chat with Team', props.config.chat);
+  const freshchatInit = useFreshchatInit(
+    driverId,
+    'Chat with Team',
+    config.chat
+  );
 
-  useApolloClient(props.config.api);
-  useFreshchatGetNewMessages(driverId);
+  useApolloClient(config.api);
+  useFreshchatGetNewMessages();
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
@@ -84,89 +89,34 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
     messages.forEach((message: FreshchatMessage) => {
       const messageUser = conversationUsers.find(
-        (user: FreshchatUser) => user.id === message.actor_id,
+        (user: FreshchatUser) => user.id === message.actor_id
       );
 
-      const messageParts = [];
-
-      let index = 0;
-      while (index < message.message_parts.length) {
-        const messagePart: FreshchatMessageParts = message.message_parts[index];
-        // console.log('Freshchat Message Part: ' + JSON.stringify(messagePart));
-        const item: FreshchatMessagePart = {};
-        let urgent = false;
-
-        if (messagePart.image) {
-          item.image = messagePart.image.url;
-          const nextIndex = index + 1;
-
-          if (nextIndex < message.message_parts.length) {
-            const messagePartNext: FreshchatMessageParts =
-              message.message_parts[nextIndex];
-            if (messagePartNext.text) {
-              let messageText = messagePartNext.text.content;
-              if (messageText.includes(urgentMessageMark)) {
-                urgent = true;
-                messageText = messageText
-                  .replace(urgentMessageMark, '')
-                  .replace('&nbsp;', '');
-              }
-
-              item.urgent = urgent;
-              item.text = messageText;
-              index = nextIndex;
-            }
-          }
-        } else if (messagePart.text) {
-          let messageText = messagePart.text.content;
-          if (messageText.includes(urgentMessageMark)) {
-            urgent = true;
-            messageText = messageText
-              .replace(urgentMessageMark, '')
-              .replace('&nbsp;', '');
-          }
-
-          item.skip =
-            messageText.includes(resolvedMessageMark) ||
-            messageText.includes(reopenedMessageMark);
-
-          item.urgent = urgent;
-          item.text = messageText;
-        } else if (
-          messagePart.file &&
-          messagePart.file.content_type.includes('video')
-        ) {
-          item.text = messagePart.file.name;
-          item.video = messagePart.file.url;
-        }
-
-        messageParts.push(item);
-        index += 1;
-      }
-
-      messageParts.forEach((item, messagePartIndex: number) => {
+      const currentMessage = message.message_parts[0];
+      if (
+        !resolvedMessageMark.some((s) =>
+          currentMessage.text?.content?.includes(s)
+        ) &&
+        !reopenedMessageMark.some((s) =>
+          currentMessage.text?.content?.includes(s)
+        )
+      ) {
         allMessages.push({
-          _id:
-            message.id + (messagePartIndex > 0 ? `-${messagePartIndex}` : ''),
-          text: item.text || '',
-          image: item.image,
-          video: item.video,
-          urgent: item.urgent || false,
-          skip: item.skip || false,
+          _id: message.id,
+          messages: message.message_parts,
+          text: '',
+          sent: !message.not_sent,
           createdAt: new Date(message.created_time),
-          pending: true,
-          sent: true,
-          received: true,
           user: {
             _id: messageUser?.id || 0,
             name: messageUser?.first_name,
             avatar:
               currentUser?.id !== messageUser?.id
-                ? props.defaultAvatarUrl
+                ? defaultAvatarUrl
                 : messageUser?.avatar.url,
           },
         });
-      });
+      }
     });
 
     setChatMessages(allMessages);
@@ -185,12 +135,31 @@ const Chat = (props: VariantChatProps): ReactElement => {
         sendMessage(newMessage);
       }
     },
-    [currentUser, currentChannel, conversation],
+    [currentUser, currentChannel, conversation]
+  );
+
+  const handleFailedSend = useCallback(
+    (sendMessages: IOpsMessage) => {
+      Keyboard.dismiss();
+
+      if (conversation) {
+        sendFailedMessage(sendMessages);
+      }
+    },
+    [currentUser, currentChannel, conversation]
   );
 
   const handleLoadEarlier = useCallback(() => {
     getMoreMessages();
   }, [conversation, moreMessages]);
+
+  const renderMessageVideo = (videoProps: MessageVideoProps<IOpsMessage>) => (
+    <MessageVideo
+      {...videoProps}
+      onDidPresentFullscreen={() => setIsFullscreenVideo(true)}
+      onDidDismissFullscreen={() => setIsFullscreenVideo(false)}
+    />
+  );
 
   return (
     <View style={styles.container}>
@@ -210,6 +179,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         infiniteScroll
         showAvatarForEveryMessage
         showUserAvatar
+        alwaysShowSend
         messages={chatMessages}
         user={{
           _id: currentUser?.id || 1,
@@ -225,10 +195,21 @@ const Chat = (props: VariantChatProps): ReactElement => {
         renderComposer={renderComposer}
         renderSend={renderSend}
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
+        onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
+        textStyle={{ paddingHorizontal: 15 }}
         lightboxProps={{
-          renderHeader: renderImageClose,
+          renderHeader: renderLightBoxClose,
           backgroundColor: styles.lightbox.backgroundColor,
+          underlayColor: styles.lightbox.backgroundColor,
+          swipeToDismiss: false,
+          activeProps: {
+            style: styles.lightboxActive,
+          },
+          springConfig: {
+            speed: 2147483647,
+            bounciness: 0,
+          },
         }}
       />
     </View>
@@ -255,13 +236,10 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
     lightbox: {
       backgroundColor: theme.colors.chat.bubbleReceive,
     },
-    closeButtonContainer: {
-      height: 150,
-    },
-    closeButton: {
-      right: 10,
-      top: 60,
-      alignSelf: 'flex-end',
+    lightboxActive: {
+      flex: 1,
+      resizeMode: 'contain',
+      marginTop: 74,
     },
   });
 }

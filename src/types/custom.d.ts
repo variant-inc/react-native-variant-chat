@@ -26,6 +26,7 @@ declare module 'react-native-video';
 declare module 'react-native-video-player';
 declare module 'react-native-video-controls';
 declare module 'react-native-background-timer';
+declare module 'react-native-lightbox';
 declare module '*.png';
 declare module '*.svg' {
   const content: string;
@@ -37,18 +38,18 @@ declare let __DEV__: boolean;
 type transportFunctionType = (props: {
   msg: any;
   rawMsg: any;
-  level: {severity: number; text: string};
+  level: { severity: number; text: string };
   extension?: string | null;
   options?: any;
 }) => any;
-type levelsType = {[key: string]: number};
+type levelsType = { [key: string]: number };
 type logMethodType = (
   level: string,
   extension: string | null,
   ...msgs: any[]
 ) => boolean;
 type levelLogMethodType = (...msgs: any[]) => boolean;
-type extendedLogType = {[key: string]: levelLogMethodType | any};
+type extendedLogType = { [key: string]: levelLogMethodType | any };
 type configLoggerType = {
   severity?: string;
   transport?: transportFunctionType;
