@@ -1,27 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /*eslint-disable @typescript-eslint/no-unused-vars */
-declare module 'react-native-config' {
-  export const ANDROID_EMULATOR_LOOPBACK: string;
-  export const BUILD_ENVIRONMENT: 'development' | 'production' | 'staging';
-  export const BUILD_NUMBER: string;
-  export const BUILD_VERSION: string;
-  export const LAUNCHDARKLY_APP_KEY: string;
-  export const VARIANT_API_URL: string;
-  export const VARIANT_API_PATH: string;
-  export const SENTRY_ENDPOINT: string;
-  export const APP_NAME: string;
-  export const RELEASE_TAG: string;
-  export const STALE_DRIVER_STATUS_SECONDS: string;
-  export const CHAT_APP_ID: string;
-  export const CHAT_APP_KEY: string;
-  export const CHAT_BASE_URL: string;
-  export const CHAT_ACCESS_TOKEN: string;
-  export const CHAT_DEFAULT_AVATAR_URL: string;
-}
-
 declare module 'redux-persist/integration/react';
 declare module 'react-native-platform-science';
-declare module 'react-native-animated-splash-screen';
 declare module 'react-native-video';
 declare module 'react-native-video-player';
 declare module 'react-native-video-controls';
