@@ -350,30 +350,6 @@ export const useFreshchatSendFailedMessage = (): ((
   return sendFailedMessage;
 };
 
-export const useFreshchatGetMessages = (page = 1): void => {
-  const dispatch = useAppDispatch();
-  const currentConversation = useSelector(selectFreshchatConversation);
-  const conversationUsers = useSelector(selectFreshchatConversationUsers);
-
-  const getMessagesInLocal = async (): Promise<void> => {
-    if (currentConversation) {
-      const response = await getFreshchatMessages(
-        currentConversation.conversation_id,
-        page
-      );
-      if (response) {
-        dispatch(freshchatAppendMessages({ message: response }));
-
-        checkConversationUsers(dispatch, conversationUsers, response.messages);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getMessagesInLocal();
-  }, []);
-};
-
 export const useFreshchatGetMoreMessages = (): (() => void) => {
   const dispatch = useAppDispatch();
   const currentConversation = useSelector(selectFreshchatConversation);
