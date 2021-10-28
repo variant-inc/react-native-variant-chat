@@ -15,8 +15,8 @@ export interface ChatState {
   conversationUsers: FreshchatUser[];
   currentChannel: FreshchatChannel | null;
   currentConversation: FreshchatConversation | null;
-  messages: FreshchatMessage[];
-  messagesLink: FreshchatMessagesLink | null; // for more meessages
+  messages: {[key: string]: FreshchatMessage[];} // key is channel name
+  messagesLink: {[key: string]: FreshchatMessagesLink | null;} // for more messages; key is channel name
   isFullscreenVideo: boolean;
   sendingMessageId: string | number | null;
 }
@@ -26,8 +26,8 @@ export const initialChatState = Object.freeze<ChatState>({
   conversationUsers: [],
   currentChannel: null,
   currentConversation: null,
-  messages: [],
-  messagesLink: null,
+  messages: {},
+  messagesLink: {},
   isFullscreenVideo: false,
   sendingMessageId: null,
 });
@@ -88,7 +88,9 @@ const handleSetConversation: CaseReducer<
   return {
     ...state,
     currentConversation: payload.conversation,
-    messages: [...state.messages, ...(payload.conversation.messages || [])],
+    messages: {
+      [state.currentChannel?.name]: [...state.messages[state.currentChannel?.name] || [], ...(payload.conversation.messages || [])],
+    }
   };
 };
 
@@ -98,8 +100,12 @@ const handleSetMessages: CaseReducer<
 > = (state: ChatState, { payload }) => {
   return {
     ...state,
-    messages: payload.message.messages,
-    messagesLink: payload.message.link || null,
+    messages: {
+      [state.currentChannel?.name]: payload.message.messages,
+    },
+    messagesLink: {
+      [state.currentChannel?.name]: payload.message.link || null,
+    }
   };
 };
 
@@ -107,7 +113,7 @@ const handleAddMessage: CaseReducer<
   ChatState,
   PayloadAction<{ message: FreshchatMessage }>
 > = (state: ChatState, { payload }) => {
-  const findIndex = state.messages.findIndex(
+  const findIndex = state.messages[state.currentChannel?.name].findIndex(
     (item: FreshchatMessage) => item.id === payload.message.id
   );
 
@@ -117,7 +123,9 @@ const handleAddMessage: CaseReducer<
 
   return {
     ...state,
-    messages: [payload.message, ...state.messages],
+    messages: {
+      [state.currentChannel?.name]: [payload.message, ...state.messages[state.currentChannel?.name] || []],
+    },
   };
 };
 
@@ -125,13 +133,15 @@ const handleRemoveMessage: CaseReducer<
   ChatState,
   PayloadAction<{ id: string | number }>
 > = (state: ChatState, { payload }) => {
-  const filteredMessages = state.messages.filter(
+  const filteredMessages = state.messages[state.currentChannel?.name].filter(
     (item: FreshchatMessage) => item.id !== payload.id
   );
 
   return {
     ...state,
-    messages: filteredMessages,
+    messages: {
+      [state.currentChannel?.name]: filteredMessages,
+    },
   };
 };
 
@@ -140,21 +150,27 @@ const handleAppendMessages: CaseReducer<
   PayloadAction<{ message: FreshchatGetMessages }>
 > = (state: ChatState, { payload }) => {
   const newMessages = filterNewMessages(
-    state.messages,
+    state.messages[state.currentChannel?.name],
     payload.message.messages
   );
 
   if (newMessages.length === 0) {
     return {
       ...state,
-      messagesLink: payload.message.link || null,
+      messagesLink: {
+        [state.currentChannel?.name]: payload.message.link || null,
+      },
     };
   }
 
   return {
     ...state,
-    messages: [...state.messages, ...newMessages],
-    messagesLink: payload.message.link || null,
+    messages: {
+      [state.currentChannel?.name]: [...state.messages[state.currentChannel?.name] || [], ...newMessages],
+    },
+    messagesLink: {
+      [state.currentChannel?.name]: payload.message.link || null,
+    },
   };
 };
 
@@ -162,20 +178,22 @@ const handleAppendNewMessages: CaseReducer<
   ChatState,
   PayloadAction<{ messages: FreshchatMessage[] }>
 > = (state: ChatState, { payload }) => {
-  const newMessages = filterNewMessages(state.messages, payload.messages);
+  const newMessages = filterNewMessages(state.messages[state.currentChannel?.name], payload.messages);
 
   if (newMessages.length === 0) {
     return state;
   }
 
-  const allMessage = [...newMessages, ...state.messages];
+  const allMessage = [...newMessages, ...state.messages[state.currentChannel?.name] || []];
   allMessage.sort((a: FreshchatMessage, b: FreshchatMessage) => {
     return b.created_time.localeCompare(a.created_time);
   });
 
   return {
     ...state,
-    messages: allMessage,
+    messages: {
+      [state.currentChannel?.name]: allMessage,
+    },
   };
 };
 
