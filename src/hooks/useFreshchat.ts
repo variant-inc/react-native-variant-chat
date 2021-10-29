@@ -1,3 +1,4 @@
+import {FreshchatCommunicationError} from 'lib/Exception';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, AppStateStatus } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
@@ -50,6 +51,7 @@ import {
 import {
   accountNotSetup,
   appNotAvailable,
+  networkTimeout,
   reopenedMessageMark,
   resolvedMessageMark,
   urgentMessageMark,
@@ -179,16 +181,24 @@ export const useFreshchatInit = (
     });
   };
 
+  const showTimeoutError = () => {
+    setInitialized(FreshchatInit.Fail);
+    Alert.alert(appName, networkTimeout, [], {cancelable: false});
+  };
+
   useEffect(() => {
     try {
       init(config);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setInitialized(FreshchatInit.Fail);
-      Alert.alert(appName, appNotAvailable, [], {
-        cancelable: false,
-      });
-      console.log(`Freshchat init failed: ${error.message}`);
+      if (error instanceof FreshchatCommunicationError) {
+        showTimeoutError();
+      } else {
+        showServiceError();
+        //log.error(`Freshchat init failed: ${error.message}`);
+        console.log(`Freshchat init failed: ${error.message}`);
+      }
     }
   }, [driverId, config]);
 
@@ -464,7 +474,12 @@ export const useFreshchatGetNewMessages = (): void => {
 
   useEffect(() => {
     const backgroundIntervalId = BackgroundTimer.setInterval(() => {
-      getNewMessages();
+      try {
+        getNewMessages();
+      } catch (error: any) {
+        //log.debug(`Background message fetch failed: ${error.message}`);
+        console.log(`Background message fetch failed: ${error.message}`);
+      }
     }, NEW_MESSAGES_POLL_INTERVAL);
 
     return () => {
