@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, {AxiosInstance} from 'axios';
+import {SECOND} from 'time-constants';
 
 import {FreshchatBadStatus, FreshchatCommunicationError} from 'lib/Exception';
 import {FreshchatConfig} from '../../types/Freshchat';
@@ -15,6 +16,7 @@ const FRESHCHAT_USER_ID = '@ps-freshchat-user-id';
 const FRESHCHAT_CONVERSATION_ID = '@ps-freshchat-conversation-id';
 const FRESHCHAT_FAILED_MESSAGES = '@ps-freshchat-failed-messages';
 const MESSAGES_PER_PAGE = 50;
+const AXIOS_REQUEST_TIMEOUT = 15;
 
 export const realtimeMessagePerPage = 10;
 
@@ -31,6 +33,7 @@ export async function initFreshchat(config: FreshchatConfig): Promise<void> {
       'accept': 'application/json',
       'Authorization': `Bearer ${config.freshchatAccessToken}`,
     },
+    timeout: AXIOS_REQUEST_TIMEOUT * SECOND,
   });
 }
 
