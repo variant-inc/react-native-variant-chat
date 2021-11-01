@@ -1,6 +1,6 @@
 import { FreshchatCommunicationError } from 'lib/Exception';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, AppState, AppStateStatus } from 'react-native';
+import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
 import { NotificationService } from 'react-native-platform-science';
@@ -486,17 +486,33 @@ export const useFreshchatGetNewMessages = (): void => {
   };
 
   useEffect(() => {
-    const backgroundIntervalId = BackgroundTimer.setInterval(() => {
+    if (Platform.OS === 'android') {
+      // Android
+      const backgroundIntervalId = BackgroundTimer.setInterval(() => {
+        try {
+          getNewMessages();
+        } catch (error: any) {
+          console.log(`Background message fetch failed: ${error.message}`);
+        }
+      }, NEW_MESSAGES_POLL_INTERVAL);
+
+      return () => {
+        BackgroundTimer.clearInterval(backgroundIntervalId);
+      };
+    }
+
+    // iOS
+    BackgroundTimer.runBackgroundTimer(() => { 
       try {
         getNewMessages();
       } catch (error: any) {
-        //log.debug(`Background message fetch failed: ${error.message}`);
         console.log(`Background message fetch failed: ${error.message}`);
       }
     }, NEW_MESSAGES_POLL_INTERVAL);
+    //rest of code will be performing for iOS on background too
 
     return () => {
-      BackgroundTimer.clearInterval(backgroundIntervalId);
+      BackgroundTimer.stopBackgroundTimer();
     };
   }, [currentConversation, conversationUsers, allMessages, isFullscreenVideo]);
 };
