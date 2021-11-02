@@ -3,7 +3,7 @@ export interface ChatProviderConfig {
   appKey: string;
   baseUrl: string;
   accessToken: string;
-  channelName: string;
+  channelNames: [string];
 }
 
 export interface VariantApiConfig {
@@ -11,9 +11,9 @@ export interface VariantApiConfig {
   url: string;
 }
 
-export interface VariantConfig {
-  chat: ChatProviderConfig;
-  api: VariantApiConfig;
+export interface VariantChatConfig {
+  chatProvider: ChatProviderConfig;
+  variantApi: VariantApiConfig;
   onError?: (message: string) => void;
   onMessageReceivedBackground?: (message: string) => void;
 }
