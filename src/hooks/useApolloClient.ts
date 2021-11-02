@@ -51,7 +51,8 @@ export const useApolloClient = (
   });
 
   const authLink = setContext(async (_, { headers = {} }) => {
-    headers.authorization = `Bearer ${configRef?.accessToken}`;
+    const token = await configRef?.accessToken();
+    headers.authorization = `Bearer ${token}`;
     return {
       headers,
     };
@@ -64,10 +65,9 @@ export const useApolloClient = (
 
   if (apiConfig) {
     configRef = apiConfig;
-  } else {
-    return new ApolloClient({
-      link: ApolloLink.from([requestIdLink, errorLink, authLink, httpLink]),
-      cache: new InMemoryCache({}),
-    });
   }
+  return new ApolloClient({
+    link: ApolloLink.from([requestIdLink, errorLink, authLink, httpLink]),
+    cache: new InMemoryCache({}),
+  });
 };
