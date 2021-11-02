@@ -1,4 +1,4 @@
-export interface VariantChatConfig {
+export interface ChatProviderConfig {
   appId: string;
   appKey: string;
   baseUrl: string;
@@ -7,18 +7,21 @@ export interface VariantChatConfig {
 }
 
 export interface VariantApiConfig {
-  accessToken: string;
+  accessToken: Function; // Returns a promise for the token
   url: string;
 }
 
 export interface VariantConfig {
-  chat: VariantChatConfig;
+  chat: ChatProviderConfig;
   api: VariantApiConfig;
+  onError?: (message: string) => void;
+  onMessageReceivedBackground?: (message: string) => void;
 }
 
 export interface VariantChatProps {
-  config: VariantConfig;
-  driverId: string;
+  channelName: string;
   theme: ReactNativePaper.Theme;
   defaultAvatarUrl: string;
+  onError?: (message: string) => void;
+  onMessageReceivedBackground?: (message: string) => void;
 }
