@@ -72,7 +72,6 @@ import { publish } from '../lib/Event';
 
 const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
 
-const bundleId = DeviceInfo.getBundleId();
 const appName = DeviceInfo.getApplicationName();
 
 export const useFreshchatInit = (

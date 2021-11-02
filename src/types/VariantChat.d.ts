@@ -7,7 +7,7 @@ export interface ChatProviderConfig {
 }
 
 export interface VariantApiConfig {
-  accessToken: Function; // Returns a promise for the token
+  accessToken: Promise<string>;
   url: string;
 }
 

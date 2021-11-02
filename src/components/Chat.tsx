@@ -46,6 +46,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
     defaultAvatarUrl,
   } = props;
 
+  console.log('Variant chat for channel: ' + channelName);
+
   const styles = localStyleSheet(theme);
 
   const conversation = useSelector(selectFreshchatConversation);
