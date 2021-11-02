@@ -8,11 +8,8 @@ import {
 } from 'react-native-gifted-chat/lib/Models';
 import { useSelector } from 'react-redux';
 
-import { useApolloClient } from '../hooks/useApolloClient';
 import {
   useFreshchatGetMoreMessages,
-  useFreshchatGetNewMessages,
-  useFreshchatInit,
   useFreshchatSendFailedMessage,
   useFreshchatSendMessage,
   useFreshchatSetIsFullscreenVideo,
@@ -27,12 +24,10 @@ import {
 } from '../store/selectors/freshchatSelectors';
 import { reopenedMessageMark, resolvedMessageMark } from '../theme/constants';
 import Font from '../theme/fonts';
-import { FreshchatInit } from '../types/FreshchatInit.enum';
 import { FreshchatMessage } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatProps } from '../types/VariantChat';
-import LoadingIndicator from './LoadingIndicator';
 import MessageVideo from './MessageVideo';
 import {
   renderAccessory,
@@ -45,7 +40,11 @@ import {
 } from './renderers';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const { config, driverId, theme, defaultAvatarUrl } = props;
+  const {
+    channelName,
+    theme,
+    defaultAvatarUrl,
+  } = props;
 
   const styles = localStyleSheet(theme);
 
@@ -63,15 +62,6 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const setIsFullscreenVideo = useFreshchatSetIsFullscreenVideo();
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
-
-  const freshchatInit = useFreshchatInit(
-    driverId,
-    config.chat.channelName,
-    config.chat
-  );
-
-  useApolloClient(config.api);
-  useFreshchatGetNewMessages();
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
@@ -163,10 +153,6 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   return (
     <View style={styles.container}>
-      <LoadingIndicator
-        isLoading={freshchatInit !== FreshchatInit.Success}
-        message={'Connecting...'}
-      />
       <GiftedChat
         messagesContainerStyle={styles.messagesContainer}
         timeTextStyle={{

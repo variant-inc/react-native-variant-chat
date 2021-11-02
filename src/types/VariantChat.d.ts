@@ -22,6 +22,4 @@ export interface VariantChatProps {
   channelName: string;
   theme: ReactNativePaper.Theme;
   defaultAvatarUrl: string;
-  onError?: (message: string) => void;
-  onMessageReceivedBackground?: (message: string) => void;
 }
