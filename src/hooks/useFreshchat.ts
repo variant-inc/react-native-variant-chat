@@ -1,4 +1,3 @@
-import { FreshchatCommunicationError } from '../lib/Exception';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
@@ -9,6 +8,8 @@ import { useSelector } from 'react-redux';
 import { SECOND } from 'time-constants';
 import { v4 as uuidv4 } from 'uuid';
 
+import { publish } from '../lib/Event';
+import { FreshchatCommunicationError } from '../lib/Exception';
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   getFreshchatAgent,
@@ -68,7 +69,6 @@ import {
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { ChatProviderConfig } from '../types/VariantChat';
-import { publish } from '../lib/Event';
 
 const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
 
@@ -512,7 +512,7 @@ export const useFreshchatGetNewMessages = (): void => {
 
     // iOS
     console.log('BGRD START');
-    BackgroundTimer.runBackgroundTimer(() => { 
+    BackgroundTimer.runBackgroundTimer(() => {
       try {
         getNewMessages();
       } catch (error: any) {

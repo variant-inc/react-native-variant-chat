@@ -1,5 +1,5 @@
 interface Subscribers {
-  [key: string]: {(data: any): void}[];
+  [key: string]: { (data: any): void }[];
 }
 
 export interface Event {
@@ -19,18 +19,22 @@ export function publish(eventName: string, data: any | null) {
   }
 
   subscribers[eventName].forEach((callback: (event: Event) => void) => {
-    callback({name: eventName, data});
+    callback({ name: eventName, data });
   });
   return true;
 }
 
-export function subscribe(eventName: string, callback: (event: Event) => void, opts: EventOptions = {}) {
+export function subscribe(
+  eventName: string,
+  callback: (event: Event) => void,
+  opts: EventOptions = {}
+) {
   if (!Array.isArray(subscribers[eventName])) {
     subscribers[eventName] = [];
   }
 
   let index = 0;
-  if (opts.once && subscribers[eventName].length === 0 || !opts.once) {
+  if ((opts.once && subscribers[eventName].length === 0) || !opts.once) {
     subscribers[eventName].push(callback);
     index = subscribers[eventName].length - 1;
   }

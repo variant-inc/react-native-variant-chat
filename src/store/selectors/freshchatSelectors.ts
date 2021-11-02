@@ -51,7 +51,9 @@ export const selectFreshchatMessages = createSelector<
   ChatState,
   FreshchatMessage[]
 >(selectFreshchatState, (freshchatState) => {
-  return freshchatState?.messages[freshchatState.currentChannel?.name ?? ''] || [];
+  return (
+    freshchatState?.messages[freshchatState.currentChannel?.name ?? ''] || []
+  );
 });
 
 export const selectFreshchatMoreMessage = createSelector<
@@ -59,7 +61,9 @@ export const selectFreshchatMoreMessage = createSelector<
   ChatState,
   FreshchatMessagesLink | null
 >(selectFreshchatState, (freshchatState) => {
-  return freshchatState?.messagesLink[freshchatState.currentChannel?.name ?? ''];
+  return freshchatState?.messagesLink[
+    freshchatState.currentChannel?.name ?? ''
+  ];
 });
 
 export const selectFreshchatIsFullscreenVideo = createSelector<

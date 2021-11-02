@@ -40,11 +40,7 @@ import {
 } from './renderers';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const {
-    channelName,
-    theme,
-    defaultAvatarUrl,
-  } = props;
+  const { channelName, theme, defaultAvatarUrl } = props;
 
   console.log('Variant chat for channel: ' + channelName);
 

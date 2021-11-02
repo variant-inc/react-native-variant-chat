@@ -1,17 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, {AxiosInstance} from 'axios';
-import {SECOND} from 'time-constants';
+import axios, { AxiosInstance } from 'axios';
+import { SECOND } from 'time-constants';
 
-import {FreshchatBadStatus, FreshchatCommunicationError} from '../Exception';
-import {FreshchatConfig} from '../../types/Freshchat';
-import {FreshchatChannel} from '../../types/FreshchatChannel.type';
-import {FreshchatConversation} from '../../types/FreshchatConversation';
+import { FreshchatConfig } from '../../types/Freshchat';
+import { FreshchatChannel } from '../../types/FreshchatChannel.type';
+import { FreshchatConversation } from '../../types/FreshchatConversation';
 import {
   FreshchatGetMessages,
   FreshchatMessage,
 } from '../../types/FreshchatMessage';
 import { FreshchatUser } from '../../types/FreshchatUser';
 import { publish } from '../Event';
+import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
 
 const FRESHCHAT_USER_ID = '@ps-freshchat-user-id';
 const FRESHCHAT_CONVERSATION_ID = '@ps-freshchat-conversation-id';
@@ -49,7 +49,7 @@ export async function getFreshchatUser(
     return response.data;
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat user: ${error.message}`,
+      `Could not get freshchat user: ${error.message}`
     );
   }
 
@@ -67,7 +67,7 @@ export async function getFreshchatAgent(
     return response.data;
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat agent: ${error.message}`,
+      `Could not get freshchat agent: ${error.message}`
     );
   }
 
@@ -83,7 +83,7 @@ export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
     return response.data && response.data.channels;
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat channels: ${error.message}`,
+      `Could not get freshchat channels: ${error.message}`
     );
   }
   return [];
@@ -100,7 +100,7 @@ export async function getFreshchatConversation(
     return response.data;
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat conversation: ${error.message}`,
+      `Could not get freshchat conversation: ${error.message}`
     );
   }
   return null;
@@ -127,7 +127,7 @@ export async function setFreshchatMessage(
     return response.data;
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not set freshchat message: ${error.message}`,
+      `Could not set freshchat message: ${error.message}`
     );
   }
   return null;
@@ -148,7 +148,7 @@ export async function getFreshchatMessages(
     return response.data;
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat messages: ${error.message}`,
+      `Could not get freshchat messages: ${error.message}`
     );
   }
   return null;
@@ -165,7 +165,7 @@ export async function getFreshchatMoreMessages(
     return response.data;
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get more freshchat conversation: ${error.message}`,
+      `Could not get more freshchat conversation: ${error.message}`
     );
   }
   return null;
@@ -210,7 +210,10 @@ export const setFreshchatConversationId = async (
       conversationId
     );
   } catch (error: any) {
-    publish('error', `Could not save freshchat conversation id: ${error.message}`);
+    publish(
+      'error',
+      `Could not save freshchat conversation id: ${error.message}`
+    );
   }
 };
 
@@ -223,7 +226,10 @@ export const getFreshchatConversationId = async (
     );
     return conversationId;
   } catch (error: any) {
-    publish('error', `Could not get freshchat conversation id: ${error.message}`);
+    publish(
+      'error',
+      `Could not get freshchat conversation id: ${error.message}`
+    );
     return null;
   }
 };
@@ -244,7 +250,10 @@ export const setFreshchatFailedMessage = async (
       JSON.stringify(freshchatFailedMessages)
     );
   } catch (error: any) {
-    publish('error', `Could not save freshchat failed message: ${error.message}`);
+    publish(
+      'error',
+      `Could not save freshchat failed message: ${error.message}`
+    );
   }
 };
 
@@ -260,7 +269,10 @@ export const getFreshchatFailedMessages = async (): Promise<
       return JSON.parse(freshchatMessages);
     }
   } catch (error: any) {
-    publish('error', `Could not get freshchat failed message: ${error.message}`);
+    publish(
+      'error',
+      `Could not get freshchat failed message: ${error.message}`
+    );
   }
   return [];
 };
@@ -279,7 +291,10 @@ export const removeFreshchatFailedMessage = async (
       JSON.stringify(filteredFailedMessages)
     );
   } catch (error: any) {
-    publish('error', `Could not save freshchat failed message: ${error.message}`);
+    publish(
+      'error',
+      `Could not save freshchat failed message: ${error.message}`
+    );
   }
 };
 

@@ -14,7 +14,4 @@ class FreshchatCommunicationError extends Error {
   }
 }
 
-export {
-  FreshchatBadStatus,
-  FreshchatCommunicationError,
-};
+export { FreshchatBadStatus, FreshchatCommunicationError };
