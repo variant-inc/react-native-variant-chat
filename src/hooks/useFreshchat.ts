@@ -1,6 +1,6 @@
-import {FreshchatCommunicationError} from '../lib/Exception';
+import { FreshchatCommunicationError } from '../lib/Exception';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, AppState, AppStateStatus } from 'react-native';
+import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
 //import { NotificationService } from 'react-native-platform-science';
@@ -184,7 +184,7 @@ export const useFreshchatInit = (
 
   const showTimeoutError = () => {
     setInitialized(FreshchatInit.Fail);
-    Alert.alert(appName, networkTimeout, [], {cancelable: false});
+    Alert.alert(appName, networkTimeout, [], { cancelable: false });
   };
 
   useEffect(() => {
@@ -262,37 +262,50 @@ export const useFreshchatSendMessage = (): ((message: string) => void) => {
   const currentUser = useSelector(selectFreshchatCurrentUser);
   const currentConversation = useSelector(selectFreshchatConversation);
 
+  const storeFailedMessage = (message: string) => {
+    if (!currentUser || !currentConversation) {
+      return;
+    }
+
+    // Fail
+    const failedMessage = {
+      message_parts: [{ text: { content: message } }],
+      actor_id: currentUser.id,
+      id: uuidv4(),
+      conversation_id: currentConversation.conversation_id,
+      message_type: MessageType.Normal,
+      actor_type: ActorType.User,
+      created_time: new Date().toISOString(),
+      user_id: currentUser.id,
+      not_sent: true,
+    };
+
+    setFreshchatFailedMessage(failedMessage);
+    dispatch(freshchatAddMessage({ message: failedMessage }));
+  };
+
   const sendMessage = useCallback(
     async (message: string): Promise<void> => {
       if (!currentUser || !currentConversation) {
         return;
       }
 
-      const response = await setFreshchatMessage(
-        currentUser.id,
-        currentConversation.conversation_id,
-        message
-      );
+      try {
+        const response = await setFreshchatMessage(
+          currentUser.id,
+          currentConversation.conversation_id,
+          message
+        );
 
-      if (response) {
-        // Success
-        dispatch(freshchatAddMessage({ message: response }));
-      } else {
+        if (response) {
+          // Success
+          dispatch(freshchatAddMessage({ message: response }));
+        } else {
+          storeFailedMessage(message);
+        }
+      } catch (error) {
         // Fail
-        const failedMessage = {
-          message_parts: [{ text: { content: message } }],
-          actor_id: currentUser.id,
-          id: uuidv4(),
-          conversation_id: currentConversation.conversation_id,
-          message_type: MessageType.Normal,
-          actor_type: ActorType.User,
-          created_time: new Date().toISOString(),
-          user_id: currentUser.id,
-          not_sent: true,
-        };
-
-        setFreshchatFailedMessage(failedMessage);
-        dispatch(freshchatAddMessage({ message: failedMessage }));
+        storeFailedMessage(message);
       }
     },
     [currentUser, currentConversation, dispatch]
@@ -481,8 +494,26 @@ export const useFreshchatGetNewMessages = (): void => {
   };
 
   useEffect(() => {
+    if (Platform.OS === 'android') {
+      // Android
+      console.log('BGRD START');
+      const backgroundIntervalId = BackgroundTimer.setInterval(() => {
+        try {
+          getNewMessages();
+        } catch (error: any) {
+          publish('error', `Background message fetch failed: ${error.message}`);
+        }
+      }, NEW_MESSAGES_POLL_INTERVAL);
+
+      return () => {
+        console.log('BGRD STOP');
+        BackgroundTimer.clearInterval(backgroundIntervalId);
+      };
+    }
+
+    // iOS
     console.log('BGRD START');
-    const backgroundIntervalId = BackgroundTimer.setInterval(() => {
+    BackgroundTimer.runBackgroundTimer(() => { 
       try {
         getNewMessages();
       } catch (error: any) {
@@ -492,7 +523,7 @@ export const useFreshchatGetNewMessages = (): void => {
 
     return () => {
       console.log('BGRD STOP');
-      BackgroundTimer.clearInterval(backgroundIntervalId);
+      BackgroundTimer.stopBackgroundTimer();
     };
   }, [currentConversation, conversationUsers, allMessages, isFullscreenVideo]);
 };
