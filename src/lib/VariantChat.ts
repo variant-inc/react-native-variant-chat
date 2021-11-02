@@ -3,12 +3,12 @@ import {
   useFreshchatGetNewMessages,
   useFreshchatInit,
 } from '../hooks/useFreshchat';
-import { VariantConfig } from '../types/VariantChat';
+import { VariantChatConfig } from '../types/VariantChat';
 import { subscribe } from './Event';
 
 export const useVariantChat = (
   driverId: string,
-  config: VariantConfig
+  config: VariantChatConfig
 ): void => {
   // Connect the callers event handlers to our events.
   subscribe('error', ({ data }) => config.onError && config.onError(data), {

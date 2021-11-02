@@ -47,6 +47,7 @@ export async function getFreshchatUser(
       throw new FreshchatBadStatus(`status code ${response.status}`);
     }
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
       `Could not get freshchat user: ${error.message}`
@@ -65,6 +66,7 @@ export async function getFreshchatAgent(
       throw new FreshchatBadStatus(`status code ${response.status}`);
     }
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
       `Could not get freshchat agent: ${error.message}`
@@ -81,6 +83,7 @@ export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
       throw new FreshchatBadStatus(`status code ${response.status}`);
     }
     return response.data && response.data.channels;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
       `Could not get freshchat channels: ${error.message}`
@@ -98,6 +101,7 @@ export async function getFreshchatConversation(
       throw new FreshchatBadStatus(`status code ${response.status}`);
     }
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
       `Could not get freshchat conversation: ${error.message}`
@@ -125,6 +129,7 @@ export async function setFreshchatMessage(
       throw new FreshchatBadStatus(`status code ${response.status}`);
     }
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
       `Could not set freshchat message: ${error.message}`
@@ -146,6 +151,7 @@ export async function getFreshchatMessages(
       throw new FreshchatBadStatus(`status code ${response.status}`);
     }
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
       `Could not get freshchat messages: ${error.message}`
@@ -163,6 +169,7 @@ export async function getFreshchatMoreMessages(
       throw new FreshchatBadStatus(`status code ${response.status}`);
     }
     return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
       `Could not get more freshchat conversation: ${error.message}`
@@ -177,6 +184,7 @@ export const setFreshchatUserId = async (
 ): Promise<void> => {
   try {
     await AsyncStorage.setItem(`${FRESHCHAT_USER_ID}-${driverId}`, userId);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     publish('error', `Could not get freshchat user id: ${error.message}`);
   }
@@ -190,6 +198,7 @@ export const getFreshchatUserId = async (
       `${FRESHCHAT_USER_ID}-${driverId}`
     );
     return userId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     publish('error', `Could not get freshchat user: ${error.message}`);
     return null;
@@ -209,6 +218,7 @@ export const setFreshchatConversationId = async (
       `${FRESHCHAT_CONVERSATION_ID}-${driverId}`,
       conversationId
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     publish(
       'error',
@@ -225,6 +235,7 @@ export const getFreshchatConversationId = async (
       `${FRESHCHAT_CONVERSATION_ID}-${driverId}`
     );
     return conversationId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     publish(
       'error',
@@ -249,6 +260,7 @@ export const setFreshchatFailedMessage = async (
       FRESHCHAT_FAILED_MESSAGES,
       JSON.stringify(freshchatFailedMessages)
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     publish(
       'error',
@@ -268,6 +280,7 @@ export const getFreshchatFailedMessages = async (): Promise<
     if (freshchatMessages) {
       return JSON.parse(freshchatMessages);
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     publish(
       'error',
@@ -290,6 +303,7 @@ export const removeFreshchatFailedMessage = async (
       FRESHCHAT_FAILED_MESSAGES,
       JSON.stringify(filteredFailedMessages)
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     publish(
       'error',

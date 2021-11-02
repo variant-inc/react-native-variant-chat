@@ -499,6 +499,7 @@ export const useFreshchatGetNewMessages = (): void => {
       const backgroundIntervalId = BackgroundTimer.setInterval(() => {
         try {
           getNewMessages();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           publish('error', `Background message fetch failed: ${error.message}`);
         }
@@ -515,6 +516,7 @@ export const useFreshchatGetNewMessages = (): void => {
     BackgroundTimer.runBackgroundTimer(() => {
       try {
         getNewMessages();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         publish('error', `Background message fetch failed: ${error.message}`);
       }

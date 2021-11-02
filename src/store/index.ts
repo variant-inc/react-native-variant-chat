@@ -39,4 +39,5 @@ export const store = configureStore({
 });
 export const persistor = persistStore(store);
 export type AppDispatch = typeof store.dispatch;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useAppDispatch = (): any => useDispatch<AppDispatch>();

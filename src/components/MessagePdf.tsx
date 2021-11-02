@@ -10,6 +10,7 @@ type MessagePdfProps<IOpsMessage> = {
   currentMessage?: IOpsMessage;
   containerStyle?: StyleProp<ViewStyle>;
   pdfStyle?: StyleProp<ViewStyle>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lightboxProps?: any;
 };
 
