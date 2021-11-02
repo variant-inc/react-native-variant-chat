@@ -22,10 +22,12 @@ export const useVariantChat = (
     { once: true }
   );
 
-  useApolloClient(config.api);
+  useApolloClient(config.variantApi);
 
-  console.log('FC INIT ' + driverId + ', ' + JSON.stringify(config.chat));
-  useFreshchatInit(driverId, config.chat.channelName, config.chat);
+  console.log(
+    'FC INIT ' + driverId + ', ' + JSON.stringify(config.chatProvider)
+  );
+  useFreshchatInit(driverId, config.chatProvider);
 
   useFreshchatGetNewMessages();
 };

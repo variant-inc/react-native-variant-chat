@@ -76,9 +76,9 @@ const appName = DeviceInfo.getApplicationName();
 
 export const useFreshchatInit = (
   driverId: string,
-  channelName: string,
   config: ChatProviderConfig
 ): FreshchatInit => {
+  const channelName = config.channelNames[0]; // TODO temp, replace with impl to use the whole array
   const dispatch = useAppDispatch();
 
   const [initialized, setInitialized] = useState(FreshchatInit.None);
