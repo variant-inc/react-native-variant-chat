@@ -1,24 +1,25 @@
-export interface VariantChatConfig {
+export interface ChatProviderConfig {
   appId: string;
   appKey: string;
   baseUrl: string;
   accessToken: string;
-  channelName: string;
+  channelNames: [string];
 }
 
 export interface VariantApiConfig {
-  accessToken: string;
+  accessToken: () => Promise<string>;
   url: string;
 }
 
-export interface VariantConfig {
-  chat: VariantChatConfig;
-  api: VariantApiConfig;
+export interface VariantChatConfig {
+  chatProvider: ChatProviderConfig;
+  variantApi: VariantApiConfig;
+  onError?: (message: string) => void;
+  onMessageReceivedBackground?: (message: string) => void;
 }
 
 export interface VariantChatProps {
-  config: VariantConfig;
-  driverId: string;
+  channelName: string;
   theme: ReactNativePaper.Theme;
   defaultAvatarUrl: string;
 }

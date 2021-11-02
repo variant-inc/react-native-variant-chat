@@ -1,14 +1,15 @@
-import { FreshchatCommunicationError } from 'lib/Exception';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
-import { NotificationService } from 'react-native-platform-science';
+//import { NotificationService } from 'react-native-platform-science';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
 import { SECOND } from 'time-constants';
 import { v4 as uuidv4 } from 'uuid';
 
+import { publish } from '../lib/Event';
+import { FreshchatCommunicationError } from '../lib/Exception';
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   getFreshchatAgent,
@@ -67,23 +68,22 @@ import {
 } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
-import { VariantChatConfig } from '../types/VariantChat';
+import { ChatProviderConfig } from '../types/VariantChat';
 
 const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
 
-const bundleId = DeviceInfo.getBundleId();
 const appName = DeviceInfo.getApplicationName();
 
 export const useFreshchatInit = (
   driverId: string,
-  channelName: string,
-  config: VariantChatConfig
+  config: ChatProviderConfig
 ): FreshchatInit => {
+  const channelName = config.channelNames[0]; // TODO temp, replace with impl to use the whole array
   const dispatch = useAppDispatch();
 
   const [initialized, setInitialized] = useState(FreshchatInit.None);
 
-  const init = async (configValue: VariantChatConfig) => {
+  const init = async (configValue: ChatProviderConfig) => {
     if (driverId) {
       // init axios
       await initFreshchat({
@@ -188,7 +188,9 @@ export const useFreshchatInit = (
 
   useEffect(() => {
     try {
-      init(config);
+      if (initialized !== FreshchatInit.Success) {
+        init(config);
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setInitialized(FreshchatInit.Fail);
@@ -196,8 +198,7 @@ export const useFreshchatInit = (
         showTimeoutError();
       } else {
         showServiceError();
-        //log.error(`Freshchat init failed: ${error.message}`);
-        console.log(`Freshchat init failed: ${error.message}`);
+        publish('error', `Freshchat init failed: ${error.message}`);
       }
     }
   }, [driverId, config]);
@@ -422,15 +423,16 @@ export const useFreshchatGetNewMessages = (): void => {
       appState.current.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      console.log('App has come to the foreground!');
+      // App has come to the foreground
     } else {
-      console.log('App has come to the background!');
+      // App has come to the background
     }
 
     appState.current = nextAppState;
   };
 
   const getNewMessages = async (): Promise<void> => {
+    console.log('GET NEW MESSAGES');
     if (currentConversation) {
       const response = await getFreshchatMessages(
         currentConversation.conversation_id,
@@ -469,16 +471,21 @@ export const useFreshchatGetNewMessages = (): void => {
             !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
             !reopenedMessageMark.some((s) => newMessage.includes(s))
           ) {
+            publish('message-received-background', newMessage);
+            console.log('MSG EVENT');
+            /*
             const now = new Date();
             const dateTime = `${now.getFullYear()}-${
               now.getMonth() + 1
             }-${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
-
+            */
+            /*
             NotificationService.addNotification(
               `${bundleId}-${dateTime}`,
               appName,
               newMessage
             );
+            */
           }
         }
       }
@@ -488,30 +495,35 @@ export const useFreshchatGetNewMessages = (): void => {
   useEffect(() => {
     if (Platform.OS === 'android') {
       // Android
+      console.log('BGRD START');
       const backgroundIntervalId = BackgroundTimer.setInterval(() => {
         try {
           getNewMessages();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-          console.log(`Background message fetch failed: ${error.message}`);
+          publish('error', `Background message fetch failed: ${error.message}`);
         }
       }, NEW_MESSAGES_POLL_INTERVAL);
 
       return () => {
+        console.log('BGRD STOP');
         BackgroundTimer.clearInterval(backgroundIntervalId);
       };
     }
 
     // iOS
-    BackgroundTimer.runBackgroundTimer(() => { 
+    console.log('BGRD START');
+    BackgroundTimer.runBackgroundTimer(() => {
       try {
         getNewMessages();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        console.log(`Background message fetch failed: ${error.message}`);
+        publish('error', `Background message fetch failed: ${error.message}`);
       }
     }, NEW_MESSAGES_POLL_INTERVAL);
-    //rest of code will be performing for iOS on background too
 
     return () => {
+      console.log('BGRD STOP');
       BackgroundTimer.stopBackgroundTimer();
     };
   }, [currentConversation, conversationUsers, allMessages, isFullscreenVideo]);

@@ -71,6 +71,7 @@ export declare type RenderMessageTextProps<TMessage extends IMessage> = Omit<
 
 export interface CustomBubbleProps<TMessage extends IMessage> {
   user?: User;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   touchableProps?: any;
   renderUsernameOnMessage?: boolean;
   isCustomViewBottom?: boolean;
@@ -89,6 +90,7 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
   containerToPreviousStyle?: LeftRightStyle<ViewStyle>;
   usernameStyle?: TextStyle;
   quickReplyStyle?: StyleProp<ViewStyle>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onLongPress?(context?: any, message?: any): void;
   onQuickReply?(replies: Reply[]): void;
   renderMessageImage?(
@@ -285,6 +287,7 @@ const CustomBubble = (
 
     const { containerStyle, wrapperStyle, optionTitles, ...messageTextProps } =
       props;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const textProps: any = {
       ...messageTextProps,
       currentMessage: {
@@ -308,6 +311,7 @@ const CustomBubble = (
 
     const { containerStyle, wrapperStyle, ...messageImageProps } = props;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const imageProps: any = {
       ...messageImageProps,
       currentMessage: {
@@ -329,6 +333,7 @@ const CustomBubble = (
 
     const { containerStyle, wrapperStyle, ...messageVideoProps } = props;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const videoProps: any = {
       ...messageVideoProps,
       currentMessage: {
@@ -350,6 +355,7 @@ const CustomBubble = (
 
     const { containerStyle, wrapperStyle, ...messagePdfProps } = props;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pdfProps: any = {
       ...messagePdfProps,
       currentMessage: {
@@ -371,6 +377,7 @@ const CustomBubble = (
 
     const { containerStyle, wrapperStyle, ...messageAudioProps } = props;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const audioProps: any = {
       ...messageAudioProps,
       currentMessage: {
