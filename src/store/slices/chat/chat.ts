@@ -241,7 +241,7 @@ const handleSetSendingMessageId: CaseReducer<
 
 const freshchatSlice = createSlice({
   name: 'freshchat',
-  initialState: initialChatState,
+  initialState: initialVariantChatState,
   reducers: {
     setCurrentUser: handleSetCurrentUser,
     setIsFullscreenVideo: handleIsFullscreenVideo,

@@ -1,9 +1,9 @@
-import { ChatState, initialChatState } from './slices/chat/chat';
+import { VariantChatState, initialVariantChatState } from './slices/chat/chat';
 
 export interface StoreState {
-  chat: ChatState;
+  chat: VariantChatState;
 }
 
 export const initialStoreState = Object.freeze<StoreState>({
-  chat: initialChatState,
+  chat: initialVariantChatState,
 });
