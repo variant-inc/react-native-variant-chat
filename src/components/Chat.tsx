@@ -9,6 +9,7 @@ import {
 import { useSelector } from 'react-redux';
 
 import {
+  useConsumerDispatch,
   useFreshchatGetMoreMessages,
   useFreshchatSendFailedMessage,
   useFreshchatSendMessage,
@@ -22,6 +23,7 @@ import {
   selectFreshchatMessages,
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
+import { freshchatSetCurrentChannelName } from '../store/slices/chat/chat';
 import { reopenedMessageMark, resolvedMessageMark } from '../theme/constants';
 import Font from '../theme/fonts';
 import { FreshchatMessage } from '../types/FreshchatMessage';
@@ -43,7 +45,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const { channelName, theme, defaultAvatarUrl } = props;
 
   console.log('Variant chat for channel: ' + channelName);
+  const dispatch = useConsumerDispatch();
+  dispatch(freshchatSetCurrentChannelName({ channelName }));
 
+  console.log('Variant chat colors ' + JSON.stringify(theme.colors));
   const styles = localStyleSheet(theme);
 
   const conversation = useSelector(selectFreshchatConversation);
@@ -60,6 +65,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const setIsFullscreenVideo = useFreshchatSetIsFullscreenVideo();
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
+
+  console.log('CHAT COMP currentUser: ' + JSON.stringify(currentUser));
+  console.log('CHAT COMP conversation: ' + JSON.stringify(conversation));
+  console.log('CHAT COMP currentChannel: ' + JSON.stringify(currentChannel));
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
@@ -204,7 +213,7 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.chat.primary,
+      backgroundColor: theme.colors.chat?.primary || 'white',
     },
     messagesContainer: {
       backgroundColor: theme.colors.chat.primary,

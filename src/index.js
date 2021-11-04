@@ -1,2 +1,6 @@
-export * from './components/VariantChat';
-export * from './lib/VariantChat';
+export { VariantChat } from './components/VariantChat';
+export { useVariantChat } from './lib/VariantChat';
+export {
+  initialVariantChatState,
+  VariantChatState,
+} from './store/slices/chat/chat';

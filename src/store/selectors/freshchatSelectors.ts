@@ -7,16 +7,16 @@ import {
   FreshchatMessagesLink,
 } from '../../types/FreshchatMessage';
 import { FreshchatUser } from '../../types/FreshchatUser';
-import { StoreState } from '../initialStoreState';
-import { ChatState } from '../slices/chat/chat';
+//import { StoreState } from '../initialStoreState';
+import { VariantChatState } from '../slices/chat/chat';
 
-export const selectFreshchatState = (state: StoreState): ChatState => {
-  return state.chat;
+export const selectFreshchatState = (state: StoreState): VariantChatState => {
+  return state.variantChat;
 };
 
 export const selectFreshchatCurrentUser = createSelector<
   StoreState,
-  ChatState,
+  VariantChatState,
   FreshchatUser | null
 >(selectFreshchatState, (freshchatState) => {
   return freshchatState?.currentUser;
@@ -24,7 +24,7 @@ export const selectFreshchatCurrentUser = createSelector<
 
 export const selectFreshchatConversationUsers = createSelector<
   StoreState,
-  ChatState,
+  VariantChatState,
   FreshchatUser[]
 >(selectFreshchatState, (freshchatState) => {
   return freshchatState?.conversationUsers;
@@ -32,15 +32,19 @@ export const selectFreshchatConversationUsers = createSelector<
 
 export const selectFreshchatChannel = createSelector<
   StoreState,
-  ChatState,
+  VariantChatState,
   FreshchatChannel | null
 >(selectFreshchatState, (freshchatState) => {
-  return freshchatState?.currentChannel;
+  console.log('selectFreshchatChannel ' + JSON.stringify(freshchatState));
+  //return freshchatState?.currentChannel;
+  return (
+    freshchatState?.channels[freshchatState.currentChannelName ?? ''] || []
+  );
 });
 
 export const selectFreshchatConversation = createSelector<
   StoreState,
-  ChatState,
+  VariantChatState,
   FreshchatConversation | null
 >(selectFreshchatState, (freshchatState) => {
   return freshchatState?.currentConversation;
@@ -48,27 +52,25 @@ export const selectFreshchatConversation = createSelector<
 
 export const selectFreshchatMessages = createSelector<
   StoreState,
-  ChatState,
+  VariantChatState,
   FreshchatMessage[]
 >(selectFreshchatState, (freshchatState) => {
   return (
-    freshchatState?.messages[freshchatState.currentChannel?.name ?? ''] || []
+    freshchatState?.messages[freshchatState.currentChannelName ?? ''] || []
   );
 });
 
 export const selectFreshchatMoreMessage = createSelector<
   StoreState,
-  ChatState,
+  VariantChatState,
   FreshchatMessagesLink | null
 >(selectFreshchatState, (freshchatState) => {
-  return freshchatState?.messagesLink[
-    freshchatState.currentChannel?.name ?? ''
-  ];
+  return freshchatState?.messagesLink[freshchatState.currentChannelName ?? ''];
 });
 
 export const selectFreshchatIsFullscreenVideo = createSelector<
   StoreState,
-  ChatState,
+  VariantChatState,
   boolean
 >(selectFreshchatState, (freshchatState) => {
   return freshchatState?.isFullscreenVideo;
@@ -76,7 +78,7 @@ export const selectFreshchatIsFullscreenVideo = createSelector<
 
 export const selectFreshchatSendingMessageId = createSelector<
   StoreState,
-  ChatState,
+  VariantChatState,
   string | number | null
 >(selectFreshchatState, (freshchatState) => {
   return freshchatState?.sendingMessageId;
