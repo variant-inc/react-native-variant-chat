@@ -44,7 +44,6 @@ import {
   freshchatSetChannels,
   freshchatSetConversation,
   freshchatSetConversationUser,
-  freshchatSetCurrentChannelName,
   freshchatSetCurrentUser,
   freshchatSetIsFullscreenVideo,
   freshchatSetMessages,
@@ -170,9 +169,6 @@ export const useFreshchatInit = (
         const conversationId = conversation.id;
         console.log(
           'SET CHANNEL NAME (LOOP) ' + JSON.stringify(conversation.channel)
-        );
-        dispatch(
-          freshchatSetCurrentChannelName({ channelName: conversation.channel })
         );
         console.log('1');
 

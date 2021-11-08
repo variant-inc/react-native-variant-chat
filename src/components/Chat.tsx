@@ -70,8 +70,6 @@ const Chat = (props: VariantChatProps): ReactElement => {
   console.log('CHAT COMP currentChannel: ' + JSON.stringify(currentChannel));
 
   useEffect(() => {
-    dispatch(freshchatSetCurrentChannelName({ channelName }));
-
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
     Keyboard.addListener('keyboardDidHide', handleDidHideKeyboard);
 
@@ -81,6 +79,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
       Keyboard.removeListener('keyboardDidHide', handleDidHideKeyboard);
     };
   }, []);
+
+  useEffect(() => {
+    dispatch(freshchatSetCurrentChannelName({ channelName }));
+  }, [channelName]);
 
   useEffect(() => {
     const allMessages: IOpsMessage[] = [];
