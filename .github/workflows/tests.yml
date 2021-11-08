@@ -17,7 +17,7 @@ jobs:
 
       - name: Lazy action steps
         id: lazy-action
-        uses: variant-inc/actions-nodejs@v1
+        uses: variant-inc/actions-nodejs@v1.1.5
         env:
           GITHUB_USER: variant-inc
         with:
