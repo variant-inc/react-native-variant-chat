@@ -1,4 +1,5 @@
 import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { VariantChatState } from 'types/VariantChatState';
 
 import { filterNewMessages } from '../../../lib/Freshchat/Utils';
 import { FreshchatChannel } from '../../../types/FreshchatChannel.type';
@@ -6,21 +7,8 @@ import { FreshchatConversation } from '../../../types/FreshchatConversation';
 import {
   FreshchatGetMessages,
   FreshchatMessage,
-  FreshchatMessagesLink,
 } from '../../../types/FreshchatMessage';
 import { FreshchatUser } from '../../../types/FreshchatUser';
-
-export interface VariantChatState {
-  currentUser: FreshchatUser | null;
-  conversationUsers: FreshchatUser[];
-  channels: FreshchatChannel[];
-  currentChannelName: string | null;
-  currentConversation: FreshchatConversation | null;
-  messages: { [key: string]: FreshchatMessage[] }; // key is channel name
-  messagesLink: { [key: string]: FreshchatMessagesLink | null }; // for more messages; key is channel name
-  isFullscreenVideo: boolean;
-  sendingMessageId: string | number | null;
-}
 
 export const initialVariantChatState = Object.freeze<VariantChatState>({
   currentUser: null,

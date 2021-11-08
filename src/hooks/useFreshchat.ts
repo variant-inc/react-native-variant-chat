@@ -27,7 +27,7 @@ import {
 } from '../lib/Freshchat/Freshchat';
 import { getFreshchatConversations } from '../lib/Freshchat/FreshchatConversation';
 import { filterNewMessages } from '../lib/Freshchat/Utils';
-import { AppDispatch, useAppDispatch } from '../store';
+import { AppDispatch } from '../store';
 import {
   selectFreshchatConversation,
   selectFreshchatConversationUsers,
@@ -71,7 +71,7 @@ import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { ChatProviderConfig } from '../types/VariantChat';
 
-let dispatch;
+let dispatch: any;
 const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
 const appName = DeviceInfo.getApplicationName();
 
@@ -80,7 +80,7 @@ export const useConsumerDispatch = (): any => {
 };
 
 //export const useFreshchatInit = (
-export const doFreshchatInit = (
+export const useFreshchatInit = (
   driverId: string,
   config: ChatProviderConfig,
   consumerDispatch: any
@@ -102,8 +102,11 @@ export const doFreshchatInit = (
 
       // Get channels from Freshchat.
       const channels = await getChannels();
-      console.log('SET CHANNELS ' + JSON.stringify(channels));
-      await dispatch(freshchatSetChannels({ channels }));
+
+      if (channels) {
+        console.log('SET CHANNELS ' + JSON.stringify(channels));
+        await dispatch(freshchatSetChannels({ channels }));
+      }
 
       // Get conversation id's from the messaging api.
       let conversationInfo = null;
@@ -205,7 +208,7 @@ export const doFreshchatInit = (
             }
             return;
           })
-          .catch((error: any) => {
+          .catch(() => {
             console.log('6');
             showConversationError();
             return;
@@ -294,7 +297,7 @@ const getUser = async (userId: string): Promise<FreshchatUser | null> => {
 
 const getConversation = async (
   conversationId: string
-): Promise<FreshchatConversation | null> => {
+): Promise<FreshchatConversation> => {
   const response = await getFreshchatConversation(conversationId);
   return response;
 };
@@ -302,7 +305,7 @@ const getConversation = async (
 const getMessages = async (
   conversationId: string,
   page = 1
-): Promise<FreshchatGetMessages | null> => {
+): Promise<FreshchatGetMessages> => {
   const response = await getFreshchatMessages(conversationId, page);
   return response;
 };
@@ -596,7 +599,7 @@ export const useFreshchatGetNewMessages = (): void => {
 };
 
 const checkConversationUsers = (
-  dispatch: AppDispatch,
+  appDispatch: AppDispatch,
   conversationUsers: FreshchatUser[],
   messages: FreshchatMessage[]
 ) => {
@@ -624,7 +627,7 @@ const checkConversationUsers = (
         responseUser = await getFreshchatAgent(user.id);
       }
       if (responseUser) {
-        dispatch(freshchatSetConversationUser({ user: responseUser }));
+        appDispatch(freshchatSetConversationUser({ user: responseUser }));
       }
     });
   }

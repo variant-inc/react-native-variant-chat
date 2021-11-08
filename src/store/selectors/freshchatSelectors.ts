@@ -1,4 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
+import { StoreState } from 'store/initialStoreState';
+import { VariantChatState } from 'types/VariantChatState';
 
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
@@ -7,11 +9,11 @@ import {
   FreshchatMessagesLink,
 } from '../../types/FreshchatMessage';
 import { FreshchatUser } from '../../types/FreshchatUser';
+
 //import { StoreState } from '../initialStoreState';
-import { VariantChatState } from '../slices/chat/chat';
 
 export const selectFreshchatState = (state: StoreState): VariantChatState => {
-  return state.variantChat;
+  return state.chat;
 };
 
 export const selectFreshchatCurrentUser = createSelector<
@@ -37,9 +39,11 @@ export const selectFreshchatChannel = createSelector<
 >(selectFreshchatState, (freshchatState) => {
   console.log('selectFreshchatChannel ' + JSON.stringify(freshchatState));
   //return freshchatState?.currentChannel;
-  return (
-    freshchatState?.channels[freshchatState.currentChannelName ?? ''] || []
+  const currentChannel = freshchatState?.channels.find(
+    (channel) => channel.name === freshchatState.currentChannelName
   );
+
+  return currentChannel ?? null;
 });
 
 export const selectFreshchatConversation = createSelector<

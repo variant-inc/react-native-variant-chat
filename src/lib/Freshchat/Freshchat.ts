@@ -38,9 +38,7 @@ export async function initFreshchat(config: FreshchatConfig): Promise<void> {
   });
 }
 
-export async function getFreshchatUser(
-  userId: string
-): Promise<FreshchatUser | null> {
+export async function getFreshchatUser(userId: string): Promise<FreshchatUser> {
   try {
     const response = await instance.get(`/v2/users/${userId}`);
     if (response.status !== 200) {
@@ -54,12 +52,12 @@ export async function getFreshchatUser(
     );
   }
 
-  return null;
+  // return null;
 }
 
 export async function getFreshchatAgent(
   agentId: string
-): Promise<FreshchatUser | null> {
+): Promise<FreshchatUser> {
   try {
     const response = await instance.get(`/v2/agents/${agentId}`);
     if (response.status !== 200) {
@@ -73,7 +71,7 @@ export async function getFreshchatAgent(
     );
   }
 
-  return null;
+  // return null;
 }
 
 export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
@@ -94,7 +92,7 @@ export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
 
 export async function getFreshchatConversation(
   conversationId: string
-): Promise<FreshchatConversation | null> {
+): Promise<FreshchatConversation> {
   try {
     const response = await instance.get(`/v2/conversations/${conversationId}`);
     if (response.status !== 200) {
@@ -107,14 +105,15 @@ export async function getFreshchatConversation(
       `Could not get freshchat conversation: ${error.message}`
     );
   }
-  return null;
+
+  // return null;
 }
 
 export async function setFreshchatMessage(
   userId: string,
   conversationId: string,
   message: string
-): Promise<FreshchatMessage | null> {
+): Promise<FreshchatMessage> {
   try {
     const response = await instance.post(
       `/v2/conversations/${conversationId}/messages`,
@@ -135,14 +134,15 @@ export async function setFreshchatMessage(
       `Could not set freshchat message: ${error.message}`
     );
   }
-  return null;
+
+  // return null;
 }
 
 export async function getFreshchatMessages(
   conversationId: string,
   page = 1,
   itemsPerPage = MESSAGES_PER_PAGE
-): Promise<FreshchatGetMessages | null> {
+): Promise<FreshchatGetMessages> {
   try {
     const response = await instance.get(
       `/v2/conversations/${conversationId}/messages?page=${page}&items_per_page=${itemsPerPage}`
@@ -157,7 +157,8 @@ export async function getFreshchatMessages(
       `Could not get freshchat messages: ${error.message}`
     );
   }
-  return null;
+
+  // return null;
 }
 
 export async function getFreshchatMoreMessages(
@@ -175,7 +176,8 @@ export async function getFreshchatMoreMessages(
       `Could not get more freshchat conversation: ${error.message}`
     );
   }
-  return null;
+
+  // return null;
 }
 
 export const setFreshchatUserId = async (
