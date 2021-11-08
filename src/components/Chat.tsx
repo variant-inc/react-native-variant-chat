@@ -46,7 +46,6 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   console.log('Variant chat for channel: ' + channelName);
   const dispatch = useConsumerDispatch();
-  dispatch(freshchatSetCurrentChannelName({ channelName }));
 
   console.log('Variant chat colors ' + JSON.stringify(theme.colors));
   const styles = localStyleSheet(theme);
@@ -71,6 +70,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
   console.log('CHAT COMP currentChannel: ' + JSON.stringify(currentChannel));
 
   useEffect(() => {
+    dispatch(freshchatSetCurrentChannelName({ channelName }));
+
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
     Keyboard.addListener('keyboardDidHide', handleDidHideKeyboard);
 

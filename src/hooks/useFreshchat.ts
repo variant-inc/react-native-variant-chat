@@ -256,26 +256,28 @@ export const doFreshchatInit = (
     }
   }, []);
 */
-  try {
-    console.log('TRYING FC INIT');
-    if (
-      initialized !== FreshchatInit.Success &&
-      initialized !== FreshchatInit.InProgress
-    ) {
-      console.log('RUNNING FC INIT');
-      setInitialized(FreshchatInit.InProgress);
-      init(config);
+  useEffect(() => {
+    try {
+      console.log('TRYING FC INIT');
+      if (
+        initialized !== FreshchatInit.Success &&
+        initialized !== FreshchatInit.InProgress
+      ) {
+        console.log('RUNNING FC INIT');
+        setInitialized(FreshchatInit.InProgress);
+        init(config);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setInitialized(FreshchatInit.Fail);
+      if (error instanceof FreshchatCommunicationError) {
+        showTimeoutError();
+      } else {
+        showServiceError();
+        publish('error', `Freshchat init failed: ${error.message}`);
+      }
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    setInitialized(FreshchatInit.Fail);
-    if (error instanceof FreshchatCommunicationError) {
-      showTimeoutError();
-    } else {
-      showServiceError();
-      publish('error', `Freshchat init failed: ${error.message}`);
-    }
-  }
+  }, []);
 
   return initialized;
 };
@@ -590,8 +592,7 @@ export const useFreshchatGetNewMessages = (): void => {
       console.log('BGRD STOP');
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, []);
-  //}, [currentConversation, conversationUsers, allMessages, isFullscreenVideo]);
+  }, [currentConversation, conversationUsers, allMessages, isFullscreenVideo]);
 };
 
 const checkConversationUsers = (
