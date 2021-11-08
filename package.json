@@ -55,7 +55,7 @@
     "react-native-get-random-values": "^1.6.0",
     "react-native-gifted-chat": "^0.16.3",
     "react-native-paper": "^4.7.2",
-    "react-native-pdf": "^6.3.0",
+    "react-native-pdf": "6.3.0",
     "react-native-platform-science": "git+https://github.com/variant-inc/react-native-platform-science.git",
     "react-native-svg": "^12.1.0",
     "react-native-svg-transformer": "^0.14.3",
