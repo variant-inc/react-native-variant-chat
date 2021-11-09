@@ -124,15 +124,17 @@ const handleSetConversation: CaseReducer<
 
 const handleSetMessages: CaseReducer<
   VariantChatState,
-  PayloadAction<{ message: FreshchatGetMessages }>
+  PayloadAction<{ message: FreshchatGetMessages; channelName: string }>
 > = (state: VariantChatState, { payload }) => {
   return {
     ...state,
     messages: {
-      [state.currentChannelName ?? '']: payload.message.messages,
+      ...state.messages,
+      [payload.channelName ?? '']: payload.message.messages,
     },
     messagesLink: {
-      [state.currentChannelName ?? '']: payload.message.link || null,
+      ...state.messagesLink,
+      [payload.channelName ?? '']: payload.message.link || null,
     },
   };
 };

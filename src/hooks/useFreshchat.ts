@@ -167,37 +167,29 @@ export const useFreshchatInit = (
       for (const conversation of conversationInfo.conversations) {
         //const conversationId = conversationInfo.conversations[i].id;
         const conversationId = conversation.id;
-        console.log(
-          'SET CHANNEL NAME (LOOP) ' + JSON.stringify(conversation.channel)
-        );
-        console.log('1');
 
         getConversation(conversationId)
           .then((response: FreshchatConversation) => {
-            console.log('2');
-            console.log('SET CONVERSATION (LOOP) ' + JSON.stringify(response));
             return dispatch(
               freshchatAddConversation({ conversation: response })
             );
           })
           .then(() => {
-            console.log('3');
             return getMessages(conversationId, 1);
           })
           .then((response: FreshchatGetMessages) => {
-            console.log('4');
-            console.log('SET MESSAGES (LOOP) ' + JSON.stringify(response));
-            dispatch(freshchatSetMessages({ message: response }));
+            dispatch(
+              freshchatSetMessages({
+                message: response,
+                channelName: conversation.channel,
+              })
+            );
             checkConversationUsers(dispatch, [], response.messages);
             return getFreshchatFailedMessages();
           })
           .then((failedMessages: FreshchatMessage[]) => {
             // Check and Append the failed messages
-            console.log('5');
             if (failedMessages && failedMessages.length) {
-              console.log(
-                'SET FAILED MESSAGES (LOOP) ' + JSON.stringify(failedMessages)
-              );
               return dispatch(
                 freshchatAppendNewMessages({ messages: failedMessages })
               );

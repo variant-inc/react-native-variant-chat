@@ -37,8 +37,6 @@ export const selectFreshchatChannel = createSelector<
   VariantChatState,
   FreshchatChannel | null
 >(selectFreshchatState, (freshchatState) => {
-  console.log('selectFreshchatChannel ' + JSON.stringify(freshchatState));
-  //return freshchatState?.currentChannel;
   const currentChannel = freshchatState?.channels.find(
     (channel) => channel.name === freshchatState.currentChannelName
   );
