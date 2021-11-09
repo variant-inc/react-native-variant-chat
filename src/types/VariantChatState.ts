@@ -7,6 +7,7 @@ export interface VariantChatState {
   currentUser: FreshchatUser | null;
   conversationUsers: FreshchatUser[];
   channels: FreshchatChannel[];
+  conversations: FreshchatConversation[];
   currentChannelName: string | null;
   currentConversation: FreshchatConversation | null;
   messages: { [key: string]: FreshchatMessage[] }; // key is channel name

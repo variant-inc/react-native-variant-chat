@@ -14,6 +14,7 @@ export const initialVariantChatState = Object.freeze<VariantChatState>({
   currentUser: null,
   conversationUsers: [],
   channels: [],
+  conversations: [],
   currentChannelName: null,
   currentConversation: null,
   messages: {},
@@ -68,9 +69,20 @@ const handleSetCurrentChannelName: CaseReducer<
   PayloadAction<{ channelName: string | null }>
 > = (state: VariantChatState, { payload }) => {
   console.log('handleSetCurrentChannelName ' + payload.channelName);
+
+  const { channelName } = payload;
+  const currentChannel = state.channels.find(
+    (channel) => channel.name === channelName
+  );
+
+  const currentConversation = state.conversations.find(
+    (conversation) => conversation.channel_id === currentChannel?.id
+  );
+
   return {
     ...state,
-    currentChannelName: payload.channelName,
+    currentChannelName: channelName,
+    currentConversation: currentConversation ?? null,
   };
 };
 
@@ -78,11 +90,19 @@ const handleSetChannels: CaseReducer<
   VariantChatState,
   PayloadAction<{ channels: FreshchatChannel[] }>
 > = (state: VariantChatState, { payload }) => {
-  //console.log('handleSetChannel ' + JSON.stringify(payload));
-  console.log('handleSetChannels ');
   return {
     ...state,
     channels: payload.channels,
+  };
+};
+
+const handleAddConversation: CaseReducer<
+  VariantChatState,
+  PayloadAction<{ conversation: FreshchatConversation }>
+> = (state: VariantChatState, { payload }) => {
+  return {
+    ...state,
+    conversations: [...state.conversations, payload.conversation],
   };
 };
 
@@ -236,6 +256,7 @@ const freshchatSlice = createSlice({
     setConversationUser: handleSetConversationUser,
     setCurrentChannelName: handleSetCurrentChannelName,
     setChannels: handleSetChannels,
+    addConversation: handleAddConversation,
     setConversation: handleSetConversation,
     setMessages: handleSetMessages,
     appendMessages: handleAppendMessages,
@@ -256,6 +277,7 @@ export const freshchatSetConversationUser =
 export const freshchatSetCurrentChannelName =
   freshchatSlice.actions.setCurrentChannelName;
 export const freshchatSetChannels = freshchatSlice.actions.setChannels;
+export const freshchatAddConversation = freshchatSlice.actions.addConversation;
 export const freshchatSetConversation = freshchatSlice.actions.setConversation;
 export const freshchatSetMessages = freshchatSlice.actions.setMessages;
 export const freshchatAppendMessages = freshchatSlice.actions.appendMessages;

@@ -37,12 +37,12 @@ import {
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
 import {
+  freshchatAddConversation,
   freshchatAddMessage,
   freshchatAppendMessages,
   freshchatAppendNewMessages,
   freshchatRemoveMessage,
   freshchatSetChannels,
-  freshchatSetConversation,
   freshchatSetConversationUser,
   freshchatSetCurrentUser,
   freshchatSetIsFullscreenVideo,
@@ -177,7 +177,7 @@ export const useFreshchatInit = (
             console.log('2');
             console.log('SET CONVERSATION (LOOP) ' + JSON.stringify(response));
             return dispatch(
-              freshchatSetConversation({ conversation: response })
+              freshchatAddConversation({ conversation: response })
             );
           })
           .then(() => {
