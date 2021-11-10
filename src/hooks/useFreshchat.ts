@@ -59,7 +59,6 @@ import {
 } from '../theme/constants';
 import { FreshchatChannel } from '../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../types/FreshchatConversation';
-import { FreshchatInit } from '../types/FreshchatInit.enum';
 import {
   ActorType,
   FreshchatGetMessages,
@@ -81,15 +80,13 @@ export const useConsumerDispatch = (): any => {
 //export const useFreshchatInit = (
 export const useFreshchatInit = (
   driverId: string,
-  config: ChatProviderConfig,
+  configValue: ChatProviderConfig,
   consumerDispatch: any
-): FreshchatInit => {
+): void => {
   //const dispatch = useAppDispatch();
   dispatch = consumerDispatch;
 
-  const [initialized, setInitialized] = useState(FreshchatInit.None);
-
-  const init = async (configValue: ChatProviderConfig) => {
+  const init = async () => {
     if (driverId) {
       // init axios
       await initFreshchat({
@@ -157,7 +154,6 @@ export const useFreshchatInit = (
         showConversationError();
         return;
       }
-      console.log('0');
 
       // For each channel get the conversations and messages.
       // Channel is specified with the conversation info.
@@ -195,80 +191,45 @@ export const useFreshchatInit = (
             return;
           })
           .catch(() => {
-            console.log('6');
             showConversationError();
             return;
           });
       }
-
-      setInitialized(FreshchatInit.Success);
     }
 
     Tts.getInitStatus();
   };
 
   const showConversationError = () => {
-    setInitialized(FreshchatInit.Fail);
     Alert.alert(appName, accountNotSetup, [], {
       cancelable: false,
     });
   };
 
   const showServiceError = () => {
-    setInitialized(FreshchatInit.Fail);
     Alert.alert(appName, appNotAvailable, [], {
       cancelable: false,
     });
   };
 
   const showTimeoutError = () => {
-    setInitialized(FreshchatInit.Fail);
     Alert.alert(appName, networkTimeout, [], { cancelable: false });
   };
-  /*
-  useEffect(() => {
-    try {
-      console.log('TRYING FC INIT');
-      if (initialized !== FreshchatInit.Success) {
-        console.log('RUNNING FC INIT');
-        init(config);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setInitialized(FreshchatInit.Fail);
-      if (error instanceof FreshchatCommunicationError) {
-        showTimeoutError();
-      } else {
-        showServiceError();
-        publish('error', `Freshchat init failed: ${error.message}`);
-      }
-    }
-  }, []);
-*/
-  useEffect(() => {
-    try {
-      console.log('TRYING FC INIT');
-      if (
-        initialized !== FreshchatInit.Success &&
-        initialized !== FreshchatInit.InProgress
-      ) {
-        console.log('RUNNING FC INIT');
-        setInitialized(FreshchatInit.InProgress);
-        init(config);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setInitialized(FreshchatInit.Fail);
-      if (error instanceof FreshchatCommunicationError) {
-        showTimeoutError();
-      } else {
-        showServiceError();
-        publish('error', `Freshchat init failed: ${error.message}`);
-      }
-    }
-  }, []);
 
-  return initialized;
+  useEffect(() => {
+    try {
+      console.log('TRYING FC INIT');
+      init();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error instanceof FreshchatCommunicationError) {
+        showTimeoutError();
+      } else {
+        showServiceError();
+        publish('error', `Freshchat init failed: ${error.message}`);
+      }
+    }
+  }, []);
 };
 
 const getChannels = async (): Promise<FreshchatChannel[] | null> => {
@@ -474,15 +435,6 @@ export const useFreshchatGetNewMessages = (): void => {
   }, []);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
-    if (
-      appState.current.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      // App has come to the foreground
-    } else {
-      // App has come to the background
-    }
-
     appState.current = nextAppState;
   };
 
