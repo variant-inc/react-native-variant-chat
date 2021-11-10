@@ -1,6 +1,4 @@
 export interface ChatProviderConfig {
-  appId: string;
-  appKey: string;
   baseUrl: string;
   accessToken: string;
   channelNames: [string];
