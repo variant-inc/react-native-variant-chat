@@ -90,6 +90,8 @@ export const useFreshchatInit = (
     if (driverId) {
       // init axios
       await initFreshchat({
+        freshchatAppId: configValue.appId,
+        freshchatAppKey: configValue.appKey,
         freshchatBaseUrl: configValue.baseUrl,
         freshchatAccessToken: configValue.accessToken,
       });
