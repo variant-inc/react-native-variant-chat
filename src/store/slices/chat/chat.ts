@@ -100,8 +100,22 @@ const handleAddConversation: CaseReducer<
   VariantChatState,
   PayloadAction<{ conversation: FreshchatConversation }>
 > = (state: VariantChatState, { payload }) => {
+  let currentConversation = state.currentConversation;
+
+  if (!currentConversation && state.currentChannelName) {
+    const currentChannel = state.channels.find(
+      (channel) => channel.name === state.currentChannelName
+    );
+
+    currentConversation =
+      state.conversations.find(
+        (conversation) => conversation.channel_id === currentChannel?.id
+      ) || null;
+  }
+
   return {
     ...state,
+    currentConversation,
     conversations: [...state.conversations, payload.conversation],
   };
 };

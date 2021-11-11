@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef } from 'react';
 import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
-//import { NotificationService } from 'react-native-platform-science';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
 import { SECOND } from 'time-constants';
@@ -181,7 +180,7 @@ export const useFreshchatInit = (
               })
             );
             checkConversationUsers(dispatch, [], response.messages);
-            return getFreshchatFailedMessages();
+            return getFreshchatFailedMessages(conversationId);
           })
           .then((failedMessages: FreshchatMessage[]) => {
             // Check and Append the failed messages
@@ -297,7 +296,10 @@ export const useFreshchatSendMessage = (): ((message: string) => void) => {
       not_sent: true,
     };
 
-    setFreshchatFailedMessage(failedMessage);
+    setFreshchatFailedMessage(
+      currentConversation.conversation_id,
+      failedMessage
+    );
     dispatch(freshchatAddMessage({ message: failedMessage }));
   };
 
@@ -482,19 +484,6 @@ export const useFreshchatGetNewMessages = (): void => {
           ) {
             publish('message-received-background', newMessage);
             console.log('MSG EVENT');
-            /*
-            const now = new Date();
-            const dateTime = `${now.getFullYear()}-${
-              now.getMonth() + 1
-            }-${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
-            */
-            /*
-            NotificationService.addNotification(
-              `${bundleId}-${dateTime}`,
-              appName,
-              newMessage
-            );
-            */
           }
         }
       }
