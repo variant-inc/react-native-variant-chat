@@ -381,7 +381,10 @@ export const useFreshchatSendFailedMessage = (): ((
         dispatch(freshchatAddMessage({ message: response }));
 
         // Remove the failed messages from storage
-        removeFreshchatFailedMessage(sendMessage._id);
+        removeFreshchatFailedMessage(
+          currentConversation.conversation_id,
+          sendMessage._id
+        );
       }
 
       dispatch(freshchatSetSendingMessageId({ id: null }));

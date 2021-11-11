@@ -296,10 +296,13 @@ export const getFreshchatFailedMessages = async (
 };
 
 export const removeFreshchatFailedMessage = async (
+  conversationId: string,
   messageId: string | number
 ): Promise<void> => {
   try {
-    const freshchatFailedMessages = await getFreshchatFailedMessages();
+    const freshchatFailedMessages = await getFreshchatFailedMessages(
+      conversationId
+    );
     const filteredFailedMessages = freshchatFailedMessages?.filter(
       (message: FreshchatMessage) => message.id !== messageId
     );
