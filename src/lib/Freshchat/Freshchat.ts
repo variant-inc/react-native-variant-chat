@@ -252,14 +252,17 @@ export const clearFreshchatConversationId = (driverId: string): void => {
 };
 
 export const setFreshchatFailedMessage = async (
+  conversationId: string,
   failedMessage: FreshchatMessage
 ): Promise<void> => {
   try {
-    const freshchatFailedMessages = await getFreshchatFailedMessages();
+    const freshchatFailedMessages = await getFreshchatFailedMessages(
+      conversationId
+    );
     freshchatFailedMessages.push(failedMessage);
 
     await AsyncStorage.setItem(
-      FRESHCHAT_FAILED_MESSAGES,
+      `${FRESHCHAT_FAILED_MESSAGES}-${conversationId}`,
       JSON.stringify(freshchatFailedMessages)
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -271,12 +274,12 @@ export const setFreshchatFailedMessage = async (
   }
 };
 
-export const getFreshchatFailedMessages = async (): Promise<
-  FreshchatMessage[]
-> => {
+export const getFreshchatFailedMessages = async (
+  conversationId: string
+): Promise<FreshchatMessage[]> => {
   try {
     const freshchatMessages = await AsyncStorage.getItem(
-      FRESHCHAT_FAILED_MESSAGES
+      `${FRESHCHAT_FAILED_MESSAGES}-${conversationId}`
     );
 
     if (freshchatMessages) {
@@ -293,16 +296,19 @@ export const getFreshchatFailedMessages = async (): Promise<
 };
 
 export const removeFreshchatFailedMessage = async (
+  conversationId: string,
   messageId: string | number
 ): Promise<void> => {
   try {
-    const freshchatFailedMessages = await getFreshchatFailedMessages();
+    const freshchatFailedMessages = await getFreshchatFailedMessages(
+      conversationId
+    );
     const filteredFailedMessages = freshchatFailedMessages?.filter(
       (message: FreshchatMessage) => message.id !== messageId
     );
 
     await AsyncStorage.setItem(
-      FRESHCHAT_FAILED_MESSAGES,
+      `${FRESHCHAT_FAILED_MESSAGES}-${conversationId}`,
       JSON.stringify(filteredFailedMessages)
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

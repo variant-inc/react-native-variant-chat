@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
-//import { NotificationService } from 'react-native-platform-science';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
 import { SECOND } from 'time-constants';
@@ -195,7 +194,7 @@ export const useFreshchatInit = (
               })
             );
             checkConversationUsers(dispatch, [], response.messages);
-            return getFreshchatFailedMessages();
+            return getFreshchatFailedMessages(conversation.id);
           })
           .then((failedMessages: FreshchatMessage[]) => {
             // Check and Append the failed messages
@@ -460,7 +459,10 @@ export const useFreshchatSendFailedMessage = (
         );
 
         // Remove the failed messages from storage
-        removeFreshchatFailedMessage(sendMessage._id);
+        removeFreshchatFailedMessage(
+          currentConversation.conversation_id,
+          sendMessage._id
+        );
       }
 
       dispatch(freshchatSetSendingMessageId({ id: null }));
@@ -543,15 +545,6 @@ export const useFreshchatGetNewMessages = (): void => {
   }, []);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
-    if (
-      appState.current.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      // App has come to the foreground
-    } else {
-      // App has come to the background
-    }
-
     appState.current = nextAppState;
   };
 
