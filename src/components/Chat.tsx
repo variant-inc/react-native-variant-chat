@@ -9,7 +9,6 @@ import {
 import { useSelector } from 'react-redux';
 
 import {
-  useConsumerDispatch,
   useFreshchatGetMoreMessages,
   useFreshchatSendFailedMessage,
   useFreshchatSendMessage,
@@ -17,7 +16,6 @@ import {
 } from '../hooks/useFreshchat';
 import {
   selectFreshchatChannel,
-  selectFreshchatConversation,
   selectFreshchatConversationInfo,
   selectFreshchatConversationUsers,
   selectFreshchatCurrentUser,
@@ -46,17 +44,18 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const { channelName, theme, defaultAvatarUrl } = props;
 
   console.log('Variant chat for channel: ' + channelName);
-  const dispatch = useConsumerDispatch();
+  // const dispatch = useConsumerDispatch();
 
   console.log('Variant chat colors ' + JSON.stringify(theme.colors));
   const styles = localStyleSheet(theme);
 
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
-  const conversationId = conversationInfo.conversations.find((conversation) => {
-    return conversation.channel === channelName;
-  }).id;
+  const conversationId =
+    conversationInfo?.conversations.find((conversation) => {
+      return conversation.channel === channelName;
+    })?.id || '';
 
-//  const conversation = useSelector(selectFreshchatConversation);
+  //  const conversation = useSelector(selectFreshchatConversation);
   const messages = useSelector(selectFreshchatMessages(conversationId));
   const currentUser = useSelector(selectFreshchatCurrentUser);
   const currentChannel = useSelector(selectFreshchatChannel(channelName));
@@ -72,7 +71,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
 
   console.log('CHAT COMP currentUser: ' + JSON.stringify(currentUser));
-//  console.log('CHAT COMP conversation: ' + JSON.stringify(conversation));
+  //  console.log('CHAT COMP conversation: ' + JSON.stringify(conversation));
   console.log('CHAT COMP currentChannel: ' + JSON.stringify(currentChannel));
 
   useEffect(() => {
@@ -86,9 +85,9 @@ const Chat = (props: VariantChatProps): ReactElement => {
     };
   }, []);
 
-//  useEffect(() => {
-//    dispatch(freshchatSetCurrentChannelName({ channelName }));
-//  }, [channelName]);
+  //  useEffect(() => {
+  //    dispatch(freshchatSetCurrentChannelName({ channelName }));
+  //  }, [channelName]);
 
   useEffect(() => {
     const allMessages: IOpsMessage[] = [];
@@ -137,22 +136,22 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
       const newMessage = sendMessages[0].text;
 
-//      if (conversation) {
-        sendMessage(newMessage);
-//      }
+      //      if (conversation) {
+      sendMessage(newMessage);
+      //      }
     },
-    [currentUser, currentChannel/*, conversation*/]
+    [currentUser, currentChannel /*, conversation*/]
   );
 
   const handleFailedSend = useCallback(
     (sendMessages: IOpsMessage) => {
       Keyboard.dismiss();
 
-//      if (conversation) {
-        sendFailedMessage(sendMessages);
-//      }
+      //      if (conversation) {
+      sendFailedMessage(sendMessages);
+      //      }
     },
-    [currentUser, currentChannel, /*conversation*/]
+    [currentUser, currentChannel /*conversation*/]
   );
 
   const handleLoadEarlier = useCallback(() => {

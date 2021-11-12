@@ -7,13 +7,15 @@ import { VariantChatProps } from '../types/VariantChat';
 import Chat from './Chat';
 
 export const VariantChat = (props: VariantChatProps): ReactElement => {
-  const { channelName, theme, defaultAvatarUrl, NoConversationComponent } = props;
+  const { channelName, NoConversationComponent } = props;
 
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
-  console.log('CHAT COMP conversationInfo: ' + JSON.stringify(conversationInfo));
+  console.log(
+    'CHAT COMP conversationInfo: ' + JSON.stringify(conversationInfo)
+  );
 
-  const conversation = conversationInfo.conversations.find((conversation) => {
-    return conversation.channel === channelName;
+  const conversation = conversationInfo?.conversations.find((item) => {
+    return item.channel === channelName;
   });
 
   if (conversation) {
@@ -24,9 +26,11 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
     return NoConversationComponent;
   } else {
     return (
-      <View style={{alignItems: 'center', justifyContent: 'center', flexGrow: 1,}}>
+      <View
+        style={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}
+      >
         <Text>{`Conversation '${channelName}' does not exist.`}</Text>
       </View>
-    )
+    );
   }
 };
