@@ -9,7 +9,6 @@ import {
 import { useSelector } from 'react-redux';
 
 import {
-  useConsumerDispatch,
   useFreshchatGetMoreMessages,
   useFreshchatSendFailedMessage,
   useFreshchatSendMessage,
@@ -17,13 +16,12 @@ import {
 } from '../hooks/useFreshchat';
 import {
   selectFreshchatChannel,
-  selectFreshchatConversation,
+  selectFreshchatConversationInfo,
   selectFreshchatConversationUsers,
   selectFreshchatCurrentUser,
   selectFreshchatMessages,
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
-import { freshchatSetCurrentChannelName } from '../store/slices/chat/chat';
 import { reopenedMessageMark, resolvedMessageMark } from '../theme/constants';
 import Font from '../theme/fonts';
 import { FreshchatMessage } from '../types/FreshchatMessage';
@@ -44,31 +42,26 @@ import {
 const Chat = (props: VariantChatProps): ReactElement => {
   const { channelName, theme, defaultAvatarUrl } = props;
 
-  console.log('Variant chat for channel: ' + channelName);
-  const dispatch = useConsumerDispatch();
-  dispatch(freshchatSetCurrentChannelName({ channelName }));
-
-  console.log('Variant chat colors ' + JSON.stringify(theme.colors));
   const styles = localStyleSheet(theme);
+  const conversationInfo = useSelector(selectFreshchatConversationInfo);
+  const conversationId =
+    conversationInfo?.conversations.find((conversation) => {
+      return conversation.channel === channelName;
+    })?.id || '';
 
-  const conversation = useSelector(selectFreshchatConversation);
-  const messages = useSelector(selectFreshchatMessages);
+  const messages = useSelector(selectFreshchatMessages(conversationId));
   const currentUser = useSelector(selectFreshchatCurrentUser);
-  const currentChannel = useSelector(selectFreshchatChannel);
+  const currentChannel = useSelector(selectFreshchatChannel(channelName));
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
   const moreMessages = useSelector(selectFreshchatMoreMessage);
   const [isDidShowKeyboard, setIsDidShowKeyboard] = useState(false);
 
-  const sendMessage = useFreshchatSendMessage();
-  const sendFailedMessage = useFreshchatSendFailedMessage();
-  const getMoreMessages = useFreshchatGetMoreMessages();
+  const sendMessage = useFreshchatSendMessage(conversationId);
+  const sendFailedMessage = useFreshchatSendFailedMessage(channelName);
+  const getMoreMessages = useFreshchatGetMoreMessages(channelName);
   const setIsFullscreenVideo = useFreshchatSetIsFullscreenVideo();
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
-
-  console.log('CHAT COMP currentUser: ' + JSON.stringify(currentUser));
-  console.log('CHAT COMP conversation: ' + JSON.stringify(conversation));
-  console.log('CHAT COMP currentChannel: ' + JSON.stringify(currentChannel));
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
@@ -83,6 +76,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   useEffect(() => {
     const allMessages: IOpsMessage[] = [];
+
+    if (!messages.length || !conversationUsers.length) {
+      return;
+    }
 
     messages.forEach((message: FreshchatMessage) => {
       const messageUser = conversationUsers.find(
@@ -125,30 +122,23 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const handleSend = useCallback(
     (sendMessages: IMessage[] = []) => {
       Keyboard.dismiss();
-
       const newMessage = sendMessages[0].text;
-
-      if (conversation) {
-        sendMessage(newMessage);
-      }
+      sendMessage(newMessage);
     },
-    [currentUser, currentChannel, conversation]
+    [currentUser, currentChannel]
   );
 
   const handleFailedSend = useCallback(
     (sendMessages: IOpsMessage) => {
       Keyboard.dismiss();
-
-      if (conversation) {
-        sendFailedMessage(sendMessages);
-      }
+      sendFailedMessage(sendMessages);
     },
-    [currentUser, currentChannel, conversation]
+    [currentUser, currentChannel]
   );
 
   const handleLoadEarlier = useCallback(() => {
     getMoreMessages();
-  }, [conversation, moreMessages]);
+  }, [moreMessages]);
 
   const renderMessageVideo = (videoProps: MessageVideoProps<IOpsMessage>) => (
     <MessageVideo

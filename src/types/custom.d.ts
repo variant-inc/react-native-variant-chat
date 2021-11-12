@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /*eslint-disable @typescript-eslint/no-unused-vars */
 declare module 'redux-persist/integration/react';
-declare module 'react-native-platform-science';
 declare module 'react-native-video';
 declare module 'react-native-video-player';
 declare module 'react-native-video-controls';

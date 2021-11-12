@@ -3,31 +3,20 @@ import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { filterNewMessages } from '../../../lib/Freshchat/Utils';
 import { FreshchatChannel } from '../../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../../types/FreshchatConversation';
+import { FreshchatConversationInfo } from '../../../types/FreshchatConversationInfo';
 import {
   FreshchatGetMessages,
   FreshchatMessage,
-  FreshchatMessagesLink,
 } from '../../../types/FreshchatMessage';
 import { FreshchatUser } from '../../../types/FreshchatUser';
-
-export interface VariantChatState {
-  currentUser: FreshchatUser | null;
-  conversationUsers: FreshchatUser[];
-  channels: FreshchatChannel[];
-  currentChannelName: string | null;
-  currentConversation: FreshchatConversation | null;
-  messages: { [key: string]: FreshchatMessage[] }; // key is channel name
-  messagesLink: { [key: string]: FreshchatMessagesLink | null }; // for more messages; key is channel name
-  isFullscreenVideo: boolean;
-  sendingMessageId: string | number | null;
-}
+import { VariantChatState } from '../../../types/VariantChatState';
 
 export const initialVariantChatState = Object.freeze<VariantChatState>({
   currentUser: null,
   conversationUsers: [],
   channels: [],
-  currentChannelName: null,
-  currentConversation: null,
+  conversations: [],
+  conversationInfo: null,
   messages: {},
   messagesLink: {},
   isFullscreenVideo: false,
@@ -57,6 +46,16 @@ const handleIsFullscreenVideo: CaseReducer<
   };
 };
 
+const handleSetConversationInfo: CaseReducer<
+  VariantChatState,
+  PayloadAction<{ conversationInfo: FreshchatConversationInfo }>
+> = (state: VariantChatState, { payload }) => {
+  return {
+    ...state,
+    conversationInfo: payload.conversationInfo ?? null,
+  };
+};
+
 const handleSetConversationUser: CaseReducer<
   VariantChatState,
   PayloadAction<{ user: FreshchatUser }>
@@ -68,21 +67,9 @@ const handleSetConversationUser: CaseReducer<
   ) {
     return state;
   }
-
   return {
     ...state,
     conversationUsers: [payload.user, ...state.conversationUsers],
-  };
-};
-
-const handleSetCurrentChannelName: CaseReducer<
-  VariantChatState,
-  PayloadAction<{ channelName: string | null }>
-> = (state: VariantChatState, { payload }) => {
-  console.log('handleSetCurrentChannelName ' + payload.channelName);
-  return {
-    ...state,
-    currentChannelName: payload.channelName,
   };
 };
 
@@ -90,50 +77,44 @@ const handleSetChannels: CaseReducer<
   VariantChatState,
   PayloadAction<{ channels: FreshchatChannel[] }>
 > = (state: VariantChatState, { payload }) => {
-  //console.log('handleSetChannel ' + JSON.stringify(payload));
-  console.log('handleSetChannels ');
   return {
     ...state,
     channels: payload.channels,
   };
 };
 
-const handleSetConversation: CaseReducer<
+const handleAddConversation: CaseReducer<
   VariantChatState,
   PayloadAction<{ conversation: FreshchatConversation }>
 > = (state: VariantChatState, { payload }) => {
   return {
     ...state,
-    currentConversation: payload.conversation,
-    messages: {
-      [state.currentChannelName ?? '']: [
-        ...(state.messages[state.currentChannelName ?? ''] || []),
-        ...(payload.conversation.messages || []),
-      ],
-    },
+    conversations: [...state.conversations, payload.conversation],
   };
 };
 
 const handleSetMessages: CaseReducer<
   VariantChatState,
-  PayloadAction<{ message: FreshchatGetMessages }>
+  PayloadAction<{ conversationId: string; message: FreshchatGetMessages }>
 > = (state: VariantChatState, { payload }) => {
   return {
     ...state,
     messages: {
-      [state.currentChannelName ?? '']: payload.message.messages,
+      ...state.messages,
+      [payload.conversationId ?? '']: payload.message.messages,
     },
     messagesLink: {
-      [state.currentChannelName ?? '']: payload.message.link || null,
+      ...state.messagesLink,
+      [payload.conversationId ?? '']: payload.message.link || null,
     },
   };
 };
 
 const handleAddMessage: CaseReducer<
   VariantChatState,
-  PayloadAction<{ message: FreshchatMessage }>
+  PayloadAction<{ conversationId: string; message: FreshchatMessage }>
 > = (state: VariantChatState, { payload }) => {
-  const findIndex = state.messages[state.currentChannelName ?? ''].findIndex(
+  const findIndex = state.messages[payload.conversationId ?? ''].findIndex(
     (item: FreshchatMessage) => item.id === payload.message.id
   );
 
@@ -144,9 +125,9 @@ const handleAddMessage: CaseReducer<
   return {
     ...state,
     messages: {
-      [state.currentChannelName ?? '']: [
+      [payload.conversationId ?? '']: [
         payload.message,
-        ...(state.messages[state.currentChannelName ?? ''] || []),
+        ...(state.messages[payload.conversationId ?? ''] || []),
       ],
     },
   };
@@ -154,26 +135,26 @@ const handleAddMessage: CaseReducer<
 
 const handleRemoveMessage: CaseReducer<
   VariantChatState,
-  PayloadAction<{ id: string | number }>
+  PayloadAction<{ conversationId: string; id: string | number }>
 > = (state: VariantChatState, { payload }) => {
-  const filteredMessages = state.messages[
-    state.currentChannelName ?? ''
-  ].filter((item: FreshchatMessage) => item.id !== payload.id);
+  const filteredMessages = state.messages[payload.conversationId ?? ''].filter(
+    (item: FreshchatMessage) => item.id !== payload.id
+  );
 
   return {
     ...state,
     messages: {
-      [state.currentChannelName ?? '']: filteredMessages,
+      [payload.conversationId ?? '']: filteredMessages,
     },
   };
 };
 
 const handleAppendMessages: CaseReducer<
   VariantChatState,
-  PayloadAction<{ message: FreshchatGetMessages }>
+  PayloadAction<{ conversationId: string; message: FreshchatGetMessages }>
 > = (state: VariantChatState, { payload }) => {
   const newMessages = filterNewMessages(
-    state.messages[state.currentChannelName ?? ''],
+    state.messages[payload.conversationId ?? ''],
     payload.message.messages
   );
 
@@ -181,7 +162,7 @@ const handleAppendMessages: CaseReducer<
     return {
       ...state,
       messagesLink: {
-        [state.currentChannelName ?? '']: payload.message.link || null,
+        [payload.conversationId ?? '']: payload.message.link || null,
       },
     };
   }
@@ -189,23 +170,23 @@ const handleAppendMessages: CaseReducer<
   return {
     ...state,
     messages: {
-      [state.currentChannelName ?? '']: [
-        ...(state.messages[state.currentChannelName ?? ''] || []),
+      [payload.conversationId ?? '']: [
+        ...(state.messages[payload.conversationId ?? ''] || []),
         ...newMessages,
       ],
     },
     messagesLink: {
-      [state.currentChannelName ?? '']: payload.message.link || null,
+      [payload.conversationId ?? '']: payload.message.link || null,
     },
   };
 };
 
 const handleAppendNewMessages: CaseReducer<
   VariantChatState,
-  PayloadAction<{ messages: FreshchatMessage[] }>
+  PayloadAction<{ conversationId: string; messages: FreshchatMessage[] }>
 > = (state: VariantChatState, { payload }) => {
   const newMessages = filterNewMessages(
-    state.messages[state.currentChannelName ?? ''],
+    state.messages[payload.conversationId ?? ''],
     payload.messages
   );
 
@@ -215,7 +196,7 @@ const handleAppendNewMessages: CaseReducer<
 
   const allMessage = [
     ...newMessages,
-    ...(state.messages[state.currentChannelName ?? ''] || []),
+    ...(state.messages[payload.conversationId ?? ''] || []),
   ];
   allMessage.sort((a: FreshchatMessage, b: FreshchatMessage) => {
     return b.created_time.localeCompare(a.created_time);
@@ -224,7 +205,7 @@ const handleAppendNewMessages: CaseReducer<
   return {
     ...state,
     messages: {
-      [state.currentChannelName ?? '']: allMessage,
+      [payload.conversationId ?? '']: allMessage,
     },
   };
 };
@@ -245,10 +226,10 @@ const freshchatSlice = createSlice({
   reducers: {
     setCurrentUser: handleSetCurrentUser,
     setIsFullscreenVideo: handleIsFullscreenVideo,
+    setConversationInfo: handleSetConversationInfo,
     setConversationUser: handleSetConversationUser,
-    setCurrentChannelName: handleSetCurrentChannelName,
     setChannels: handleSetChannels,
-    setConversation: handleSetConversation,
+    addConversation: handleAddConversation,
     setMessages: handleSetMessages,
     appendMessages: handleAppendMessages,
     appendNewMessages: handleAppendNewMessages,
@@ -263,12 +244,12 @@ export const variantChatReducer = freshchatSlice.reducer;
 export const freshchatSetCurrentUser = freshchatSlice.actions.setCurrentUser;
 export const freshchatSetIsFullscreenVideo =
   freshchatSlice.actions.setIsFullscreenVideo;
+export const freshchatSetConversationInfo =
+  freshchatSlice.actions.setConversationInfo;
 export const freshchatSetConversationUser =
   freshchatSlice.actions.setConversationUser;
-export const freshchatSetCurrentChannelName =
-  freshchatSlice.actions.setCurrentChannelName;
 export const freshchatSetChannels = freshchatSlice.actions.setChannels;
-export const freshchatSetConversation = freshchatSlice.actions.setConversation;
+export const freshchatAddConversation = freshchatSlice.actions.addConversation;
 export const freshchatSetMessages = freshchatSlice.actions.setMessages;
 export const freshchatAppendMessages = freshchatSlice.actions.appendMessages;
 export const freshchatAppendNewMessages =

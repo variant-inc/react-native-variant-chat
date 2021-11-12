@@ -1,7 +1,7 @@
 import { useApolloClient } from '../hooks/useApolloClient';
 import {
-  doFreshchatInit,
   useFreshchatGetNewMessages,
+  useFreshchatInit,
 } from '../hooks/useFreshchat';
 import { VariantChatConfig } from '../types/VariantChat';
 import { subscribe } from './Event';
@@ -24,17 +24,6 @@ export const useVariantChat = (
   );
 
   useApolloClient(config.variantApi);
-
-  console.log(
-    'FC INIT ' + driverId + ', ' + JSON.stringify(config.chatProvider)
-  );
-
-  ////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////
-
-  //useFreshchatInit(driverId, config.chatProvider, dispatch);
-  doFreshchatInit(driverId, config.chatProvider, dispatch);
-
+  useFreshchatInit(driverId, config.chatProvider, dispatch);
   useFreshchatGetNewMessages();
 };
