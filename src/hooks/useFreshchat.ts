@@ -310,21 +310,6 @@ const getMessages = async (
   return response;
 };
 
-export const useFreshchatGetUser = (userId: string): void => {
-  //const dispatch = useAppDispatch();
-
-  const getUserInLocal = async (): Promise<void> => {
-    const response = await getFreshchatUser(userId);
-    if (response) {
-      dispatch(freshchatSetConversationUser({ user: response }));
-    }
-  };
-
-  useEffect(() => {
-    getUserInLocal();
-  }, []);
-};
-
 export const useFreshchatSendMessage = (
   conversationId: string
 ): ((message: string) => void) => {

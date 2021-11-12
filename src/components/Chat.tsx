@@ -92,6 +92,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
   useEffect(() => {
     const allMessages: IOpsMessage[] = [];
 
+    if (!messages.length || !conversationUsers.length) {
+      return;
+    }
+
     messages.forEach((message: FreshchatMessage) => {
       const messageUser = conversationUsers.find(
         (user: FreshchatUser) => user.id === message.actor_id
