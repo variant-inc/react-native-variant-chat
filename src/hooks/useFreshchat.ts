@@ -352,7 +352,7 @@ export const useFreshchatSendMessage = (
       not_sent: true,
     };
 
-    setFreshchatFailedMessage(failedMessage);
+    setFreshchatFailedMessage(conversationId, failedMessage);
     dispatch(
       freshchatAddMessage({
         conversationId: conversationId, //currentConversation.conversation_id,
