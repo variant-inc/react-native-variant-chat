@@ -1,6 +1,3 @@
-import { useEffect } from 'react';
-
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useApolloClient } from '../hooks/useApolloClient';
 import {
   useFreshchatGetNewMessages,
@@ -14,27 +11,29 @@ export const useVariantChat = (
   config: VariantChatConfig,
   dispatch: any
 ): void => {
-  useEffect(() => {
-    // Connect the callers event handlers to our events.
-    subscribe('error', ({ data }) => config.onError && config.onError(data), {
-      once: true,
-    });
+  // Connect the callers event handlers to our events.
+  subscribe('error', ({ data }) => config.onError && config.onError(data), {
+    once: true,
+  });
+  subscribe(
+    'message-received-background',
+    ({ data }) =>
+      config.onMessageReceivedBackground &&
+      config.onMessageReceivedBackground(data),
+    { once: true }
+  );
 
-    subscribe(
-      'message-received-background',
-      ({ data }) =>
-        config.onMessageReceivedBackground &&
-        config.onMessageReceivedBackground(data),
-      { once: true }
-    );
-  }, []);
+  useApolloClient(config.variantApi);
 
   console.log(
     'FC INIT ' + driverId + ', ' + JSON.stringify(config.chatProvider)
   );
 
-  useApolloClient(config.variantApi);
+  ////////////////////////////////////////////////////
 
+  ////////////////////////////////////////////////////
+
+  //useFreshchatInit(driverId, config.chatProvider, dispatch);
   useFreshchatInit(driverId, config.chatProvider, dispatch);
 
   useFreshchatGetNewMessages();

@@ -1,6 +1,7 @@
 import { FreshchatChannel } from './FreshchatChannel.type';
 import { FreshchatConversation } from './FreshchatConversation';
 import { FreshchatMessage, FreshchatMessagesLink } from './FreshchatMessage';
+import { FreshchatConversationInfo } from './FreshchatConversationInfo';
 import { FreshchatUser } from './FreshchatUser';
 
 export interface VariantChatState {
@@ -8,8 +9,9 @@ export interface VariantChatState {
   conversationUsers: FreshchatUser[];
   channels: FreshchatChannel[];
   conversations: FreshchatConversation[];
-  currentChannelName: string | null;
-  currentConversation: FreshchatConversation | null;
+  conversationInfo: FreshchatConversationInfo | null;
+//  currentChannelName: string | null;
+//  currentConversation: FreshchatConversation | null;
   messages: { [key: string]: FreshchatMessage[] }; // key is channel name
   messagesLink: { [key: string]: FreshchatMessagesLink | null }; // for more messages; key is channel name
   isFullscreenVideo: boolean;

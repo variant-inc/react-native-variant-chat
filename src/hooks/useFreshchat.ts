@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
+//import { NotificationService } from 'react-native-platform-science';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
 import { SECOND } from 'time-constants';
@@ -28,11 +29,12 @@ import { getFreshchatConversations } from '../lib/Freshchat/FreshchatConversatio
 import { filterNewMessages } from '../lib/Freshchat/Utils';
 import { AppDispatch } from '../store';
 import {
+  selectFreshchatAllMessages,
   selectFreshchatConversation,
+  selectFreshchatConversationInfo,
   selectFreshchatConversationUsers,
   selectFreshchatCurrentUser,
   selectFreshchatIsFullscreenVideo,
-  selectFreshchatMessages,
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
 import {
@@ -42,6 +44,7 @@ import {
   freshchatAppendNewMessages,
   freshchatRemoveMessage,
   freshchatSetChannels,
+  freshchatSetConversationInfo,
   freshchatSetConversationUser,
   freshchatSetCurrentUser,
   freshchatSetIsFullscreenVideo,
@@ -58,6 +61,8 @@ import {
 } from '../theme/constants';
 import { FreshchatChannel } from '../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../types/FreshchatConversation';
+import { FreshchatConversationInfoConversation } from '../types/FreshchatConversationInfo';
+import { FreshchatInit } from '../types/FreshchatInit.enum';
 import {
   ActorType,
   FreshchatGetMessages,
@@ -79,20 +84,22 @@ export const useConsumerDispatch = (): any => {
 //export const useFreshchatInit = (
 export const useFreshchatInit = (
   driverId: string,
-  configValue: ChatProviderConfig,
+  config: ChatProviderConfig,
   consumerDispatch: any
-): void => {
+): FreshchatInit => {
   //const dispatch = useAppDispatch();
   dispatch = consumerDispatch;
 
-  const init = async () => {
+  const [initialized, setInitialized] = useState(FreshchatInit.None);
+
+  const init = async (configValue: ChatProviderConfig) => {
     if (driverId) {
       // init axios
       await initFreshchat({
-        freshchatAppId: configValue.appId,
-        freshchatAppKey: configValue.appKey,
         freshchatBaseUrl: configValue.baseUrl,
         freshchatAccessToken: configValue.accessToken,
+        freshchatAppId: configValue.appId,
+        freshchatAppKey: configValue.appKey,
       });
 
       // Get channels from Freshchat.
@@ -108,6 +115,10 @@ export const useFreshchatInit = (
 
       try {
         conversationInfo = await getFreshchatConversations(driverId);
+        if (conversationInfo) {
+          await dispatch(freshchatSetConversationInfo({ conversationInfo }));
+        }
+
         console.debug(
           'Messaging service conversation info: ' +
             JSON.stringify(conversationInfo)
@@ -155,74 +166,91 @@ export const useFreshchatInit = (
         showConversationError();
         return;
       }
+      console.log('0');
 
       // For each channel get the conversations and messages.
       // Channel is specified with the conversation info.
       //for (let i = 0; i < conversationInfo.conversations.length; i++) {
       for (const conversation of conversationInfo.conversations) {
         //const conversationId = conversationInfo.conversations[i].id;
-        const conversationId = conversation.id;
 
-        getConversation(conversationId)
+        getConversation(conversation.id)
           .then((response: FreshchatConversation) => {
             return dispatch(
+              //freshchatSetConversation({
+              //  channelName: conversation.channel,
+              //  conversation: response
+              //})
               freshchatAddConversation({ conversation: response })
             );
           })
           .then(() => {
-            return getMessages(conversationId, 1);
+            return getMessages(conversation.id, 1);
           })
           .then((response: FreshchatGetMessages) => {
             dispatch(
               freshchatSetMessages({
+                conversationId: conversation.id,
                 message: response,
-                channelName: conversation.channel,
               })
             );
             checkConversationUsers(dispatch, [], response.messages);
-            return getFreshchatFailedMessages(conversationId);
+            return getFreshchatFailedMessages();
           })
           .then((failedMessages: FreshchatMessage[]) => {
             // Check and Append the failed messages
             if (failedMessages && failedMessages.length) {
               return dispatch(
-                freshchatAppendNewMessages({ messages: failedMessages })
+                freshchatAppendNewMessages({
+                  conversationId: conversation.id,
+                  messages: failedMessages,
+                })
               );
             }
             return;
           })
           .catch(() => {
+            console.log('6');
             showConversationError();
             return;
           });
       }
+
+      setInitialized(FreshchatInit.Success);
     }
 
     Tts.getInitStatus();
   };
 
   const showConversationError = () => {
+    setInitialized(FreshchatInit.Fail);
     Alert.alert(appName, accountNotSetup, [], {
       cancelable: false,
     });
   };
 
   const showServiceError = () => {
+    setInitialized(FreshchatInit.Fail);
     Alert.alert(appName, appNotAvailable, [], {
       cancelable: false,
     });
   };
 
   const showTimeoutError = () => {
+    setInitialized(FreshchatInit.Fail);
     Alert.alert(appName, networkTimeout, [], { cancelable: false });
   };
-
+  /*
   useEffect(() => {
     try {
       console.log('TRYING FC INIT');
-      init();
+      if (initialized !== FreshchatInit.Success) {
+        console.log('RUNNING FC INIT');
+        init(config);
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      setInitialized(FreshchatInit.Fail);
       if (error instanceof FreshchatCommunicationError) {
         showTimeoutError();
       } else {
@@ -231,6 +259,31 @@ export const useFreshchatInit = (
       }
     }
   }, []);
+  */
+  useEffect(() => {
+    try {
+      console.log('TRYING FC INIT');
+      if (
+        initialized !== FreshchatInit.Success &&
+        initialized !== FreshchatInit.InProgress
+      ) {
+        console.log('RUNNING FC INIT');
+        setInitialized(FreshchatInit.InProgress);
+        init(config);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setInitialized(FreshchatInit.Fail);
+      if (error instanceof FreshchatCommunicationError) {
+        showTimeoutError();
+      } else {
+        showServiceError();
+        publish('error', `Freshchat init failed: ${error.message}`);
+      }
+    }
+  }, []);
+
+  return initialized;
 };
 
 const getChannels = async (): Promise<FreshchatChannel[] | null> => {
@@ -273,13 +326,17 @@ export const useFreshchatGetUser = (userId: string): void => {
   }, []);
 };
 
-export const useFreshchatSendMessage = (): ((message: string) => void) => {
+export const useFreshchatSendMessage = (
+  conversationId: string
+): ((message: string) => void) => {
   //const dispatch = useAppDispatch();
   const currentUser = useSelector(selectFreshchatCurrentUser);
-  const currentConversation = useSelector(selectFreshchatConversation);
+  //  const currentConversation = useSelector(selectFreshchatConversation);
+  //  const currentConversation = useSelector(selectFreshchatConversation(channelName));
 
   const storeFailedMessage = (message: string) => {
-    if (!currentUser || !currentConversation) {
+    //if (!currentUser || !currentConversation) {
+    if (!currentUser || !conversationId) {
       return;
     }
 
@@ -288,7 +345,7 @@ export const useFreshchatSendMessage = (): ((message: string) => void) => {
       message_parts: [{ text: { content: message } }],
       actor_id: currentUser.id,
       id: uuidv4(),
-      conversation_id: currentConversation.conversation_id,
+      conversation_id: conversationId, //currentConversation.conversation_id,
       message_type: MessageType.Normal,
       actor_type: ActorType.User,
       created_time: new Date().toISOString(),
@@ -296,29 +353,39 @@ export const useFreshchatSendMessage = (): ((message: string) => void) => {
       not_sent: true,
     };
 
-    setFreshchatFailedMessage(
-      currentConversation.conversation_id,
-      failedMessage
+    setFreshchatFailedMessage(failedMessage);
+    dispatch(
+      freshchatAddMessage({
+        conversationId: conversationId, //currentConversation.conversation_id,
+        message: failedMessage,
+      })
     );
-    dispatch(freshchatAddMessage({ message: failedMessage }));
   };
 
   const sendMessage = useCallback(
     async (message: string): Promise<void> => {
-      if (!currentUser || !currentConversation) {
+      //if (!currentUser || !currentConversation) {
+      if (!currentUser || !conversationId) {
         return;
       }
-
+      console.log(
+        'SEND MESSAGE ' + conversationId + '  ' + JSON.stringify(message)
+      );
       try {
         const response = await setFreshchatMessage(
           currentUser.id,
-          currentConversation.conversation_id,
+          conversationId, //currentConversation.conversation_id,
           message
         );
 
         if (response) {
           // Success
-          dispatch(freshchatAddMessage({ message: response }));
+          dispatch(
+            freshchatAddMessage({
+              conversationId, //currentConversation.conversation_id,
+              message: response,
+            })
+          );
         } else {
           storeFailedMessage(message);
         }
@@ -327,18 +394,20 @@ export const useFreshchatSendMessage = (): ((message: string) => void) => {
         storeFailedMessage(message);
       }
     },
-    [currentUser, currentConversation, dispatch]
+    [currentUser, /*currentConversation,*/ conversationId, dispatch]
   );
 
   return sendMessage;
 };
 
-export const useFreshchatSendFailedMessage = (): ((
-  message: IOpsMessage
-) => void) => {
+export const useFreshchatSendFailedMessage = (
+  channelName: string
+): ((message: IOpsMessage) => void) => {
   //const dispatch = useAppDispatch();
   const currentUser = useSelector(selectFreshchatCurrentUser);
-  const currentConversation = useSelector(selectFreshchatConversation);
+  const currentConversation = useSelector(
+    selectFreshchatConversation(channelName)
+  );
   const isSending = useRef(false);
 
   const sendFailedMessage = useCallback(
@@ -376,15 +445,22 @@ export const useFreshchatSendFailedMessage = (): ((
         // Success
 
         // remove the failed message
-        dispatch(freshchatRemoveMessage({ id: sendMessage._id }));
+        dispatch(
+          freshchatRemoveMessage({
+            conversationId: currentConversation.conversation_id,
+            id: sendMessage._id,
+          })
+        );
 
-        dispatch(freshchatAddMessage({ message: response }));
+        dispatch(
+          freshchatAddMessage({
+            conversationId: currentConversation.conversation_id,
+            message: response,
+          })
+        );
 
         // Remove the failed messages from storage
-        removeFreshchatFailedMessage(
-          currentConversation.conversation_id,
-          sendMessage._id
-        );
+        removeFreshchatFailedMessage(sendMessage._id);
       }
 
       dispatch(freshchatSetSendingMessageId({ id: null }));
@@ -397,11 +473,15 @@ export const useFreshchatSendFailedMessage = (): ((
   return sendFailedMessage;
 };
 
-export const useFreshchatGetMoreMessages = (): (() => void) => {
+export const useFreshchatGetMoreMessages = (
+  channelName: string
+): (() => void) => {
   //const dispatch = useAppDispatch();
-  const currentConversation = useSelector(selectFreshchatConversation);
+  const currentConversation = useSelector(
+    selectFreshchatConversation(channelName)
+  );
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
-  const moreMessages = useSelector(selectFreshchatMoreMessage);
+  const moreMessages = useSelector(selectFreshchatMoreMessage(channelName));
   const isFetching = useRef(false);
 
   const getMoreMessages = useCallback(async (): Promise<void> => {
@@ -413,7 +493,12 @@ export const useFreshchatGetMoreMessages = (): (() => void) => {
       isFetching.current = false;
 
       if (response) {
-        dispatch(freshchatAppendMessages({ message: response }));
+        dispatch(
+          freshchatAppendMessages({
+            conversationId: currentConversation.conversation_id,
+            message: response,
+          })
+        );
 
         checkConversationUsers(dispatch, conversationUsers, response.messages);
       }
@@ -425,9 +510,25 @@ export const useFreshchatGetMoreMessages = (): (() => void) => {
 
 export const useFreshchatGetNewMessages = (): void => {
   //const dispatch = useAppDispatch();
-  const currentConversation = useSelector(selectFreshchatConversation);
+  //const currentConversation = useSelector(selectFreshchatConversation);
+  const conversationInfo = useSelector(selectFreshchatConversationInfo);
+  console.log('USE GET NEW MESSAGES ' + JSON.stringify(conversationInfo));
+
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
-  const allMessages = useSelector(selectFreshchatMessages);
+  //  const allMessages = useSelector(selectFreshchatMessages(channelName));
+  let allMessages: { [key: string]: FreshchatMessage[] } = {};
+  console.log('GETTING ALL MESSAGES AT BACKGROUND');
+
+  allMessages = useSelector(selectFreshchatAllMessages);
+  console.log('ALL MESSAGES ' + JSON.stringify(allMessages));
+
+  //  for (let i = 0; i < conversationInfo?.conversations.length; i++) {
+  //    allMessages[conversationInfo.conversations[i].id] = useSelector(selectFreshchatMessages(conversationInfo.conversations[i].id));
+  //for (const conversation of conversationInfo?.conversations) {
+  //  allMessages[conversation.id] = useSelector(selectFreshchatMessages(conversation.id));
+  //  }
+  console.log('DONE GETTING ALL MESSAGES AT BACKGROUND');
+
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
 
   const appState = useRef(AppState.currentState);
@@ -442,52 +543,101 @@ export const useFreshchatGetNewMessages = (): void => {
   }, []);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      // App has come to the foreground
+    } else {
+      // App has come to the background
+    }
+
     appState.current = nextAppState;
   };
 
   const getNewMessages = async (): Promise<void> => {
-    console.log('GET NEW MESSAGES');
-    if (currentConversation) {
-      const response = await getFreshchatMessages(
-        currentConversation.conversation_id,
-        1,
-        realtimeMessagePerPage
+    console.log('START GET NEW MESSAGES ' + JSON.stringify(conversationInfo));
+    if (!conversationInfo) {
+      return;
+    }
+    for (const conversation of conversationInfo.conversations) {
+      console.log('GET NEW MESSAGES ' + conversation.channel);
+      getNewMessagesForConversation(conversation);
+    }
+  };
+
+  const getNewMessagesForConversation = async (
+    conversation: FreshchatConversationInfoConversation
+  ): Promise<void> => {
+    console.log('FETCHING MESSAGES');
+    // Get our currently stored messages.
+    //    const allMessages = useSelector(selectFreshchatMessages(conversation.channel));
+    //    console.log('!!!!!!!!!!!!!!!!!');
+
+    const response = await getFreshchatMessages(
+      conversation.id,
+      1,
+      realtimeMessagePerPage
+    );
+    if (response && allMessages && allMessages[conversation.id]) {
+      console.log(
+        'FILTER MESSAGES ' + JSON.stringify(allMessages[conversation.id])
       );
-      if (response) {
-        const newMessages = filterNewMessages(allMessages, response.messages);
-        if (newMessages.length === 0) {
+      const newMessages = filterNewMessages(
+        allMessages[conversation.id],
+        response.messages
+      );
+      if (newMessages.length === 0) {
+        console.log('NO NEW MESSAGES');
+        return;
+      }
+      console.log('NEW MESSAGES ' + JSON.stringify(newMessages));
+
+      dispatch(
+        freshchatAppendNewMessages({
+          conversationId: conversation.id,
+          messages: newMessages,
+        })
+      );
+      checkConversationUsers(dispatch, conversationUsers, response.messages);
+
+      if (appState.current === 'background' && !isFullscreenVideo) {
+        if (lastBackgroundMessage.current === newMessages[0].id) {
           return;
         }
 
-        dispatch(freshchatAppendNewMessages({ messages: newMessages }));
-        checkConversationUsers(dispatch, conversationUsers, response.messages);
+        lastBackgroundMessage.current = newMessages[0]?.id;
 
-        if (appState.current === 'background' && !isFullscreenVideo) {
-          if (lastBackgroundMessage.current === newMessages[0].id) {
-            return;
-          }
+        let newMessage = newMessages[0]?.message_parts[0]?.text?.content || '';
 
-          lastBackgroundMessage.current = newMessages[0]?.id;
+        if (newMessage.includes(urgentMessageMark)) {
+          // urgent message
+          Tts.stop();
+          newMessage = newMessage
+            .replace(urgentMessageMark, '')
+            .replace('&nbsp;', '');
+          Tts.speak(newMessage);
+        }
 
-          let newMessage =
-            newMessages[0]?.message_parts[0]?.text?.content || '';
-
-          if (newMessage.includes(urgentMessageMark)) {
-            // urgent message
-            Tts.stop();
-            newMessage = newMessage
-              .replace(urgentMessageMark, '')
-              .replace('&nbsp;', '');
-            Tts.speak(newMessage);
-          }
-
-          if (
-            !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
-            !reopenedMessageMark.some((s) => newMessage.includes(s))
-          ) {
-            publish('message-received-background', newMessage);
-            console.log('MSG EVENT');
-          }
+        if (
+          !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
+          !reopenedMessageMark.some((s) => newMessage.includes(s))
+        ) {
+          publish('message-received-background', newMessage);
+          console.log('MSG EVENT');
+          /*
+          const now = new Date();
+          const dateTime = `${now.getFullYear()}-${
+            now.getMonth() + 1
+          }-${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
+          */
+          /*
+          NotificationService.addNotification(
+            `${bundleId}-${dateTime}`,
+            appName,
+            newMessage
+          );
+          */
         }
       }
     }
@@ -527,7 +677,8 @@ export const useFreshchatGetNewMessages = (): void => {
       console.log('BGRD STOP');
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [currentConversation, conversationUsers, allMessages, isFullscreenVideo]);
+    //}, [currentConversation, conversationUsers, allMessages, isFullscreenVideo]);
+  }, [conversationInfo, conversationUsers, allMessages, isFullscreenVideo]);
 };
 
 const checkConversationUsers = (

@@ -1,4 +1,4 @@
-import { VariantChatState } from 'types/VariantChatState';
+import { VariantChatState } from '../types/VariantChatState';
 
 import { initialVariantChatState } from './slices/chat/chat';
 

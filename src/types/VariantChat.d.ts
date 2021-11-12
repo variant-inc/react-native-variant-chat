@@ -1,8 +1,8 @@
 export interface ChatProviderConfig {
-  appId: string;
-  appKey: string;
   baseUrl: string;
   accessToken: string;
+  appId: string;
+  appKey: string;
   channelNames: [string];
 }
 
@@ -22,4 +22,5 @@ export interface VariantChatProps {
   channelName: string;
   theme: ReactNativePaper.Theme;
   defaultAvatarUrl: string;
+  NoConversationComponent: JSX.Element;
 }

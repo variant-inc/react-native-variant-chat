@@ -1,14 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { StoreState } from 'store/initialStoreState';
-import { VariantChatState } from 'types/VariantChatState';
 
+import { StoreState } from '../../store/initialStoreState';
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
+import { FreshchatConversationInfo } from '../../types/FreshchatConversationInfo';
 import {
   FreshchatMessage,
   FreshchatMessagesLink,
 } from '../../types/FreshchatMessage';
 import { FreshchatUser } from '../../types/FreshchatUser';
+import { VariantChatState } from '../../types/VariantChatState';
 
 //import { StoreState } from '../initialStoreState';
 
@@ -32,43 +33,60 @@ export const selectFreshchatConversationUsers = createSelector<
   return freshchatState?.conversationUsers;
 });
 
-export const selectFreshchatChannel = createSelector<
-  StoreState,
-  VariantChatState,
-  FreshchatChannel | null
->(selectFreshchatState, (freshchatState) => {
-  const currentChannel = freshchatState?.channels.find(
-    (channel) => channel.name === freshchatState.currentChannelName
+export const selectFreshchatChannel = (channelName: string) =>
+  createSelector<StoreState, VariantChatState, FreshchatChannel | null>(
+    selectFreshchatState,
+    (freshchatState) => {
+      const channel = freshchatState?.channels.find(
+        (c) => c.name === channelName
+      );
+      return channel ?? null;
+    }
   );
 
-  return currentChannel ?? null;
-});
-
-export const selectFreshchatConversation = createSelector<
-  StoreState,
-  VariantChatState,
-  FreshchatConversation | null
->(selectFreshchatState, (freshchatState) => {
-  return freshchatState?.currentConversation;
-});
-
-export const selectFreshchatMessages = createSelector<
-  StoreState,
-  VariantChatState,
-  FreshchatMessage[]
->(selectFreshchatState, (freshchatState) => {
-  return (
-    freshchatState?.messages[freshchatState.currentChannelName ?? ''] || []
+export const selectFreshchatConversation = (conversationId: string) =>
+  createSelector<StoreState, VariantChatState, FreshchatConversation | null>(
+    selectFreshchatState,
+    (freshchatState) => {
+      const conversation = freshchatState.conversations.find((c) => {
+        return c.conversation_id === conversationId;
+      });
+      return conversation || null;
+    }
   );
-});
 
-export const selectFreshchatMoreMessage = createSelector<
+export const selectFreshchatConversationInfo = createSelector<
   StoreState,
   VariantChatState,
-  FreshchatMessagesLink | null
+  FreshchatConversationInfo | null
 >(selectFreshchatState, (freshchatState) => {
-  return freshchatState?.messagesLink[freshchatState.currentChannelName ?? ''];
+  return freshchatState?.conversationInfo;
 });
+
+export const selectFreshchatMessages = (conversationId: string) =>
+  createSelector<StoreState, VariantChatState, FreshchatMessage[]>(
+    selectFreshchatState,
+    (freshchatState) => {
+      return freshchatState?.messages[conversationId ?? ''] || [];
+    }
+  );
+
+export const selectFreshchatAllMessages = createSelector<
+  StoreState,
+  VariantChatState,
+  //FreshchatMessage[]
+  any
+>(selectFreshchatState, (freshchatState) => {
+  return freshchatState?.messages;
+});
+
+export const selectFreshchatMoreMessage = (conversationId: string) =>
+  createSelector<StoreState, VariantChatState, FreshchatMessagesLink | null>(
+    selectFreshchatState,
+    (freshchatState) => {
+      return freshchatState?.messagesLink[conversationId ?? ''];
+    }
+  );
 
 export const selectFreshchatIsFullscreenVideo = createSelector<
   StoreState,
