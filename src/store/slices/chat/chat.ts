@@ -1,11 +1,15 @@
 import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { filterNewMessages } from 'lib/Freshchat/Utils';
-import { FreshchatChannel } from 'types/FreshchatChannel.type';
-import { FreshchatConversation } from 'types/FreshchatConversation';
-import { FreshchatConversationInfo } from 'types/FreshchatConversationInfo';
-import { FreshchatGetMessages, FreshchatMessage } from 'types/FreshchatMessage';
-import { FreshchatUser } from 'types/FreshchatUser';
-import { VariantChatState } from 'types/VariantChatState';
+
+import { filterNewMessages } from '../../../lib/Freshchat/Utils';
+import { FreshchatChannel } from '../../../types/FreshchatChannel.type';
+import { FreshchatConversation } from '../../../types/FreshchatConversation';
+import { FreshchatConversationInfo } from '../../../types/FreshchatConversationInfo';
+import {
+  FreshchatGetMessages,
+  FreshchatMessage,
+} from '../../../types/FreshchatMessage';
+import { FreshchatUser } from '../../../types/FreshchatUser';
+import { VariantChatState } from '../../../types/VariantChatState';
 
 export const initialVariantChatState = Object.freeze<VariantChatState>({
   currentUser: null,
