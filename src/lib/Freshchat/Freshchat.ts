@@ -13,8 +13,6 @@ import { FreshchatUser } from '../../types/FreshchatUser';
 import { publish } from '../Event';
 import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
 
-const FRESHCHAT_USER_ID = '@ps-freshchat-user-id';
-const FRESHCHAT_CONVERSATION_ID = '@ps-freshchat-conversation-id';
 const FRESHCHAT_FAILED_MESSAGES = '@ps-freshchat-failed-messages';
 const MESSAGES_PER_PAGE = 50;
 const AXIOS_REQUEST_TIMEOUT = 15;
@@ -167,77 +165,6 @@ export async function getFreshchatMoreMessages(
   }
 }
 
-export const setFreshchatUserId = async (
-  driverId: string,
-  userId: string
-): Promise<void> => {
-  try {
-    await AsyncStorage.setItem(`${FRESHCHAT_USER_ID}-${driverId}`, userId);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    publish('error', `Could not get freshchat user id: ${error.message}`);
-  }
-};
-
-export const getFreshchatUserId = async (
-  driverId: string
-): Promise<string | null> => {
-  try {
-    const userId = await AsyncStorage.getItem(
-      `${FRESHCHAT_USER_ID}-${driverId}`
-    );
-    return userId;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    publish('error', `Could not get freshchat user: ${error.message}`);
-    return null;
-  }
-};
-
-export const clearFreshchatUserId = (driverId: string): void => {
-  AsyncStorage.removeItem(`${FRESHCHAT_USER_ID}-${driverId}`);
-};
-
-export const setFreshchatConversationId = async (
-  driverId: string,
-  conversationId: string
-): Promise<void> => {
-  try {
-    await AsyncStorage.setItem(
-      `${FRESHCHAT_CONVERSATION_ID}-${driverId}`,
-      conversationId
-    );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    publish(
-      'error',
-      `Could not save freshchat conversation id: ${error.message}`
-    );
-  }
-};
-
-export const getFreshchatConversationId = async (
-  driverId: string
-): Promise<string | null> => {
-  try {
-    const conversationId = await AsyncStorage.getItem(
-      `${FRESHCHAT_CONVERSATION_ID}-${driverId}`
-    );
-    return conversationId;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    publish(
-      'error',
-      `Could not get freshchat conversation id: ${error.message}`
-    );
-    return null;
-  }
-};
-
-export const clearFreshchatConversationId = (driverId: string): void => {
-  AsyncStorage.removeItem(`${FRESHCHAT_CONVERSATION_ID}-${driverId}`);
-};
-
 export const setFreshchatFailedMessage = async (
   conversationId: string,
   failedMessage: FreshchatMessage
@@ -305,8 +232,4 @@ export const removeFreshchatFailedMessage = async (
       `Could not save freshchat failed message: ${error.message}`
     );
   }
-};
-
-export const clearFreshchatFailedMessages = (): void => {
-  AsyncStorage.removeItem(FRESHCHAT_FAILED_MESSAGES);
 };
