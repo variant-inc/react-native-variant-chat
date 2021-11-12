@@ -10,10 +10,8 @@ export interface VariantChatState {
   channels: FreshchatChannel[];
   conversations: FreshchatConversation[];
   conversationInfo: FreshchatConversationInfo | null;
-  //  currentChannelName: string | null;
-  //  currentConversation: FreshchatConversation | null;
-  messages: { [key: string]: FreshchatMessage[] }; // key is channel name
-  messagesLink: { [key: string]: FreshchatMessagesLink | null }; // for more messages; key is channel name
+  messages: { [key: string]: FreshchatMessage[] }; // key is conversation id
+  messagesLink: { [key: string]: FreshchatMessagesLink | null }; // for more messages; key is conversation id
   isFullscreenVideo: boolean;
   sendingMessageId: string | number | null;
 }

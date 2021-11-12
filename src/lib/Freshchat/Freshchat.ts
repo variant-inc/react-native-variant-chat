@@ -51,8 +51,6 @@ export async function getFreshchatUser(userId: string): Promise<FreshchatUser> {
       `Could not get freshchat user: ${error.message}`
     );
   }
-
-  // return null;
 }
 
 export async function getFreshchatAgent(
@@ -70,8 +68,6 @@ export async function getFreshchatAgent(
       `Could not get freshchat agent: ${error.message}`
     );
   }
-
-  // return null;
 }
 
 export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
@@ -87,7 +83,6 @@ export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
       `Could not get freshchat channels: ${error.message}`
     );
   }
-  return [];
 }
 
 export async function getFreshchatConversation(
@@ -105,8 +100,6 @@ export async function getFreshchatConversation(
       `Could not get freshchat conversation: ${error.message}`
     );
   }
-
-  // return null;
 }
 
 export async function setFreshchatMessage(
@@ -134,8 +127,6 @@ export async function setFreshchatMessage(
       `Could not set freshchat message: ${error.message}`
     );
   }
-
-  // return null;
 }
 
 export async function getFreshchatMessages(
@@ -157,8 +148,6 @@ export async function getFreshchatMessages(
       `Could not get freshchat messages: ${error.message}`
     );
   }
-
-  // return null;
 }
 
 export async function getFreshchatMoreMessages(
@@ -176,8 +165,6 @@ export async function getFreshchatMoreMessages(
       `Could not get more freshchat conversation: ${error.message}`
     );
   }
-
-  // return null;
 }
 
 export const setFreshchatUserId = async (

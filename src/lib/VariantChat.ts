@@ -24,17 +24,6 @@ export const useVariantChat = (
   );
 
   useApolloClient(config.variantApi);
-
-  console.log(
-    'FC INIT ' + driverId + ', ' + JSON.stringify(config.chatProvider)
-  );
-
-  ////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////
-
-  //useFreshchatInit(driverId, config.chatProvider, dispatch);
   useFreshchatInit(driverId, config.chatProvider, dispatch);
-
   useFreshchatGetNewMessages();
 };

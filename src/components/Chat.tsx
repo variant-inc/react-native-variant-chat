@@ -22,7 +22,6 @@ import {
   selectFreshchatMessages,
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
-//import { freshchatSetCurrentChannelName } from '../store/slices/chat/chat';
 import { reopenedMessageMark, resolvedMessageMark } from '../theme/constants';
 import Font from '../theme/fonts';
 import { FreshchatMessage } from '../types/FreshchatMessage';
@@ -43,19 +42,13 @@ import {
 const Chat = (props: VariantChatProps): ReactElement => {
   const { channelName, theme, defaultAvatarUrl } = props;
 
-  console.log('Variant chat for channel: ' + channelName);
-  // const dispatch = useConsumerDispatch();
-
-  console.log('Variant chat colors ' + JSON.stringify(theme.colors));
   const styles = localStyleSheet(theme);
-
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversationId =
     conversationInfo?.conversations.find((conversation) => {
       return conversation.channel === channelName;
     })?.id || '';
 
-  //  const conversation = useSelector(selectFreshchatConversation);
   const messages = useSelector(selectFreshchatMessages(conversationId));
   const currentUser = useSelector(selectFreshchatCurrentUser);
   const currentChannel = useSelector(selectFreshchatChannel(channelName));
@@ -70,10 +63,6 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
 
-  console.log('CHAT COMP currentUser: ' + JSON.stringify(currentUser));
-  //  console.log('CHAT COMP conversation: ' + JSON.stringify(conversation));
-  console.log('CHAT COMP currentChannel: ' + JSON.stringify(currentChannel));
-
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
     Keyboard.addListener('keyboardDidHide', handleDidHideKeyboard);
@@ -84,10 +73,6 @@ const Chat = (props: VariantChatProps): ReactElement => {
       Keyboard.removeListener('keyboardDidHide', handleDidHideKeyboard);
     };
   }, []);
-
-  //  useEffect(() => {
-  //    dispatch(freshchatSetCurrentChannelName({ channelName }));
-  //  }, [channelName]);
 
   useEffect(() => {
     const allMessages: IOpsMessage[] = [];
@@ -137,30 +122,23 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const handleSend = useCallback(
     (sendMessages: IMessage[] = []) => {
       Keyboard.dismiss();
-
       const newMessage = sendMessages[0].text;
-
-      //      if (conversation) {
       sendMessage(newMessage);
-      //      }
     },
-    [currentUser, currentChannel /*, conversation*/]
+    [currentUser, currentChannel]
   );
 
   const handleFailedSend = useCallback(
     (sendMessages: IOpsMessage) => {
       Keyboard.dismiss();
-
-      //      if (conversation) {
       sendFailedMessage(sendMessages);
-      //      }
     },
-    [currentUser, currentChannel /*conversation*/]
+    [currentUser, currentChannel]
   );
 
   const handleLoadEarlier = useCallback(() => {
     getMoreMessages();
-  }, [/*conversation,*/ moreMessages]);
+  }, [moreMessages]);
 
   const renderMessageVideo = (videoProps: MessageVideoProps<IOpsMessage>) => (
     <MessageVideo

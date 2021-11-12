@@ -11,8 +11,6 @@ import {
 import { FreshchatUser } from '../../types/FreshchatUser';
 import { VariantChatState } from '../../types/VariantChatState';
 
-//import { StoreState } from '../initialStoreState';
-
 export const selectFreshchatState = (state: StoreState): VariantChatState => {
   return state.chat;
 };
@@ -74,8 +72,7 @@ export const selectFreshchatMessages = (conversationId: string) =>
 export const selectFreshchatAllMessages = createSelector<
   StoreState,
   VariantChatState,
-  //FreshchatMessage[]
-  any
+  { [key: string]: FreshchatMessage[] }
 >(selectFreshchatState, (freshchatState) => {
   return freshchatState?.messages;
 });
