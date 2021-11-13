@@ -2,12 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
+import { EventRegister } from 'react-native-event-listeners';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
 import { SECOND } from 'time-constants';
 import { v4 as uuidv4 } from 'uuid';
 
-import { publish } from '../lib/Event';
 import { FreshchatCommunicationError } from '../lib/Exception';
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
@@ -226,7 +226,7 @@ export const useFreshchatInit = (
         showTimeoutError();
       } else {
         showServiceError();
-        publish('error', `Freshchat init failed: ${error.message}`);
+        EventRegister.emit('error', `Freshchat init failed: ${error.message}`);
       }
     }
   }, []);
@@ -510,7 +510,7 @@ export const useFreshchatGetNewMessages = (): void => {
           !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
           !reopenedMessageMark.some((s) => newMessage.includes(s))
         ) {
-          publish('message-received-background', newMessage);
+          EventRegister.emit('messageReceivedInBackground', newMessage);
         }
       }
     }
@@ -524,7 +524,10 @@ export const useFreshchatGetNewMessages = (): void => {
           getNewMessages();
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-          publish('error', `Background message fetch failed: ${error.message}`);
+          EventRegister.emit(
+            'error',
+            `Background message fetch failed: ${error.message}`
+          );
         }
       }, NEW_MESSAGES_POLL_INTERVAL);
 
@@ -539,7 +542,10 @@ export const useFreshchatGetNewMessages = (): void => {
         getNewMessages();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        publish('error', `Background message fetch failed: ${error.message}`);
+        EventRegister.emit(
+          'error',
+          `Background message fetch failed: ${error.message}`
+        );
       }
     }, NEW_MESSAGES_POLL_INTERVAL);
 

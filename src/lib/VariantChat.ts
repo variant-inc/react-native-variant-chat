@@ -4,13 +4,14 @@ import {
   useFreshchatInit,
 } from '../hooks/useFreshchat';
 import { VariantChatConfig } from '../types/VariantChat';
-import { subscribe } from './Event';
+//import { subscribe } from './Event';
 
 export const useVariantChat = (
   driverId: string,
   config: VariantChatConfig,
   dispatch: any
 ): void => {
+  /*
   // Connect the callers event handlers to our events.
   subscribe('error', ({ data }) => config.onError && config.onError(data), {
     once: true,
@@ -22,7 +23,7 @@ export const useVariantChat = (
       config.onMessageReceivedBackground(data),
     { once: true }
   );
-
+*/
   useApolloClient(config.variantApi);
   useFreshchatInit(driverId, config.chatProvider, dispatch);
   useFreshchatGetNewMessages();
