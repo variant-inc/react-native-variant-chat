@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosInstance } from 'axios';
+import { EventRegister } from 'react-native-event-listeners';
 import { SECOND } from 'time-constants';
 
 import { FreshchatConfig } from '../../types/Freshchat';
@@ -10,7 +11,6 @@ import {
   FreshchatMessage,
 } from '../../types/FreshchatMessage';
 import { FreshchatUser } from '../../types/FreshchatUser';
-import { publish } from '../Event';
 import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
 
 const FRESHCHAT_FAILED_MESSAGES = '@ps-freshchat-failed-messages';
@@ -181,7 +181,7 @@ export const setFreshchatFailedMessage = async (
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    publish(
+    EventRegister.emit(
       'error',
       `Could not save freshchat failed message: ${error.message}`
     );
@@ -201,7 +201,7 @@ export const getFreshchatFailedMessages = async (
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    publish(
+    EventRegister.emit(
       'error',
       `Could not get freshchat failed message: ${error.message}`
     );
@@ -227,7 +227,7 @@ export const removeFreshchatFailedMessage = async (
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    publish(
+    EventRegister.emit(
       'error',
       `Could not save freshchat failed message: ${error.message}`
     );
