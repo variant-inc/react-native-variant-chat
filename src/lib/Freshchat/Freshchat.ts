@@ -89,24 +89,6 @@ export const tryGetNewMessagesOnPushNotificationEvent = (
   );
 };
 
-/*
-export const handlePushNotification = async (
-  notification: FirebaseMessagingTypes.RemoteMessage
-): Promise<boolean> => {
-  return Freshchat.isFreshchatNotification(
-    notification,
-    (n: FirebaseMessagingTypes.RemoteMessage) => {
-      if (n) {
-        // Handle the freshchat notification... retrieve new messages....
-        console.log('PUSH NOTIFICATION MESSAGE: ${n}');
-        return true;
-      }
-      // Notification not handled here.
-      return false;
-    }
-  );
-};
-*/
 export async function getFreshchatUser(userId: string): Promise<FreshchatUser> {
   try {
     const response = await instance.get(`/v2/users/${userId}`);
