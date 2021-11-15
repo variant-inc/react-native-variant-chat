@@ -91,15 +91,6 @@ export const useFreshchatInit = (
 
   const init = async (providerConfig: ChatProviderConfig) => {
     if (driverId) {
-      await initFreshchat(driverId, providerConfig);
-
-      // Get channels from Freshchat.
-      const channels = await getChannels();
-
-      if (channels) {
-        await dispatch(freshchatSetChannels({ channels }));
-      }
-
       // Get conversation id's from the messaging api.
       let conversationInfo = null;
 
@@ -114,6 +105,8 @@ export const useFreshchatInit = (
           return;
         }
 
+        console.log('CONVERSATION INFO ' + JSON.stringify(conversationInfo));
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         // ENOTFOUND indicates the messaging service could not find the specified driver id.
@@ -123,6 +116,15 @@ export const useFreshchatInit = (
           showServiceError();
         }
         throw error;
+      }
+
+      await initFreshchat(driverId, conversationInfo.userId, providerConfig);
+
+      // Get channels from Freshchat.
+      const channels = await getChannels();
+
+      if (channels) {
+        await dispatch(freshchatSetChannels({ channels }));
       }
 
       // Getting user, conversation, and messages must be done synchonously.

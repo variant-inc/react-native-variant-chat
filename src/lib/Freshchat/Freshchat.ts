@@ -28,6 +28,7 @@ let instance: AxiosInstance;
 
 export async function initFreshchat(
   driverId: string,
+  freshchatUserId: string,
   config: ChatProviderConfig
 ): Promise<void> {
   if (!config) {
@@ -44,29 +45,38 @@ export async function initFreshchat(
   });
 
   // Freshchat SDK provides push notification functionality.
-  initFreshchatSDK(driverId, config);
+  initFreshchatSDK(driverId, freshchatUserId, config);
 }
 
 const initFreshchatSDK = async (
   driverId: string,
+  freshchatUserId: string,
   config: ChatProviderConfig
 ): Promise<void> => {
   const freshchatSDKConfig = new FreshchatSDKConfig(
     config.appId,
     config.appKey
   );
+  const freshchatUser = await getFreshchatUser(freshchatUserId);
+  console.log('FRESHCHAT USER ' + JSON.stringify(freshchatUser));
+
   Freshchat.init(freshchatSDKConfig);
-  Freshchat.identifyUser(driverId, null, (error: string) => {
-    EventRegister.emit(
-      'error',
-      `Freshchat user identification failed: ${error}`
-    );
-  });
+  Freshchat.identifyUser(
+    driverId,
+    freshchatUser.restore_id,
+    (error: string) => {
+      EventRegister.emit(
+        'error',
+        `Freshchat user identification failed: ${error}`
+      );
+    }
+  );
 };
 
 export const registerPushNotificationToken = async (
   token: string
 ): Promise<void> => {
+  console.log('SET PUSH NOTIFICATION TOKEN ' + token);
   Freshchat.setPushRegistrationToken(token);
 };
 
