@@ -6,6 +6,7 @@ declare module 'react-native-video-player';
 declare module 'react-native-video-controls';
 declare module 'react-native-background-timer';
 declare module 'react-native-lightbox';
+declare module 'react-native-freshchat-sdk';
 declare module '*.png';
 declare module '*.svg' {
   const content: string;

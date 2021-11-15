@@ -24,5 +24,3 @@ export interface VariantChatProps {
   defaultAvatarUrl: string;
   NoConversationComponent: JSX.Element;
 }
-
-declare module 'react-native-freshchat-sdk';
