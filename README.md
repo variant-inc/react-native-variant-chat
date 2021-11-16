@@ -7,11 +7,18 @@ A React Native chat component for Variant apps. This component wraps a selected 
 ```sh
 npm install react-native-variant-chat
 ```
+Add the following dependencies.
+- TODO: remove this requirement
+
+```sh
+npm install react-native-background-timer
+npm install react-native-tts
+```
 
 ## Integration
 
 Several steps are required to integrate this component.
-1. Place the VarianChat component into a view
+1. Place the `<VariantChat>` component into a view
 1. Make a call to initialize the component library
 1. Add the components reducers and selectors to your Redux store
 1. Add event handlers and provide UI responses
