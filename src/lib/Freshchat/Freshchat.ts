@@ -65,10 +65,10 @@ const initFreshchatSDK = async (
     driverId,
     freshchatUser.restore_id,
     (error: string) => {
-      EventRegister.emit(
-        'error',
-        `Freshchat user identification failed: ${error}`
-      );
+      EventRegister.emit('error', {
+        type: 'internal',
+        message: `Freshchat user identification failed: ${error}`,
+      });
     }
   );
 };
@@ -244,10 +244,10 @@ export const setFreshchatFailedMessage = async (
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit(
-      'error',
-      `Could not save failed message: ${error.message}`
-    );
+    EventRegister.emit('error', {
+      type: 'internal',
+      message: `Could not save failed message: ${error.message}`,
+    });
   }
 };
 
@@ -264,10 +264,10 @@ export const getFreshchatFailedMessages = async (
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit(
-      'error',
-      `Could not get failed message: ${error.message}`
-    );
+    EventRegister.emit('error', {
+      type: 'internal',
+      message: `Could not get failed message: ${error.message}`,
+    });
   }
   return [];
 };
@@ -290,9 +290,9 @@ export const removeFreshchatFailedMessage = async (
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit(
-      'error',
-      `Could not save failed message: ${error.message}`
-    );
+    EventRegister.emit('error', {
+      type: 'internal',
+      message: `Could not save failed message: ${error.message}`,
+    });
   }
 };

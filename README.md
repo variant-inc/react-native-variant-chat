@@ -28,22 +28,22 @@ Several steps are required to integrate this component.
 ### Basic Usage
 
 ```javascript
-import {VariantChat} from "react-native-variant-chat";
+import {VariantChat, VariantChatEventType} from "react-native-variant-chat";
 
 export const ChatModal: React.FC = () => {
 
   useEffect(() => {
     const errorListener = VariantChatEvent.addEventListener(
       'error',
-      (error: string) => {
-        console.log(error);
+      (event: VariantChatEventType) => {
+        console.log(`${event.type} ${event.message}`);
       },
     );
 
     const messageReceivedListener = VariantChatEvent.addEventListener(
-      'messageReceivedInBackground',
-      (message: string) => {
-        console.log(message);
+      'messageReceived',
+      (event: VariantChatEventType) => {
+        console.log(`${event.type} ${event.message}`);
       },
     );
 
@@ -174,24 +174,34 @@ export const rootReducer = combineReducers({
 ### Events
 
 ```javascript
-import { VariantChatEvent } from 'react-native-variant-chat';
+import { VariantChatEvent, VariantChatEventType } from 'react-native-variant-chat';
 
 // Add a listner to handle the desired event.
-const errorListener = VariantChatEvent.addEventListener(
+const internalErrorListener = VariantChatEvent.addEventListener(
   'error',
-  (message: string) => {
-    console.log('ERROR: ' + message);
+  (event: VariantChatEventType) => {
+    console.log(`${event.type} ${event.message}`);
   },
 );
 
 // Be sure to remove the listener when the consuming component unmounts.
-VariantChatEvent.removeEventListener(errorListener);
+VariantChatEvent.removeEventListener(internalErrorListener);
 ```
 
-Event name | Description | Event data
+The following events are emitted from the library. Your app should register for events by name.
+
+Event name | Description | Types
 ------ | ------ | ------
-**`error`** | Variant chat has encountered an error | error message text
-**`messageReceivedInBackground`** | Variant chat has received a chat message from the provider, message received while the app is in the background | message text
+**`error`** | Variant chat has encountered an error | `conversation`, `internal`, `service`
+**`info`** | Variant chat has provided some useful information | `notYetImplemented`
+**`messageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `background`
+
+The event callback receives a single argument `event` of type `VariantChatEventType`. Properties of each `VariantChatEventType` are as follows.
+
+Property | Description | Type
+------ | ------ | ------
+**`type`** | The type of event received | String
+**`message`** | The event description | String
 
 ### Push Notification
 

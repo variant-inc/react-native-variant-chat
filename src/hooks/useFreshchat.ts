@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
+import { AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
-import DeviceInfo from 'react-native-device-info';
 import { EventRegister } from 'react-native-event-listeners';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
@@ -51,9 +50,6 @@ import {
   freshchatSetSendingMessageId,
 } from '../store/slices/chat/chat';
 import {
-  accountNotSetup,
-  appNotAvailable,
-  networkTimeout,
   reopenedMessageMark,
   resolvedMessageMark,
   urgentMessageMark,
@@ -74,7 +70,6 @@ import { ChatProviderConfig } from '../types/VariantChat';
 
 let dispatch: any;
 const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
-const appName = DeviceInfo.getApplicationName();
 
 export const useConsumerDispatch = (): any => {
   return dispatch;
@@ -101,7 +96,7 @@ export const useFreshchatInit = (
         }
 
         if (!conversationInfo) {
-          showConversationError();
+          conversationError('No conversation info from messaging service');
           return;
         }
 
@@ -109,9 +104,9 @@ export const useFreshchatInit = (
       } catch (error: any) {
         // ENOTFOUND indicates the messaging service could not find the specified driver id.
         if (error.message.includes('ENOTFOUND')) {
-          showConversationError();
+          conversationError(error.message);
         } else {
-          showServiceError();
+          serviceError(error.message);
         }
         throw error;
       }
@@ -134,7 +129,7 @@ export const useFreshchatInit = (
       if (user) {
         dispatch(freshchatSetCurrentUser({ user }));
       } else {
-        showConversationError();
+        conversationError('No chat provider user found');
         return;
       }
 
@@ -173,7 +168,7 @@ export const useFreshchatInit = (
             return;
           })
           .catch(() => {
-            showConversationError();
+            conversationError('Failed to get conversation messages');
             return;
           });
       }
@@ -184,23 +179,20 @@ export const useFreshchatInit = (
     Tts.getInitStatus();
   };
 
-  const showConversationError = () => {
+  const conversationError = (message: string) => {
     setInitialized(FreshchatInit.Fail);
-    Alert.alert(appName, accountNotSetup, [], {
-      cancelable: false,
+    EventRegister.emit('error', {
+      type: 'conversation',
+      message,
     });
   };
 
-  const showServiceError = () => {
+  const serviceError = (message: string) => {
     setInitialized(FreshchatInit.Fail);
-    Alert.alert(appName, appNotAvailable, [], {
-      cancelable: false,
+    EventRegister.emit('error', {
+      type: 'service',
+      message,
     });
-  };
-
-  const showTimeoutError = () => {
-    setInitialized(FreshchatInit.Fail);
-    Alert.alert(appName, networkTimeout, [], { cancelable: false });
   };
 
   useEffect(() => {
@@ -216,10 +208,9 @@ export const useFreshchatInit = (
     } catch (error: any) {
       setInitialized(FreshchatInit.Fail);
       if (error instanceof FreshchatCommunicationError) {
-        showTimeoutError();
+        serviceError(`Chat provider error: ${error.message}`);
       } else {
-        showServiceError();
-        EventRegister.emit('error', `Freshchat init failed: ${error.message}`);
+        serviceError(`Freshchat init failed: ${error.message}`);
       }
     }
   }, []);
@@ -458,10 +449,10 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      EventRegister.emit(
-        'error',
-        `Chat message fetch failed: ${error.message}`
-      );
+      EventRegister.emit('error', {
+        type: 'internal',
+        message: `Chat message fetch failed: ${error.message}`,
+      });
     }
   };
 
@@ -512,7 +503,10 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
           !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
           !reopenedMessageMark.some((s) => newMessage.includes(s))
         ) {
-          EventRegister.emit('messageReceivedInBackground', newMessage);
+          EventRegister.emit('messageReceived', {
+            type: 'background',
+            message: newMessage,
+          });
         }
       }
     }

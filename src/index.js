@@ -1,5 +1,6 @@
 import { EventRegister } from 'react-native-event-listeners';
 
+import { VariantChatEventType } from './types/VariantChatEvent';
 import { VariantChatState } from './types/VariantChatState';
 
 /**
@@ -25,6 +26,7 @@ export { VariantChat } from './components/VariantChat';
  * Provides Variant chat event handling.
  */
 export { EventRegister as VariantChatEvent };
+export { VariantChatEventType };
 
 /**
  * Provides the necessary integration of Variant chat into your redux store.

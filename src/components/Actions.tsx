@@ -1,19 +1,16 @@
 import React, { ReactElement } from 'react';
 import {
-  Alert,
   StyleProp,
   StyleSheet,
   TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
+import { EventRegister } from 'react-native-event-listeners';
 import { ActionsProps } from 'react-native-gifted-chat';
 import { SvgXml } from 'react-native-svg';
 
 import { getSvg } from '../theme/Svg';
-
-const appName = DeviceInfo.getApplicationName();
 
 type CustomActionProps = {
   style?: StyleProp<ViewStyle>;
@@ -31,16 +28,20 @@ const CustomAction = (
     if (onOpenCamera) {
       onOpenCamera();
     }
-
-    Alert.alert(appName, 'Take a picture coming soon.');
+    EventRegister.emit('info', {
+      type: 'notYetImplemented',
+      message: 'Take a picture coming soon.',
+    });
   };
 
   const handleOpenAttachment = () => {
     if (onOpenAttachment) {
       onOpenAttachment();
     }
-
-    Alert.alert(appName, 'Add attachments coming soon.');
+    EventRegister.emit('info', {
+      type: 'notYetImplemented',
+      message: 'Add attachments coming soon.',
+    });
   };
 
   return (
