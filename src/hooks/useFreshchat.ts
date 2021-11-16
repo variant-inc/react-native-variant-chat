@@ -80,7 +80,6 @@ export const useConsumerDispatch = (): any => {
   return dispatch;
 };
 
-//export const useFreshchatInit = (
 export const useFreshchatInit = (
   driverId: string,
   config: ChatProviderConfig,
@@ -90,23 +89,8 @@ export const useFreshchatInit = (
 
   const [initialized, setInitialized] = useState(FreshchatInit.None);
 
-  const init = async (configValue: ChatProviderConfig) => {
+  const init = async (providerConfig: ChatProviderConfig) => {
     if (driverId) {
-      // init axios
-      await initFreshchat({
-        freshchatBaseUrl: configValue.baseUrl,
-        freshchatAccessToken: configValue.accessToken,
-        freshchatAppId: configValue.appId,
-        freshchatAppKey: configValue.appKey,
-      });
-
-      // Get channels from Freshchat.
-      const channels = await getChannels();
-
-      if (channels) {
-        await dispatch(freshchatSetChannels({ channels }));
-      }
-
       // Get conversation id's from the messaging api.
       let conversationInfo = null;
 
@@ -121,6 +105,8 @@ export const useFreshchatInit = (
           return;
         }
 
+        console.log('CONVERSATION INFO ' + JSON.stringify(conversationInfo));
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         // ENOTFOUND indicates the messaging service could not find the specified driver id.
@@ -130,6 +116,15 @@ export const useFreshchatInit = (
           showServiceError();
         }
         throw error;
+      }
+
+      await initFreshchat(driverId, conversationInfo.userId, providerConfig);
+
+      // Get channels from Freshchat.
+      const channels = await getChannels();
+
+      if (channels) {
+        await dispatch(freshchatSetChannels({ channels }));
       }
 
       // Getting user, conversation, and messages must be done synchonously.
@@ -435,7 +430,7 @@ export const useFreshchatGetMoreMessages = (
   return getMoreMessages;
 };
 
-export const useFreshchatGetNewMessages = (): void => {
+export const useFreshchatGetNewMessages = (): (() => void) => {
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
   const allMessages = useSelector(selectFreshchatAllMessages);
@@ -458,8 +453,17 @@ export const useFreshchatGetNewMessages = (): void => {
     if (!conversationInfo) {
       return;
     }
-    for (const conversation of conversationInfo.conversations) {
-      getNewMessagesForConversation(conversation);
+
+    try {
+      for (const conversation of conversationInfo.conversations) {
+        getNewMessagesForConversation(conversation);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      EventRegister.emit(
+        'error',
+        `Chat message fetch failed: ${error.message}`
+      );
     }
   };
 
@@ -520,15 +524,7 @@ export const useFreshchatGetNewMessages = (): void => {
     if (Platform.OS === 'android') {
       // Android
       const backgroundIntervalId = BackgroundTimer.setInterval(() => {
-        try {
-          getNewMessages();
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-          EventRegister.emit(
-            'error',
-            `Background message fetch failed: ${error.message}`
-          );
-        }
+        getNewMessages();
       }, NEW_MESSAGES_POLL_INTERVAL);
 
       return () => {
@@ -538,21 +534,15 @@ export const useFreshchatGetNewMessages = (): void => {
 
     // iOS
     BackgroundTimer.runBackgroundTimer(() => {
-      try {
-        getNewMessages();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        EventRegister.emit(
-          'error',
-          `Background message fetch failed: ${error.message}`
-        );
-      }
+      getNewMessages();
     }, NEW_MESSAGES_POLL_INTERVAL);
 
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
   }, [conversationInfo, conversationUsers, allMessages, isFullscreenVideo]);
+
+  return getNewMessages;
 };
 
 const checkConversationUsers = (

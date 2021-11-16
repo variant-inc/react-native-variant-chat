@@ -5,6 +5,7 @@ export type FreshchatUserProperties = {
 
 export type FreshchatUser = {
   reference_id?: string;
+  restore_id?: string;
   created_time?: string;
   updated_time?: string;
   id: string;

@@ -1,9 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import axios, { AxiosInstance } from 'axios';
 import { EventRegister } from 'react-native-event-listeners';
+import {
+  Freshchat,
+  FreshchatConfig as FreshchatSDKConfig,
+} from 'react-native-freshchat-sdk';
 import { SECOND } from 'time-constants';
 
-import { FreshchatConfig } from '../../types/Freshchat';
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
 import {
@@ -11,6 +15,7 @@ import {
   FreshchatMessage,
 } from '../../types/FreshchatMessage';
 import { FreshchatUser } from '../../types/FreshchatUser';
+import { ChatProviderConfig } from '../../types/VariantChat';
 import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
 
 const FRESHCHAT_FAILED_MESSAGES = '@ps-freshchat-failed-messages';
@@ -21,20 +26,78 @@ export const realtimeMessagePerPage = 10;
 
 let instance: AxiosInstance;
 
-export async function initFreshchat(config: FreshchatConfig): Promise<void> {
+export async function initFreshchat(
+  driverId: string,
+  freshchatUserId: string,
+  config: ChatProviderConfig
+): Promise<void> {
   if (!config) {
     return;
   }
   instance = axios.create({
-    baseURL: config.freshchatBaseUrl,
+    baseURL: config.baseUrl,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'accept': 'application/json',
-      'Authorization': `Bearer ${config.freshchatAccessToken}`,
+      'Authorization': `Bearer ${config.accessToken}`,
     },
     timeout: AXIOS_REQUEST_TIMEOUT * SECOND,
   });
+
+  // Freshchat SDK provides push notification functionality.
+  initFreshchatSDK(driverId, freshchatUserId, config);
 }
+
+const initFreshchatSDK = async (
+  driverId: string,
+  freshchatUserId: string,
+  config: ChatProviderConfig
+): Promise<void> => {
+  const freshchatSDKConfig = new FreshchatSDKConfig(
+    config.appId,
+    config.appKey
+  );
+  const freshchatUser = await getFreshchatUser(freshchatUserId);
+  console.log('FRESHCHAT USER ' + JSON.stringify(freshchatUser));
+
+  Freshchat.init(freshchatSDKConfig);
+  Freshchat.identifyUser(
+    driverId,
+    freshchatUser.restore_id,
+    (error: string) => {
+      EventRegister.emit(
+        'error',
+        `Freshchat user identification failed: ${error}`
+      );
+    }
+  );
+};
+
+export const registerPushNotificationToken = async (
+  token: string
+): Promise<void> => {
+  console.log('SET PUSH NOTIFICATION TOKEN ' + token);
+  Freshchat.setPushRegistrationToken(token);
+};
+
+export const tryGetNewMessagesOnPushNotificationEvent = (
+  notification: FirebaseMessagingTypes.RemoteMessage,
+  getNewMessages: () => void
+): void => {
+  return Freshchat.isFreshchatNotification(
+    notification,
+    (n: FirebaseMessagingTypes.RemoteMessage) => {
+      if (n) {
+        // Handle the freshchat notification... retrieve new messages....
+        console.log('PUSH NOTIFICATION MESSAGE: ${n}');
+        getNewMessages();
+        return true;
+      }
+      // Notification not handled here.
+      return false;
+    }
+  );
+};
 
 export async function getFreshchatUser(userId: string): Promise<FreshchatUser> {
   try {
@@ -183,7 +246,7 @@ export const setFreshchatFailedMessage = async (
   } catch (error: any) {
     EventRegister.emit(
       'error',
-      `Could not save freshchat failed message: ${error.message}`
+      `Could not save failed message: ${error.message}`
     );
   }
 };
@@ -203,7 +266,7 @@ export const getFreshchatFailedMessages = async (
   } catch (error: any) {
     EventRegister.emit(
       'error',
-      `Could not get freshchat failed message: ${error.message}`
+      `Could not get failed message: ${error.message}`
     );
   }
   return [];
@@ -229,7 +292,7 @@ export const removeFreshchatFailedMessage = async (
   } catch (error: any) {
     EventRegister.emit(
       'error',
-      `Could not save freshchat failed message: ${error.message}`
+      `Could not save failed message: ${error.message}`
     );
   }
 };

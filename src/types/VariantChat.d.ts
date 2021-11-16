@@ -14,8 +14,6 @@ export interface VariantApiConfig {
 export interface VariantChatConfig {
   chatProvider: ChatProviderConfig;
   variantApi: VariantApiConfig;
-  onError?: (message: string) => void;
-  onMessageReceivedBackground?: (message: string) => void;
 }
 
 export interface VariantChatProps {
