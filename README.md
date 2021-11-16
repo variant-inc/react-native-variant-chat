@@ -205,7 +205,6 @@ When a push notification is received by the app Variant chat can handle the noti
 import {handlePushNotification} from 'react-native-variant-chat';
 
 handlePushNotification(notification);
-);
 ```
 
 Argument | Description | Type | Default
