@@ -13,6 +13,7 @@ Add the following dependencies.
 ```sh
 npm install react-native-background-timer
 npm install react-native-tts
+npm install react-native-freshchat-sdk
 ```
 
 ## Integration
