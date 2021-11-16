@@ -25,6 +25,7 @@
     "url": "git+https://github.com/variant-inc/react-native-variant-chat.git"
   },
   "scripts": {
+    "changelog": "github-changes -o variant-inc -r react-native-variant-chat --only-pulls --use-commit-body -b main --order-semver --exclude-tag \"alpha|beta\" --hide-authors --date-format \"(M/D/YYYY)\" --multi-tag",
     "lint": "eslint \"**/*.{js,ts,tsx}\" --fix",
     "types:check": "tsc",
     "release": "release-it",
