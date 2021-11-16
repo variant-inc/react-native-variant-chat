@@ -5,7 +5,7 @@ A React Native chat component for Variant apps. This component wraps a selected 
 ## Installation
 
 ```sh
-npm install react-native-variant-chat
+npm install https://github.com/variant-inc/react-native-variant-chat
 ```
 Add the following dependencies.
 - TODO: remove this requirement
