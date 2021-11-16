@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.1 (11/16/2021)
+- Fix type export for VariantChatState [#13](https://github.com/variant-inc/react-native-variant-chat/pull/13) 
+
 ### v1.0.0 (11/16/2021)
 - Expose functions for handling push notification integration [#12](https://github.com/variant-inc/react-native-variant-chat/pull/12) 
 - Replace event handler [#11](https://github.com/variant-inc/react-native-variant-chat/pull/11) 
