@@ -105,8 +105,6 @@ export const useFreshchatInit = (
           return;
         }
 
-        console.log('CONVERSATION INFO ' + JSON.stringify(conversationInfo));
-
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         // ENOTFOUND indicates the messaging service could not find the specified driver id.
