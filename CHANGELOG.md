@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.3 (11/17/2021)
+- Fix apollo errors, use event emitter [#15](https://github.com/variant-inc/react-native-variant-chat/pull/15) 
+
 ### v1.0.2 (11/16/2021)
 - Remove alerts and improve events implementation [#14](https://github.com/variant-inc/react-native-variant-chat/pull/14) 
 
