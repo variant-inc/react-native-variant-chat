@@ -10,6 +10,7 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import fetch from 'cross-fetch';
+import { EventRegister } from 'react-native-event-listeners';
 import { v4 as uuidv4 } from 'uuid';
 
 import { VariantApiConfig } from '../types/VariantChat';
@@ -36,17 +37,19 @@ export const useApolloClient = (
             message === 'Not authenticated'
           )
         ) {
-          console.error(
-            `GraphQL error: ${operation.operationName} - ${message}`
-          );
+          EventRegister.emit('error', {
+            type: 'internal',
+            message: `GraphQL error: ${operation.operationName} - ${message}`,
+          });
         }
       });
     }
 
     if (networkError) {
-      console.error(
-        `GraphQL network error: ${operation.operationName} - ${networkError.message}`
-      );
+      EventRegister.emit('error', {
+        type: 'internal',
+        message: `GraphQL network error: ${operation.operationName} - ${networkError.message}`,
+      });
     }
   });
 
