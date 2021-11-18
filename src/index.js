@@ -35,4 +35,5 @@ export { VariantChatState };
 export {
   initialVariantChatState,
   variantChatReducer,
+  variantChatReset,
 } from './store/slices/chat/chat';

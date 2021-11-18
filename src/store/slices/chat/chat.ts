@@ -23,6 +23,10 @@ export const initialVariantChatState = Object.freeze<VariantChatState>({
   sendingMessageId: null,
 });
 
+const resetChatState: CaseReducer<VariantChatState, PayloadAction> = () => {
+  return initialVariantChatState;
+};
+
 const handleSetCurrentUser: CaseReducer<
   VariantChatState,
   PayloadAction<{ user: FreshchatUser }>
@@ -236,6 +240,7 @@ const freshchatSlice = createSlice({
     addMessage: handleAddMessage,
     removeMessage: handleRemoveMessage,
     setSendingMessageId: handleSetSendingMessageId,
+    setReset: resetChatState,
   },
   extraReducers: {},
 });
@@ -258,3 +263,4 @@ export const freshchatAddMessage = freshchatSlice.actions.addMessage;
 export const freshchatRemoveMessage = freshchatSlice.actions.removeMessage;
 export const freshchatSetSendingMessageId =
   freshchatSlice.actions.setSendingMessageId;
+export const variantChatReset = freshchatSlice.actions.setReset;
