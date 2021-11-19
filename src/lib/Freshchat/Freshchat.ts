@@ -58,7 +58,6 @@ const initFreshchatSDK = async (
     config.appKey
   );
   const freshchatUser = await getFreshchatUser(freshchatUserId);
-  console.log('FRESHCHAT USER ' + JSON.stringify(freshchatUser));
 
   Freshchat.init(freshchatSDKConfig);
   Freshchat.identifyUser(
@@ -67,10 +66,15 @@ const initFreshchatSDK = async (
     (error: string) => {
       EventRegister.emit('error', {
         type: 'internal',
-        message: `Freshchat user identification failed: ${error}`,
+        message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
       });
     }
   );
+
+  EventRegister.emit('debug', {
+    type: 'log',
+    message: `Init Freshchat SDK with user: ${JSON.stringify(freshchatUser)})`,
+  });
 };
 
 export const registerPushNotificationToken = async (
