@@ -127,9 +127,9 @@ const CustomBubble = (
   const {
     bubbleContainerStyle,
     bubbleWrapperStyle,
-    bubbleTextStyle,
+    // bubbleTextStyle,
     bubbleBottomContainerStyle,
-    bubbleTickStyle,
+    // bubbleTickStyle,
   } = props;
 
   const sendingMessageId = useSelector(selectFreshchatSendingMessageId);
@@ -555,7 +555,8 @@ const CustomBubble = (
               style={[
                 styles[position].bottom,
                 bottomContainerStyle && bottomContainerStyle[position],
-                bubbleBottomContainerStyle && bubbleBottomContainerStyle[position],
+                bubbleBottomContainerStyle &&
+                  bubbleBottomContainerStyle[position],
               ]}
             >
               {renderUsername()}
