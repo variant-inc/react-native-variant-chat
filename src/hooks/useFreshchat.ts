@@ -48,6 +48,7 @@ import {
   freshchatSetIsFullscreenVideo,
   freshchatSetMessages,
   freshchatSetSendingMessageId,
+  variantChatReset,
 } from '../store/slices/chat/chat';
 import {
   reopenedMessageMark,
@@ -73,6 +74,12 @@ const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
 
 export const useConsumerDispatch = (): any => {
   return dispatch;
+};
+
+export const resetVariantChatReducer = async (): Promise<void> => {
+  if (dispatch) {
+    await dispatch(variantChatReset());
+  }
 };
 
 export const useFreshchatInit = (
