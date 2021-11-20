@@ -15,6 +15,7 @@ const CustomSend = (props: SendProps<IMessage>): ReactElement => {
       disabled={!props.text}
       textStyle={[
         styles.textSend,
+        props.textStyle,
         !props.text ? styles.textDisabledSend : null,
       ]}
     />
