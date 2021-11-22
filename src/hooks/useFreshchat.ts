@@ -76,7 +76,7 @@ export const useConsumerDispatch = (): any => {
   return dispatch;
 };
 
-export const resetVariantChatReducer = async (): Promise<void> => {
+export const resetVariantChat = async (): Promise<void> => {
   if (dispatch) {
     await dispatch(variantChatReset());
   }
