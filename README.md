@@ -83,8 +83,46 @@ Prop | Description | Type | Default
 ------ | ------ | ------ | ------
 **`channelName`** | The channel name for which a conversation is presented | String | **Required**
 **`theme`** | A react native paper theme | ReactNativePaper.Theme | **A sample theme**
+**`chatStyles`** | Styles for the user interface | VariantChatStyles  | **Default styles**
 **`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar | String | **The chat users initials**
 **`NoConversationComponent`** | Rendered if the specified `channelName` does not resolve a conversation | Component, Element | **Text stating the conversation does not exist**
+
+#### VariantChatStyles
+
+Chat styles are standard React properties. The `LeftRightStyle` is used to denote, for example, left chat bubble or right chat bubble.
+
+```javascript
+export interface LeftRightStyle<T> {
+  left?: StyleProp<T>
+  right?: StyleProp<T>
+}
+```
+
+Prop | Description | Type
+------ | ------ | ------
+**containerStyle** | TBD | StyleProp<ViewStyle>
+**scrollToBottomStyle** | TBD | StyleProp<ViewStyle>
+**messagesContainerStyle** | TBD | StyleProp<ViewStyle>
+**textInputStyle** | TBD | StyleProp<TextStyle>
+**textStyle** | TBD | StyleProp<TextStyle>
+**timeTextStyle** | TBD | LeftRightStyle<TextStyle>
+**imageStyle** | TBD | StyleProp<TextStyle>
+**sendContainerStyle** | TBD | StyleProp<ViewStyle>
+**sendTextStyle** | TBD | StyleProp<TextStyle>
+**messageContainerStyle** | TBD | LeftRightStyle<TextStyle>
+**videoMessageContainerStyle** | TBD | StyleProp<ViewStyle>
+**videoMessageVideoStyle** | TBD | StyleProp<ViewStyle>
+**textMessageTextStyle** | TBD | StyleProp<TextStyle>
+**userNameTextStyle** | TBD | LeftRightStyle<TextStyle>
+**actionsContainerStyle** | TBD | StyleProp<ViewStyle>
+**actionWrapperSyle** | TBD | StyleProp<ViewStyle>
+**bubbleContainerStyle** | TBD | LeftRightStyle<ViewStyle>
+**bubbleWrapperStyle** | TBD | LeftRightStyle<ViewStyle>
+**bubbleTextStyle** | TBD | LeftRightStyle<TextStyle>
+**bubbleBottomContainerStyle** | TBD | LeftRightStyle<ViewStyle>
+**bubbleTickStyle** | TBD | StyleProp<TextStyle>
+**lightboxCloseButtonStyle** | TBD | StyleProp<ViewStyle>
+**lightboxProps** | TBD | any
 
 ### Initialization
 
