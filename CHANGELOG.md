@@ -1,5 +1,12 @@
 ## Change Log
 
+### v1.0.4 (11/22/2021)
+- Implements the custom styles / theme [#18](https://github.com/variant-inc/react-native-variant-chat/pull/18) 
+- Update doc [#20](https://github.com/variant-inc/react-native-variant-chat/pull/20) 
+- Add driver status awareness [#19](https://github.com/variant-inc/react-native-variant-chat/pull/19) 
+- Implements the reset functionality of the chat reducer [#16](https://github.com/variant-inc/react-native-variant-chat/pull/16) 
+- Minor logging updates [#17](https://github.com/variant-inc/react-native-variant-chat/pull/17) 
+
 ### v1.0.3 (11/17/2021)
 - Fix apollo errors, use event emitter [#15](https://github.com/variant-inc/react-native-variant-chat/pull/15) 
 
