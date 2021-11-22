@@ -29,6 +29,11 @@ export { EventRegister as VariantChatEvent };
 export { VariantChatEventType };
 
 /**
+ * Provides the reducer reset.
+ */
+export { resetVariantChat } from './hooks/useFreshchat';
+
+/**
  * Provides the necessary integration of Variant chat into your redux store.
  */
 export { VariantChatState };
