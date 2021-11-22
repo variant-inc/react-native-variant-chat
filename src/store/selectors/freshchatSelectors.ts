@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { DriverStatus } from '../../types/DriverStatus';
 import { StoreState } from '../../store/initialStoreState';
+import { DriverStatus } from '../../types/DriverStatus';
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
 import { FreshchatConversationInfo } from '../../types/FreshchatConversationInfo';

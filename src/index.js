@@ -33,8 +33,8 @@ export { VariantChatEventType };
 
 * Provides Variant chat the driver status.
  */
- export { DriverStatus };
- export { setDriverStatus } from './lib/VariantChat';
+export { DriverStatus };
+export { setDriverStatus } from './lib/VariantChat';
 
 /* Provides ability to reset internal state.
  */

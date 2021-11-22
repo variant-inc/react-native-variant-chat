@@ -1,7 +1,7 @@
 import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { DriverStatus } from '../../../types/DriverStatus';
 
 import { filterNewMessages } from '../../../lib/Freshchat/Utils';
+import { DriverStatus } from '../../../types/DriverStatus';
 import { FreshchatChannel } from '../../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../../types/FreshchatConversation';
 import { FreshchatConversationInfo } from '../../../types/FreshchatConversationInfo';
@@ -227,7 +227,7 @@ const handleSetSendingMessageId: CaseReducer<
 };
 
 const handleSetDriverStatus: CaseReducer<
-VariantChatState,
+  VariantChatState,
   PayloadAction<{ driverStatus: DriverStatus }>
 > = (state: VariantChatState, { payload }) => {
   return {

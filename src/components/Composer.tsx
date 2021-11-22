@@ -6,10 +6,14 @@ import { useTheme } from 'react-native-paper';
 import Font from '../theme/fonts';
 
 const CustomComposer = (props: ComposerProps): ReactElement => {
+  const { textInputStyle } = props;
+
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
-  return <Composer {...props} textInputStyle={styles.textInput} />;
+  return (
+    <Composer {...props} textInputStyle={[styles.textInput, textInputStyle]} />
+  );
 };
 
 function localStyleSheet(theme: ReactNativePaper.Theme) {

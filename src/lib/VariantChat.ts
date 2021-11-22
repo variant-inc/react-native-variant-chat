@@ -1,11 +1,11 @@
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import { variantChatSetDriverStatus } from '../store/slices/chat/chat';
 
 import { useApolloClient } from '../hooks/useApolloClient';
 import {
   useFreshchatGetNewMessages,
   useFreshchatInit,
 } from '../hooks/useFreshchat';
+import { variantChatSetDriverStatus } from '../store/slices/chat/chat';
 import { DriverStatus } from '../types/DriverStatus';
 import { VariantChatConfig } from '../types/VariantChat';
 import {
@@ -41,7 +41,7 @@ const handlePushNotification = (
 };
 
 const setDriverStatus = (status: DriverStatus): void => {
-  dispatch(variantChatSetDriverStatus({driverStatus: status}));
+  dispatch(variantChatSetDriverStatus({ driverStatus: status }));
 };
 
 export {
