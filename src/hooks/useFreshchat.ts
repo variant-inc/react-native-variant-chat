@@ -56,7 +56,10 @@ import {
 } from '../theme/constants';
 import { FreshchatChannel } from '../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../types/FreshchatConversation';
-import { FreshchatConversationInfoConversation } from '../types/FreshchatConversationInfo';
+import {
+  FreshchatConversationInfo,
+  FreshchatConversationInfoConversation,
+} from '../types/FreshchatConversationInfo';
 import { FreshchatInit } from '../types/FreshchatInit.enum';
 import {
   ActorType,
@@ -87,7 +90,7 @@ export const useFreshchatInit = (
   const init = async (providerConfig: ChatProviderConfig) => {
     if (driverId) {
       // Get conversation id's from the messaging api.
-      let conversationInfo = null;
+      let conversationInfo: FreshchatConversationInfo = null;
 
       try {
         conversationInfo = await getFreshchatConversations(driverId);
@@ -96,17 +99,30 @@ export const useFreshchatInit = (
         }
 
         if (!conversationInfo) {
-          conversationError('No conversation info from messaging service');
+          conversationError(
+            `No conversation info from messaging service for driver ${driverId}`
+          );
           return;
         }
+
+        EventRegister.emit('debug', {
+          type: 'log',
+          message: `Conversations available for driver: ${JSON.stringify(
+            conversationInfo
+          )})`,
+        });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         // ENOTFOUND indicates the messaging service could not find the specified driver id.
         if (error.message.includes('ENOTFOUND')) {
-          conversationError(error.message);
+          conversationError(
+            `${error.message} (driver ${driverId}, conversation ${conversationInfo?.userId})`
+          );
         } else {
-          serviceError(error.message);
+          serviceError(
+            `${error.message} (driver ${driverId}, conversation ${conversationInfo?.userId})`
+          );
         }
         throw error;
       }
@@ -129,7 +145,9 @@ export const useFreshchatInit = (
       if (user) {
         dispatch(freshchatSetCurrentUser({ user }));
       } else {
-        conversationError('No chat provider user found');
+        conversationError(
+          `No chat provider user found for user id ${conversationInfo.userId} (driver ${driverId})`
+        );
         return;
       }
 
@@ -168,7 +186,9 @@ export const useFreshchatInit = (
             return;
           })
           .catch(() => {
-            conversationError('Failed to get conversation messages');
+            conversationError(
+              `Failed to get conversation messages (driver ${driverId}, conversation ${conversationInfo?.userId})`
+            );
             return;
           });
       }
@@ -183,7 +203,7 @@ export const useFreshchatInit = (
     setInitialized(FreshchatInit.Fail);
     EventRegister.emit('error', {
       type: 'conversation',
-      message,
+      message: `Conversation error: ${message}`,
     });
   };
 
@@ -191,7 +211,7 @@ export const useFreshchatInit = (
     setInitialized(FreshchatInit.Fail);
     EventRegister.emit('error', {
       type: 'service',
-      message,
+      message: `Service error: ${message}`,
     });
   };
 
@@ -208,9 +228,13 @@ export const useFreshchatInit = (
     } catch (error: any) {
       setInitialized(FreshchatInit.Fail);
       if (error instanceof FreshchatCommunicationError) {
-        serviceError(`Chat provider error: ${error.message}`);
+        serviceError(
+          `Chat provider error: ${error.message} (driver ${driverId})`
+        );
       } else {
-        serviceError(`Freshchat init failed: ${error.message}`);
+        serviceError(
+          `Freshchat init failed: ${error.message} (driver ${driverId})`
+        );
       }
     }
   }, []);
