@@ -66,7 +66,7 @@ export const ChatModal: React.FC = () => {
       <Modal title="Chat">
         <VariantChat
           channelName={'Chat with Team'}
-          theme={theme}
+          chatStyles={chatStyles}
           defaultAvatarUrl={'https://some-domain/my-avatar.jpg'}
           NoConversationComponent={noConversationComponent()}
         />
@@ -82,9 +82,46 @@ export const ChatModal: React.FC = () => {
 Prop | Description | Type | Default
 ------ | ------ | ------ | ------
 **`channelName`** | The channel name for which a conversation is presented | String | **Required**
-**`theme`** | A react native paper theme | ReactNativePaper.Theme | **A sample theme**
+**`chatStyles`** | Styles for the user interface | VariantChatStyles  | **Default styles**
 **`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar | String | **The chat users initials**
 **`NoConversationComponent`** | Rendered if the specified `channelName` does not resolve a conversation | Component, Element | **Text stating the conversation does not exist**
+
+#### VariantChatStyles
+
+Chat styles are standard React properties. The `LeftRightStyle` is used to denote, for example, left chat bubble or right chat bubble.
+
+```javascript
+export interface LeftRightStyle<T> {
+  left?: StyleProp<T>
+  right?: StyleProp<T>
+}
+```
+
+Prop | Description | Type
+------ | ------ | ------
+**containerStyle** | TBD | StyleProp<ViewStyle>
+**scrollToBottomStyle** | TBD | StyleProp<ViewStyle>
+**messagesContainerStyle** | TBD | StyleProp<ViewStyle>
+**textInputStyle** | TBD | StyleProp<TextStyle>
+**textStyle** | TBD | StyleProp<TextStyle>
+**timeTextStyle** | TBD | LeftRightStyle<TextStyle>
+**imageStyle** | TBD | StyleProp<TextStyle>
+**sendContainerStyle** | TBD | StyleProp<ViewStyle>
+**sendTextStyle** | TBD | StyleProp<TextStyle>
+**messageContainerStyle** | TBD | LeftRightStyle<TextStyle>
+**videoMessageContainerStyle** | TBD | StyleProp<ViewStyle>
+**videoMessageVideoStyle** | TBD | StyleProp<ViewStyle>
+**textMessageTextStyle** | TBD | StyleProp<TextStyle>
+**userNameTextStyle** | TBD | LeftRightStyle<TextStyle>
+**actionsContainerStyle** | TBD | StyleProp<ViewStyle>
+**actionWrapperSyle** | TBD | StyleProp<ViewStyle>
+**bubbleContainerStyle** | TBD | LeftRightStyle<ViewStyle>
+**bubbleWrapperStyle** | TBD | LeftRightStyle<ViewStyle>
+**bubbleTextStyle** | TBD | LeftRightStyle<TextStyle>
+**bubbleBottomContainerStyle** | TBD | LeftRightStyle<ViewStyle>
+**bubbleTickStyle** | TBD | StyleProp<TextStyle>
+**lightboxCloseButtonStyle** | TBD | StyleProp<ViewStyle>
+**lightboxProps** | TBD | any
 
 ### Initialization
 
@@ -228,6 +265,16 @@ handlePushNotification(notification);
 Argument | Description | Type | Default
 ------ | ------ | ------ | ------
 **`notification`** | The notification received by the app | FirebaseMessagingTypes.RemoteMessage | **Required**
+
+### Clearing VariantChat state
+
+It is possible to clear the persistent state of the component. For example, this might need to be done when the consuming apps user changes (i.e. on logout).
+
+```javascript
+import {resetVariantChat} from 'react-native-variant-chat';
+
+resetVariantChat();
+```
 
 ## License
 
