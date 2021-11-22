@@ -73,7 +73,9 @@ const initFreshchatSDK = async (
 
   EventRegister.emit('debug', {
     type: 'log',
-    message: `Init Freshchat SDK with user: ${JSON.stringify(freshchatUser)})`,
+    message: `Init Freshchat SDK with user: ${JSON.stringify(
+      freshchatUser
+    )})`,
   });
 };
 

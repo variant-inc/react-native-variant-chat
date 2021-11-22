@@ -1,5 +1,6 @@
 import { EventRegister } from 'react-native-event-listeners';
 
+import { DriverStatus } from './types/DriverStatus';
 import { VariantChatEventType } from './types/VariantChatEvent';
 import { VariantChatState } from './types/VariantChatState';
 
@@ -29,7 +30,13 @@ export { EventRegister as VariantChatEvent };
 export { VariantChatEventType };
 
 /**
- * Provides the reducer reset.
+
+* Provides Variant chat the driver status.
+ */
+ export { DriverStatus };
+ export { setDriverStatus } from './lib/VariantChat';
+
+/* Provides ability to reset internal state.
  */
 export { resetVariantChat } from './hooks/useFreshchat';
 

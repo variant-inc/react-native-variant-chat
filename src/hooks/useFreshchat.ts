@@ -27,6 +27,7 @@ import { getFreshchatConversations } from '../lib/Freshchat/FreshchatConversatio
 import { filterNewMessages } from '../lib/Freshchat/Utils';
 import { AppDispatch } from '../store';
 import {
+  selectDriverStatus,
   selectFreshchatAllMessages,
   selectFreshchatConversation,
   selectFreshchatConversationInfo,
@@ -73,7 +74,7 @@ import { IOpsMessage } from '../types/Message.interface';
 import { ChatProviderConfig } from '../types/VariantChat';
 
 let dispatch: any;
-const NEW_MESSAGES_POLL_INTERVAL = 10 * SECOND;
+const NEW_MESSAGES_POLL_INTERVAL = 30 * SECOND;
 
 export const useConsumerDispatch = (): any => {
   return dispatch;
@@ -455,6 +456,7 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
   const allMessages = useSelector(selectFreshchatAllMessages);
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
+  const driverStatus = useSelector(selectDriverStatus);
   const appState = useRef(AppState.currentState);
   const lastBackgroundMessage = useRef<string | null>(null);
 
@@ -563,7 +565,13 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [conversationInfo, conversationUsers, allMessages, isFullscreenVideo]);
+  }, [
+    conversationInfo,
+    conversationUsers,
+    allMessages,
+    isFullscreenVideo,
+    driverStatus,
+  ]);
 
   return getNewMessages;
 };
