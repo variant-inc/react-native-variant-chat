@@ -1,4 +1,5 @@
 import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { DriverStatus } from '../../../types/DriverStatus';
 
 import { filterNewMessages } from '../../../lib/Freshchat/Utils';
 import { FreshchatChannel } from '../../../types/FreshchatChannel.type';
@@ -21,6 +22,7 @@ export const initialVariantChatState = Object.freeze<VariantChatState>({
   messagesLink: {},
   isFullscreenVideo: false,
   sendingMessageId: null,
+  driverStatus: DriverStatus.Unknown,
 });
 
 const handleSetCurrentUser: CaseReducer<
@@ -220,6 +222,16 @@ const handleSetSendingMessageId: CaseReducer<
   };
 };
 
+const handleSetDriverStatus: CaseReducer<
+VariantChatState,
+  PayloadAction<{ driverStatus: DriverStatus }>
+> = (state: VariantChatState, { payload }) => {
+  return {
+    ...state,
+    driverStatus: payload.driverStatus,
+  };
+};
+
 const freshchatSlice = createSlice({
   name: 'freshchat',
   initialState: initialVariantChatState,
@@ -236,6 +248,7 @@ const freshchatSlice = createSlice({
     addMessage: handleAddMessage,
     removeMessage: handleRemoveMessage,
     setSendingMessageId: handleSetSendingMessageId,
+    setDriverStatus: handleSetDriverStatus,
   },
   extraReducers: {},
 });
@@ -258,3 +271,5 @@ export const freshchatAddMessage = freshchatSlice.actions.addMessage;
 export const freshchatRemoveMessage = freshchatSlice.actions.removeMessage;
 export const freshchatSetSendingMessageId =
   freshchatSlice.actions.setSendingMessageId;
+export const variantChatSetDriverStatus =
+  freshchatSlice.actions.setDriverStatus;

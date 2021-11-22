@@ -1,5 +1,6 @@
 import { EventRegister } from 'react-native-event-listeners';
 
+import { DriverStatus } from './types/DriverStatus';
 import { VariantChatEventType } from './types/VariantChatEvent';
 import { VariantChatState } from './types/VariantChatState';
 
@@ -27,6 +28,12 @@ export { VariantChat } from './components/VariantChat';
  */
 export { EventRegister as VariantChatEvent };
 export { VariantChatEventType };
+
+/**
+ * Provides Variant chat the driver status.
+ */
+ export { DriverStatus };
+ export { setDriverStatus } from './lib/VariantChat';
 
 /**
  * Provides the necessary integration of Variant chat into your redux store.

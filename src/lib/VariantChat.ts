@@ -1,15 +1,23 @@
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import { variantChatSetDriverStatus } from '../store/slices/chat/chat';
 
 import { useApolloClient } from '../hooks/useApolloClient';
 import {
   useFreshchatGetNewMessages,
   useFreshchatInit,
 } from '../hooks/useFreshchat';
+import { DriverStatus } from '../types/DriverStatus';
 import { VariantChatConfig } from '../types/VariantChat';
 import {
   registerPushNotificationToken,
   tryGetNewMessagesOnPushNotificationEvent,
 } from './Freshchat/Freshchat';
+
+let dispatch: any;
+
+export const useConsumerDispatch = (): any => {
+  return dispatch;
+};
 
 let getNewMessages = (): void => {
   return;
@@ -18,8 +26,9 @@ let getNewMessages = (): void => {
 const useVariantChat = (
   driverId: string,
   config: VariantChatConfig,
-  dispatch: any
+  consumerDispatch: any
 ): void => {
+  dispatch = consumerDispatch;
   useApolloClient(config.variantApi);
   useFreshchatInit(driverId, config.chatProvider, dispatch);
   getNewMessages = useFreshchatGetNewMessages();
@@ -31,8 +40,13 @@ const handlePushNotification = (
   return tryGetNewMessagesOnPushNotificationEvent(notification, getNewMessages);
 };
 
+const setDriverStatus = (status: DriverStatus): void => {
+  dispatch(variantChatSetDriverStatus({driverStatus: status}));
+};
+
 export {
   handlePushNotification,
   registerPushNotificationToken,
+  setDriverStatus,
   useVariantChat,
 };

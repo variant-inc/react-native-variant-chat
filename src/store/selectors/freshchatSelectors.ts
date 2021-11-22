@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 
+import { DriverStatus } from '../../types/DriverStatus';
 import { StoreState } from '../../store/initialStoreState';
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
@@ -99,4 +100,12 @@ export const selectFreshchatSendingMessageId = createSelector<
   string | number | null
 >(selectFreshchatState, (freshchatState) => {
   return freshchatState?.sendingMessageId;
+});
+
+export const selectDriverStatus = createSelector<
+  StoreState,
+  VariantChatState,
+  DriverStatus | null
+>(selectFreshchatState, (variantChatState) => {
+  return variantChatState?.driverStatus;
 });
