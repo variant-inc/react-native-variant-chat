@@ -12,7 +12,26 @@ import Font from '../theme/fonts';
 import { IOpsMessage } from '../types/Message.interface';
 import Bubble from './Bubble';
 
-const CustomMessage = (props: MessageProps<IOpsMessage>): ReactElement => {
+export interface IOpsMessageProps extends MessageProps<IOpsMessage> {
+  userNameTextStyle: LeftRightStyle<TextStyle>;
+  bubbleContainerStyle?: LeftRightStyle<ViewStyle>;
+  bubbleWrapperStyle?: LeftRightStyle<ViewStyle>;
+  bubbleTextStyle?: LeftRightStyle<TextStyle>;
+  bubbleBottomContainerStyle?: LeftRightStyle<ViewStyle>;
+  bubbleTickStyle?: StyleProp<TextStyle>;
+}
+
+const CustomMessage = (props: IOpsMessageProps): ReactElement => {
+  const {
+    containerStyle,
+    userNameTextStyle,
+    bubbleContainerStyle,
+    bubbleWrapperStyle,
+    bubbleTextStyle,
+    bubbleBottomContainerStyle,
+    bubbleTickStyle,
+  } = props;
+
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
@@ -21,13 +40,21 @@ const CustomMessage = (props: MessageProps<IOpsMessage>): ReactElement => {
       return (
         <View style={styles.bubbleContainer}>
           <Text
-            style={
-              styles.textUserName[bubbleProps.position] as StyleProp<TextStyle>
-            }
+            style={[
+              styles.textUserName[bubbleProps.position] as StyleProp<TextStyle>,
+              userNameTextStyle[bubbleProps.position] as StyleProp<TextStyle>,
+            ]}
           >
             {props.currentMessage?.user?.name}
           </Text>
-          <Bubble {...bubbleProps} />
+          <Bubble
+            {...bubbleProps}
+            bubbleContainerStyle={bubbleContainerStyle}
+            bubbleWrapperStyle={bubbleWrapperStyle}
+            bubbleTextStyle={bubbleTextStyle}
+            bubbleBottomContainerStyle={bubbleBottomContainerStyle}
+            bubbleTickStyle={bubbleTickStyle}
+          />
         </View>
       );
     }
@@ -41,7 +68,10 @@ const CustomMessage = (props: MessageProps<IOpsMessage>): ReactElement => {
     return (
       <Message
         {...props}
-        containerStyle={styles.container as LeftRightStyle<ViewStyle>}
+        containerStyle={{
+          ...(styles.container as LeftRightStyle<ViewStyle>),
+          ...containerStyle,
+        }}
         renderBubble={renderBubble}
       />
     );

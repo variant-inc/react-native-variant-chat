@@ -1,3 +1,5 @@
+import { VariantChatStyles } from './VariantChatStyles.type';
+
 export interface ChatProviderConfig {
   baseUrl: string;
   accessToken: string;
@@ -18,7 +20,7 @@ export interface VariantChatConfig {
 
 export interface VariantChatProps {
   channelName: string;
-  theme: ReactNativePaper.Theme;
   defaultAvatarUrl: string;
   NoConversationComponent: JSX.Element;
+  chatStyles?: VariantChatStyles;
 }

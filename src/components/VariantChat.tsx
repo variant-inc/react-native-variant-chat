@@ -8,6 +8,7 @@ import Chat from './Chat';
 
 export const VariantChat = (props: VariantChatProps): ReactElement => {
   const { channelName, NoConversationComponent } = props;
+
   const styles = localStyleSheet();
 
   const conversationInfo = useSelector(selectFreshchatConversationInfo);

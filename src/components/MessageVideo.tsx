@@ -6,18 +6,23 @@ import Video from 'react-native-video';
 import { IOpsVideoMessage } from '../types/VideoMessage.interface';
 
 const CustomMessageVideo = (props: IOpsVideoMessage): ReactElement => {
-  const { onDidPresentFullscreen, onDidDismissFullscreen } = props;
+  const {
+    containerStyle,
+    videoStyle,
+    onDidPresentFullscreen,
+    onDidDismissFullscreen,
+  } = props;
 
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <Video
+        style={[styles.video, videoStyle]}
         source={{ uri: props.currentMessage?.video }}
         controls
         paused
-        style={styles.video}
         onFullscreenPlayerDidPresent={() =>
           onDidPresentFullscreen && onDidPresentFullscreen()
         }

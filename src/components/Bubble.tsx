@@ -90,6 +90,12 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
   containerToPreviousStyle?: LeftRightStyle<ViewStyle>;
   usernameStyle?: TextStyle;
   quickReplyStyle?: StyleProp<ViewStyle>;
+
+  bubbleContainerStyle?: LeftRightStyle<ViewStyle>;
+  bubbleWrapperStyle?: LeftRightStyle<ViewStyle>;
+  bubbleTextStyle?: LeftRightStyle<TextStyle>;
+  bubbleBottomContainerStyle?: LeftRightStyle<ViewStyle>;
+  bubbleTickStyle?: StyleProp<TextStyle>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onLongPress?(context?: any, message?: any): void;
   onQuickReply?(replies: Reply[]): void;
@@ -118,6 +124,14 @@ const DEFAULT_OPTION_TITLES = ['Copy Text', 'Cancel'];
 const CustomBubble = (
   props: CustomBubbleProps<IOpsMessage>
 ): React.ReactElement => {
+  const {
+    bubbleContainerStyle,
+    bubbleWrapperStyle,
+    // bubbleTextStyle,
+    bubbleBottomContainerStyle,
+    // bubbleTickStyle,
+  } = props;
+
   const sendingMessageId = useSelector(selectFreshchatSendingMessageId);
 
   const theme = useTheme();
@@ -515,6 +529,7 @@ const CustomBubble = (
       style={[
         styles[position].container,
         containerStyle && containerStyle[position],
+        bubbleContainerStyle && bubbleContainerStyle[position],
       ]}
     >
       <View
@@ -524,6 +539,7 @@ const CustomBubble = (
           styledBubbleToNext(),
           styledBubbleToPrevious(),
           wrapperStyle && wrapperStyle[position],
+          bubbleWrapperStyle && bubbleWrapperStyle[position],
         ]}
       >
         <TouchableWithoutFeedback
@@ -539,6 +555,8 @@ const CustomBubble = (
               style={[
                 styles[position].bottom,
                 bottomContainerStyle && bottomContainerStyle[position],
+                bubbleBottomContainerStyle &&
+                  bubbleBottomContainerStyle[position],
               ]}
             >
               {renderUsername()}
@@ -583,6 +601,11 @@ CustomBubble.defaultProps = {
   usernameStyle: {},
   containerToNextStyle: {},
   containerToPreviousStyle: {},
+  bubbleContainerStyle: {},
+  bubbleWrapperStyle: {},
+  bubbleTextStyle: {},
+  bubbleBottomContainerStyle: {},
+  bubbleTickStyle: {},
 };
 
 function localStyleSheet(theme: ReactNativePaper.Theme) {

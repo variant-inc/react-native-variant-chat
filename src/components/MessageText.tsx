@@ -9,10 +9,17 @@ import { useTheme } from 'react-native-paper';
 import Font from '../theme/fonts';
 
 const CustomMessageText = (props: MessageTextProps<IMessage>): ReactElement => {
+  const { customTextStyle } = props;
+
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
-  return <MessageText {...props} customTextStyle={styles.textMessage} />;
+  return (
+    <MessageText
+      {...props}
+      customTextStyle={[styles.textMessage, customTextStyle]}
+    />
+  );
 };
 
 function localStyleSheet(theme: ReactNativePaper.Theme) {

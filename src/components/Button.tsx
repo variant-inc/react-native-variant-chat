@@ -1,25 +1,24 @@
 import React, { FC } from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { Button as PaperButton, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 
 import Font from '../theme/fonts';
-import { UnknownObject } from '../types/Misc.types';
 
 export interface ButtonContainedProps {
   mode?: 'contained' | 'outlined';
   color?: 'primary' | 'accent' | 'secondaryAction';
   palette?: 'light' | 'dark';
   fullWidth?: boolean;
-  style?: UnknownObject;
+  style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   onPress: () => void;
   accessibilityLabel?: string;
   loading?: boolean;
-  labelStyle?: UnknownObject;
+  labelStyle?: StyleProp<ViewStyle>;
   testID?: string;
   icon?: IconSource;
-  contentStyle?: ViewStyle;
+  contentStyle?: StyleProp<TextStyle>;
 }
 
 export const Button: FC<ButtonContainedProps> = ({
@@ -42,10 +41,10 @@ export const Button: FC<ButtonContainedProps> = ({
   );
 
   let container = [styles.root, style];
-  let label = [styles.labelText, labelStyle];
+  let labelStyles: any = [styles.labelText, labelStyle];
   if (mode === 'outlined') {
     container = [...container, styles.outlinedContainer];
-    label = [...label, styles.outlinedLabel];
+    labelStyles = [...labelStyles, styles.outlinedLabel];
   }
 
   return (
@@ -53,7 +52,7 @@ export const Button: FC<ButtonContainedProps> = ({
       mode={mode}
       color={resolvedColor}
       style={container}
-      labelStyle={label}
+      labelStyle={labelStyles}
       {...restProps}
     >
       {children}

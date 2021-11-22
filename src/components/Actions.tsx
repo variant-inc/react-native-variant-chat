@@ -1,11 +1,5 @@
 import React, { ReactElement } from 'react';
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EventRegister } from 'react-native-event-listeners';
 import { ActionsProps } from 'react-native-gifted-chat';
 import { SvgXml } from 'react-native-svg';
@@ -13,7 +7,6 @@ import { SvgXml } from 'react-native-svg';
 import { getSvg } from '../theme/Svg';
 
 type CustomActionProps = {
-  style?: StyleProp<ViewStyle>;
   onOpenCamera?: () => void;
   onOpenAttachment?: () => void;
 };
@@ -21,7 +14,8 @@ type CustomActionProps = {
 const CustomAction = (
   props: ActionsProps & CustomActionProps
 ): ReactElement => {
-  const { style, onOpenCamera, onOpenAttachment } = props;
+  const { containerStyle, wrapperStyle, onOpenCamera, onOpenAttachment } =
+    props;
   const styles = localStyleSheet();
 
   const handleOpenCamera = () => {
@@ -45,16 +39,16 @@ const CustomAction = (
   };
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, containerStyle]}>
       <TouchableOpacity
-        style={styles.actionButton}
+        style={[styles.actionButton, wrapperStyle]}
         activeOpacity={0.8}
         onPress={handleOpenCamera}
       >
         <SvgXml xml={getSvg('iconCamera')} accessibilityLabel="camera" />
       </TouchableOpacity>
       <TouchableOpacity
-        style={styles.actionButton}
+        style={[styles.actionButton, wrapperStyle]}
         activeOpacity={0.8}
         onPress={handleOpenAttachment}
       >

@@ -3,9 +3,15 @@ import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
+  ActionsProps,
+  ComposerProps,
   IMessage,
+  MessageProps,
+  MessageTextProps,
   MessageVideoProps,
+  SendProps,
 } from 'react-native-gifted-chat/lib/Models';
+import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
 import {
@@ -28,20 +34,62 @@ import { FreshchatMessage } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatProps } from '../types/VariantChat';
+import Accessory from './Accessory';
+import Actions from './Actions';
+import { Button } from './Button';
+import Composer from './Composer';
+import Message from './Message';
+import MessageText from './MessageText';
 import MessageVideo from './MessageVideo';
-import {
-  renderAccessory,
-  renderActions,
-  renderComposer,
-  renderLightBoxClose,
-  renderMessage,
-  renderMessageText,
-  renderSend,
-} from './renderers';
+import Send from './Send';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const { channelName, theme, defaultAvatarUrl } = props;
+  const { chatStyles = {}, channelName, defaultAvatarUrl } = props;
 
+  const {
+    containerStyle = {},
+    scrollToBottomStyle = {},
+    messagesContainerStyle = {},
+    textStyle = {},
+    timeTextStyle = {},
+    imageStyle = {},
+    sendContainerStyle = {},
+    sendTextStyle = {},
+    messageContainerStyle = {
+      left: {},
+      right: {},
+    },
+    videoMessageContainerStyle = {},
+    videoMessageVideoStyle = {},
+    textMessageTextStyle = {},
+    userNameTextStyle = {
+      left: {},
+      right: {},
+    },
+    actionsContainerStyle = {},
+    actionWrapperSyle = {},
+    bubbleContainerStyle = {
+      left: {},
+      right: {},
+    },
+    bubbleWrapperStyle = {
+      left: {},
+      right: {},
+    },
+    bubbleTextStyle = {
+      left: {},
+      right: {},
+    },
+    bubbleBottomContainerStyle = {
+      left: {},
+      right: {},
+    },
+    bubbleTickStyle = {},
+    lightboxCloseButtonStyle = {},
+    lightboxProps = {},
+  } = chatStyles;
+
+  const theme = useTheme();
   const styles = localStyleSheet(theme);
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversationId =
@@ -140,22 +188,85 @@ const Chat = (props: VariantChatProps): ReactElement => {
     getMoreMessages();
   }, [moreMessages]);
 
+  const renderAccessory = (): JSX.Element => <Accessory />;
+
+  const renderComposer = (composerProps: ComposerProps): JSX.Element => (
+    <Composer {...composerProps} />
+  );
+
+  const renderActions = (actionsProps: ActionsProps): JSX.Element => (
+    <Actions
+      {...actionsProps}
+      containerStyle={actionsContainerStyle}
+      wrapperStyle={actionWrapperSyle}
+    />
+  );
+
+  const renderSend = (sendProps: SendProps<IOpsMessage>): JSX.Element => (
+    <Send
+      {...sendProps}
+      containerStyle={sendContainerStyle}
+      textStyle={sendTextStyle}
+    />
+  );
+
+  const renderLightBoxClose = (close: () => void): ReactElement => {
+    return (
+      <Button
+        style={[styles.closeButton, lightboxCloseButtonStyle]}
+        color="primary"
+        onPress={close}
+      >
+        Close
+      </Button>
+    );
+  };
+
+  const renderMessage = (
+    messageProps: MessageProps<IOpsMessage>
+  ): JSX.Element => (
+    <Message
+      {...messageProps}
+      containerStyle={messageContainerStyle}
+      userNameTextStyle={userNameTextStyle}
+      bubbleContainerStyle={bubbleContainerStyle}
+      bubbleWrapperStyle={bubbleWrapperStyle}
+      bubbleTextStyle={bubbleTextStyle}
+      bubbleBottomContainerStyle={bubbleBottomContainerStyle}
+      bubbleTickStyle={bubbleTickStyle}
+    />
+  );
+
+  const renderMessageText = (
+    messageProps: MessageTextProps<IOpsMessage>
+  ): JSX.Element => (
+    <MessageText {...messageProps} customTextStyle={textMessageTextStyle} />
+  );
+
   const renderMessageVideo = (videoProps: MessageVideoProps<IOpsMessage>) => (
     <MessageVideo
       {...videoProps}
+      containerStyle={videoMessageContainerStyle}
+      videoStyle={videoMessageVideoStyle}
       onDidPresentFullscreen={() => setIsFullscreenVideo(true)}
       onDidDismissFullscreen={() => setIsFullscreenVideo(false)}
     />
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <GiftedChat
-        messagesContainerStyle={styles.messagesContainer}
+        messagesContainerStyle={[
+          styles.messagesContainer,
+          messagesContainerStyle,
+        ]}
         timeTextStyle={{
           left: styles.textTime,
           right: styles.textTime,
+          ...timeTextStyle,
         }}
+        scrollToBottomStyle={scrollToBottomStyle}
+        imageStyle={imageStyle}
         maxComposerHeight={80}
         keyboardShouldPersistTaps="handled"
         loadEarlier={!!moreMessages}
@@ -180,7 +291,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
-        textStyle={{ paddingHorizontal: 15 }}
+        textStyle={[styles.textGeneral, textStyle]}
         lightboxProps={{
           renderHeader: renderLightBoxClose,
           backgroundColor: styles.lightbox.backgroundColor,
@@ -193,6 +304,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
             speed: 2147483647,
             bounciness: 0,
           },
+          ...lightboxProps,
         }}
       />
     </View>
@@ -223,6 +335,14 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
       flex: 1,
       resizeMode: 'contain',
       marginTop: 74,
+    },
+    textGeneral: {
+      paddingHorizontal: 15,
+    },
+    closeButton: {
+      marginRight: 10,
+      marginTop: 74,
+      alignSelf: 'flex-end',
     },
   });
 }
