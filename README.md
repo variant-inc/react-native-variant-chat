@@ -66,7 +66,7 @@ export const ChatModal: React.FC = () => {
       <Modal title="Chat">
         <VariantChat
           channelName={'Chat with Team'}
-          theme={theme}
+          chatStyles={chatStyles}
           defaultAvatarUrl={'https://some-domain/my-avatar.jpg'}
           NoConversationComponent={noConversationComponent()}
         />
@@ -82,7 +82,6 @@ export const ChatModal: React.FC = () => {
 Prop | Description | Type | Default
 ------ | ------ | ------ | ------
 **`channelName`** | The channel name for which a conversation is presented | String | **Required**
-**`theme`** | A react native paper theme | ReactNativePaper.Theme | **A sample theme**
 **`chatStyles`** | Styles for the user interface | VariantChatStyles  | **Default styles**
 **`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar | String | **The chat users initials**
 **`NoConversationComponent`** | Rendered if the specified `channelName` does not resolve a conversation | Component, Element | **Text stating the conversation does not exist**
