@@ -11,6 +11,7 @@ import {
   MessageVideoProps,
   SendProps,
 } from 'react-native-gifted-chat/lib/Models';
+import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
 import {
@@ -43,7 +44,7 @@ import MessageVideo from './MessageVideo';
 import Send from './Send';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const { chatStyles = {}, channelName, theme, defaultAvatarUrl } = props;
+  const { chatStyles = {}, channelName, defaultAvatarUrl } = props;
 
   const {
     containerStyle = {},
@@ -88,6 +89,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
     lightboxProps = {},
   } = chatStyles;
 
+  const theme = useTheme();
   const styles = localStyleSheet(theme);
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversationId =

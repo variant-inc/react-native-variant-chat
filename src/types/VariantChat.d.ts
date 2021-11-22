@@ -20,7 +20,6 @@ export interface VariantChatConfig {
 
 export interface VariantChatProps {
   channelName: string;
-  theme: ReactNativePaper.Theme;
   defaultAvatarUrl: string;
   NoConversationComponent: JSX.Element;
   chatStyles?: VariantChatStyles;
