@@ -1,6 +1,7 @@
 import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { filterNewMessages } from '../../../lib/Freshchat/Utils';
+import { DriverStatus } from '../../../types/DriverStatus';
 import { FreshchatChannel } from '../../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../../types/FreshchatConversation';
 import { FreshchatConversationInfo } from '../../../types/FreshchatConversationInfo';
@@ -21,6 +22,7 @@ export const initialVariantChatState = Object.freeze<VariantChatState>({
   messagesLink: {},
   isFullscreenVideo: false,
   sendingMessageId: null,
+  driverStatus: DriverStatus.Unknown,
 });
 
 const resetChatState: CaseReducer<VariantChatState, PayloadAction> = () => {
@@ -224,6 +226,16 @@ const handleSetSendingMessageId: CaseReducer<
   };
 };
 
+const handleSetDriverStatus: CaseReducer<
+  VariantChatState,
+  PayloadAction<{ driverStatus: DriverStatus }>
+> = (state: VariantChatState, { payload }) => {
+  return {
+    ...state,
+    driverStatus: payload.driverStatus,
+  };
+};
+
 const freshchatSlice = createSlice({
   name: 'freshchat',
   initialState: initialVariantChatState,
@@ -240,6 +252,7 @@ const freshchatSlice = createSlice({
     addMessage: handleAddMessage,
     removeMessage: handleRemoveMessage,
     setSendingMessageId: handleSetSendingMessageId,
+    setDriverStatus: handleSetDriverStatus,
     setReset: resetChatState,
   },
   extraReducers: {},
@@ -263,4 +276,6 @@ export const freshchatAddMessage = freshchatSlice.actions.addMessage;
 export const freshchatRemoveMessage = freshchatSlice.actions.removeMessage;
 export const freshchatSetSendingMessageId =
   freshchatSlice.actions.setSendingMessageId;
+export const variantChatSetDriverStatus =
+  freshchatSlice.actions.setDriverStatus;
 export const variantChatReset = freshchatSlice.actions.setReset;

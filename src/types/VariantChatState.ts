@@ -1,3 +1,4 @@
+import { DriverStatus } from './DriverStatus';
 import { FreshchatChannel } from './FreshchatChannel.type';
 import { FreshchatConversation } from './FreshchatConversation';
 import { FreshchatConversationInfo } from './FreshchatConversationInfo';
@@ -14,4 +15,5 @@ export interface VariantChatState {
   messagesLink: { [key: string]: FreshchatMessagesLink | null }; // for more messages; key is conversation id
   isFullscreenVideo: boolean;
   sendingMessageId: string | number | null;
+  driverStatus: DriverStatus;
 }
