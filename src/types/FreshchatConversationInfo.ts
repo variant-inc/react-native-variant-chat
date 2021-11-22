@@ -7,4 +7,4 @@ export type FreshchatConversationInfo = {
   driverId: string;
   userId: string;
   conversations: FreshchatConversationInfoConversation[];
-};
+} | null;
