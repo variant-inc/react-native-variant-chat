@@ -30,10 +30,15 @@ export { EventRegister as VariantChatEvent };
 export { VariantChatEventType };
 
 /**
- * Provides Variant chat the driver status.
+
+* Provides Variant chat the driver status.
  */
  export { DriverStatus };
  export { setDriverStatus } from './lib/VariantChat';
+
+/* Provides ability to reset internal state.
+ */
+export { resetVariantChat } from './hooks/useFreshchat';
 
 /**
  * Provides the necessary integration of Variant chat into your redux store.

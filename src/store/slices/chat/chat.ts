@@ -25,6 +25,10 @@ export const initialVariantChatState = Object.freeze<VariantChatState>({
   driverStatus: DriverStatus.Unknown,
 });
 
+const resetChatState: CaseReducer<VariantChatState, PayloadAction> = () => {
+  return initialVariantChatState;
+};
+
 const handleSetCurrentUser: CaseReducer<
   VariantChatState,
   PayloadAction<{ user: FreshchatUser }>
@@ -249,6 +253,7 @@ const freshchatSlice = createSlice({
     removeMessage: handleRemoveMessage,
     setSendingMessageId: handleSetSendingMessageId,
     setDriverStatus: handleSetDriverStatus,
+    setReset: resetChatState,
   },
   extraReducers: {},
 });
@@ -273,3 +278,4 @@ export const freshchatSetSendingMessageId =
   freshchatSlice.actions.setSendingMessageId;
 export const variantChatSetDriverStatus =
   freshchatSlice.actions.setDriverStatus;
+export const variantChatReset = freshchatSlice.actions.setReset;
