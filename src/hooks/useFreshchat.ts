@@ -452,7 +452,7 @@ export const useFreshchatGetMoreMessages = (
 };
 
 export const useFreshchatGetNewMessages = (
-  capabilities: ChatCapabilities
+  capabilities: ChatCapabilities | undefined
 ): (() => void) => {
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
