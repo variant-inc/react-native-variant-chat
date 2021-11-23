@@ -1,7 +1,7 @@
 export enum DriverStatus {
   Unknown = 'Unknown',
   Driving = 'Driving',
-  OnDuty = 'On Duty',
-  OffDuty = 'Off Duty',
-  SleeperBerth = 'Sleeper Berth',
+  OnDuty = 'OnDuty',
+  OffDuty = 'OffDuty',
+  SleeperBerth = 'SleeperBerth',
 }

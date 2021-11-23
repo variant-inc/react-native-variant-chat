@@ -4,7 +4,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import { EventRegister } from 'react-native-event-listeners';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
-import { SECOND } from 'time-constants';
+import { MINUTE } from 'time-constants';
 import { v4 as uuidv4 } from 'uuid';
 
 import { FreshchatCommunicationError } from '../lib/Exception';
@@ -71,10 +71,10 @@ import {
 } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
-import { ChatProviderConfig } from '../types/VariantChat';
+import { ChatCapabilities, ChatProviderConfig } from '../types/VariantChat';
 
 let dispatch: any;
-const NEW_MESSAGES_POLL_INTERVAL = 30 * SECOND;
+const NEW_MESSAGES_POLL_INTERVAL = 15 * MINUTE;
 
 export const useConsumerDispatch = (): any => {
   return dispatch;
@@ -451,7 +451,9 @@ export const useFreshchatGetMoreMessages = (
   return getMoreMessages;
 };
 
-export const useFreshchatGetNewMessages = (): (() => void) => {
+export const useFreshchatGetNewMessages = (
+  capabilities: ChatCapabilities | undefined
+): (() => void) => {
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
   const allMessages = useSelector(selectFreshchatAllMessages);
@@ -459,6 +461,11 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
   const driverStatus = useSelector(selectDriverStatus);
   const appState = useRef(AppState.currentState);
   const lastBackgroundMessage = useRef<string | null>(null);
+
+  let pollingInterval = NEW_MESSAGES_POLL_INTERVAL;
+  if (driverStatus && capabilities?.messagePolling[driverStatus]) {
+    pollingInterval = capabilities?.messagePolling[driverStatus];
+  }
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
@@ -550,7 +557,7 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
       // Android
       const backgroundIntervalId = BackgroundTimer.setInterval(() => {
         getNewMessages();
-      }, NEW_MESSAGES_POLL_INTERVAL);
+      }, pollingInterval);
 
       return () => {
         BackgroundTimer.clearInterval(backgroundIntervalId);
@@ -560,7 +567,7 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
     // iOS
     BackgroundTimer.runBackgroundTimer(() => {
       getNewMessages();
-    }, NEW_MESSAGES_POLL_INTERVAL);
+    }, pollingInterval);
 
     return () => {
       BackgroundTimer.stopBackgroundTimer();
@@ -570,7 +577,7 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
     conversationUsers,
     allMessages,
     isFullscreenVideo,
-    driverStatus,
+    pollingInterval,
   ]);
 
   return getNewMessages;
