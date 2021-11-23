@@ -19,9 +19,7 @@ export const useConsumerDispatch = (): any => {
   return dispatch;
 };
 
-let getNewMessages = (): void => {
-  return;
-};
+let getNewMessages = () => {};
 
 const useVariantChat = (
   driverId: string,
@@ -31,7 +29,7 @@ const useVariantChat = (
   dispatch = consumerDispatch;
   useApolloClient(config.variantApi);
   useFreshchatInit(driverId, config.chatProvider, dispatch);
-  getNewMessages = useFreshchatGetNewMessages();
+  getNewMessages = useFreshchatGetNewMessages(config.capabilities);
 };
 
 const handlePushNotification = (

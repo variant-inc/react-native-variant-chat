@@ -71,7 +71,7 @@ import {
 } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
-import { ChatProviderConfig } from '../types/VariantChat';
+import { ChatCapabilities, ChatProviderConfig } from '../types/VariantChat';
 
 let dispatch: any;
 const NEW_MESSAGES_POLL_INTERVAL = 30 * SECOND;
@@ -451,7 +451,9 @@ export const useFreshchatGetMoreMessages = (
   return getMoreMessages;
 };
 
-export const useFreshchatGetNewMessages = (): (() => void) => {
+export const useFreshchatGetNewMessages = (
+  capabilities: ChatCapabilities,
+): (() => void) => {
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
   const allMessages = useSelector(selectFreshchatAllMessages);
@@ -459,6 +461,7 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
   const driverStatus = useSelector(selectDriverStatus);
   const appState = useRef(AppState.currentState);
   const lastBackgroundMessage = useRef<string | null>(null);
+  const pollingInterval = capabilities?.messagePolling[driverStatus] || NEW_MESSAGES_POLL_INTERVAL;
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
@@ -550,7 +553,7 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
       // Android
       const backgroundIntervalId = BackgroundTimer.setInterval(() => {
         getNewMessages();
-      }, NEW_MESSAGES_POLL_INTERVAL);
+      }, pollingInterval);
 
       return () => {
         BackgroundTimer.clearInterval(backgroundIntervalId);
@@ -560,7 +563,7 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
     // iOS
     BackgroundTimer.runBackgroundTimer(() => {
       getNewMessages();
-    }, NEW_MESSAGES_POLL_INTERVAL);
+    }, pollingInterval);
 
     return () => {
       BackgroundTimer.stopBackgroundTimer();
@@ -570,7 +573,7 @@ export const useFreshchatGetNewMessages = (): (() => void) => {
     conversationUsers,
     allMessages,
     isFullscreenVideo,
-    driverStatus,
+    pollingInterval,
   ]);
 
   return getNewMessages;
