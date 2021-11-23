@@ -19,7 +19,8 @@ export interface ChatCapabilities {
     OnDuty: number;
     OffDuty: number;
     SleeperBerth: number;
-  }
+    Unknown: number;
+  };
 }
 
 export interface VariantChatConfig {
