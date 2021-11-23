@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.5 (11/23/2021)
+- Set message polling interval via LD flag [#21](https://github.com/variant-inc/react-native-variant-chat/pull/21) 
+
 ### v1.0.4 (11/22/2021)
 - Implements the custom styles / theme [#18](https://github.com/variant-inc/react-native-variant-chat/pull/18) 
 - Update doc [#20](https://github.com/variant-inc/react-native-variant-chat/pull/20) 
