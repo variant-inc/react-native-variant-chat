@@ -19,7 +19,9 @@ export const useConsumerDispatch = (): any => {
   return dispatch;
 };
 
-let getNewMessages = () => {};
+let getNewMessages = (): void => {
+  return;
+};
 
 const useVariantChat = (
   driverId: string,
