@@ -31,7 +31,7 @@ const useVariantChat = (
   dispatch = consumerDispatch;
   useApolloClient(config.variantApi);
   useFreshchatInit(driverId, config.chatProvider, dispatch);
-  getNewMessages = useFreshchatGetNewMessages();
+  getNewMessages = useFreshchatGetNewMessages(config.capabilities);
 };
 
 const handlePushNotification = (

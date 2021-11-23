@@ -13,9 +13,20 @@ export interface VariantApiConfig {
   url: string;
 }
 
+export interface ChatCapabilities {
+  messagePolling: {
+    Driving: number;
+    OnDuty: number;
+    OffDuty: number;
+    SleeperBerth: number;
+    Unknown: number;
+  };
+}
+
 export interface VariantChatConfig {
   chatProvider: ChatProviderConfig;
   variantApi: VariantApiConfig;
+  capabilities?: ChatCapabilities;
 }
 
 export interface VariantChatProps {
