@@ -4,7 +4,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import { EventRegister } from 'react-native-event-listeners';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
-import { SECOND } from 'time-constants';
+import { MINUTE } from 'time-constants';
 import { v4 as uuidv4 } from 'uuid';
 
 import { FreshchatCommunicationError } from '../lib/Exception';
@@ -74,7 +74,7 @@ import { IOpsMessage } from '../types/Message.interface';
 import { ChatCapabilities, ChatProviderConfig } from '../types/VariantChat';
 
 let dispatch: any;
-const NEW_MESSAGES_POLL_INTERVAL = 30 * SECOND;
+const NEW_MESSAGES_POLL_INTERVAL = 15 * MINUTE;
 
 export const useConsumerDispatch = (): any => {
   return dispatch;
@@ -452,7 +452,7 @@ export const useFreshchatGetMoreMessages = (
 };
 
 export const useFreshchatGetNewMessages = (
-  capabilities: ChatCapabilities,
+  capabilities: ChatCapabilities
 ): (() => void) => {
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
@@ -461,7 +461,11 @@ export const useFreshchatGetNewMessages = (
   const driverStatus = useSelector(selectDriverStatus);
   const appState = useRef(AppState.currentState);
   const lastBackgroundMessage = useRef<string | null>(null);
-  const pollingInterval = capabilities?.messagePolling[driverStatus] || NEW_MESSAGES_POLL_INTERVAL;
+
+  let pollingInterval = NEW_MESSAGES_POLL_INTERVAL;
+  if (driverStatus && capabilities?.messagePolling[driverStatus]) {
+    pollingInterval = capabilities?.messagePolling[driverStatus];
+  }
 
   useEffect(() => {
     AppState.addEventListener('change', handleAppStateChange);
