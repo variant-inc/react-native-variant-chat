@@ -19,6 +19,7 @@ import { ChatProviderConfig } from '../../types/VariantChat';
 import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
 
 const FRESHCHAT_FAILED_MESSAGES = '@ps-freshchat-failed-messages';
+const FRESHCHAT_UNREAD_MESSAGE_COUNTS = '@ps-freshchat-unread-message-counts';
 const MESSAGES_PER_PAGE = 50;
 const AXIOS_REQUEST_TIMEOUT = 15;
 
@@ -297,6 +298,74 @@ export const removeFreshchatFailedMessage = async (
     EventRegister.emit('error', {
       type: 'internal',
       message: `Could not save failed message: ${error.message}`,
+    });
+  }
+};
+
+export const setFreshchatUnreadMessageCounts = async (
+  channelName: string,
+  count = -1
+): Promise<void> => {
+  try {
+    const messageCounts = await getFreshchatUnreadMessageCounts();
+
+    if (count === -1) {
+      messageCounts[channelName] = (messageCounts[channelName] || 0) + 1;
+    } else {
+      messageCounts[channelName] = count;
+    }
+
+    await AsyncStorage.setItem(
+      `${FRESHCHAT_UNREAD_MESSAGE_COUNTS}`,
+      JSON.stringify(messageCounts)
+    );
+
+    EventRegister.emit('unreadMessageCounts', {
+      type: 'background',
+      message: messageCounts,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      message: `Could not save the unread message counts: ${error.message}`,
+    });
+  }
+};
+
+export const getFreshchatUnreadMessageCounts = async (): Promise<
+  Record<string, number>
+> => {
+  try {
+    const messageCounts = await AsyncStorage.getItem(
+      `${FRESHCHAT_UNREAD_MESSAGE_COUNTS}`
+    );
+
+    if (messageCounts) {
+      return JSON.parse(messageCounts);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      message: `Could not get the unread message counts: ${error.message}`,
+    });
+  }
+
+  return {};
+};
+
+export const removeFreshchatUnreadMessageCounts = async (
+  channelName: string
+): Promise<void> => {
+  try {
+    setFreshchatUnreadMessageCounts(channelName, 0);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      message: `Could not save the unread message counts: ${error.message}`,
     });
   }
 };

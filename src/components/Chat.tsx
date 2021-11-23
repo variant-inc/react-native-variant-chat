@@ -1,3 +1,4 @@
+import { removeFreshchatUnreadMessageCounts } from 'lib/Freshchat/Freshchat';
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
@@ -121,6 +122,12 @@ const Chat = (props: VariantChatProps): ReactElement => {
       Keyboard.removeListener('keyboardDidHide', handleDidHideKeyboard);
     };
   }, []);
+
+  useEffect(() => {
+    if (channelName) {
+      removeFreshchatUnreadMessageCounts(channelName);
+    }
+  }, [channelName]);
 
   useEffect(() => {
     const allMessages: IOpsMessage[] = [];

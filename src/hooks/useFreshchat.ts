@@ -22,6 +22,7 @@ import {
   removeFreshchatFailedMessage,
   setFreshchatFailedMessage,
   setFreshchatMessage,
+  setFreshchatUnreadMessageCounts,
 } from '../lib/Freshchat/Freshchat';
 import { getFreshchatConversations } from '../lib/Freshchat/FreshchatConversation';
 import { filterNewMessages } from '../lib/Freshchat/Utils';
@@ -459,10 +460,12 @@ export const useFreshchatGetNewMessages = (
   const allMessages = useSelector(selectFreshchatAllMessages);
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
   const driverStatus = useSelector(selectDriverStatus);
+
   const appState = useRef(AppState.currentState);
   const lastBackgroundMessage = useRef<string | null>(null);
 
   let pollingInterval = NEW_MESSAGES_POLL_INTERVAL;
+
   if (driverStatus && capabilities?.messagePolling[driverStatus]) {
     pollingInterval = capabilities?.messagePolling[driverStatus];
   }
@@ -473,6 +476,34 @@ export const useFreshchatGetNewMessages = (
       AppState.removeEventListener('change', handleAppStateChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      // Android
+      const backgroundIntervalId = BackgroundTimer.setInterval(() => {
+        getNewMessages();
+      }, pollingInterval);
+
+      return () => {
+        BackgroundTimer.clearInterval(backgroundIntervalId);
+      };
+    }
+
+    // iOS
+    BackgroundTimer.runBackgroundTimer(() => {
+      getNewMessages();
+    }, pollingInterval);
+
+    return () => {
+      BackgroundTimer.stopBackgroundTimer();
+    };
+  }, [
+    conversationInfo,
+    conversationUsers,
+    allMessages,
+    isFullscreenVideo,
+    pollingInterval,
+  ]);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
     appState.current = nextAppState;
@@ -543,42 +574,16 @@ export const useFreshchatGetNewMessages = (
           !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
           !reopenedMessageMark.some((s) => newMessage.includes(s))
         ) {
-          EventRegister.emit('messageReceived', {
+          EventRegister.emit('messageReceivedInBackground', {
             type: 'background',
             message: newMessage,
           });
+
+          setFreshchatUnreadMessageCounts(conversation.channel);
         }
       }
     }
   };
-
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      // Android
-      const backgroundIntervalId = BackgroundTimer.setInterval(() => {
-        getNewMessages();
-      }, pollingInterval);
-
-      return () => {
-        BackgroundTimer.clearInterval(backgroundIntervalId);
-      };
-    }
-
-    // iOS
-    BackgroundTimer.runBackgroundTimer(() => {
-      getNewMessages();
-    }, pollingInterval);
-
-    return () => {
-      BackgroundTimer.stopBackgroundTimer();
-    };
-  }, [
-    conversationInfo,
-    conversationUsers,
-    allMessages,
-    isFullscreenVideo,
-    pollingInterval,
-  ]);
 
   return getNewMessages;
 };

@@ -245,6 +245,7 @@ const freshchatSlice = createSlice({
     setConversationInfo: handleSetConversationInfo,
     setConversationUser: handleSetConversationUser,
     setChannels: handleSetChannels,
+    setCurrentChannelName: handleSetCurrentChannelName,
     addConversation: handleAddConversation,
     setMessages: handleSetMessages,
     appendMessages: handleAppendMessages,
@@ -267,6 +268,8 @@ export const freshchatSetConversationInfo =
 export const freshchatSetConversationUser =
   freshchatSlice.actions.setConversationUser;
 export const freshchatSetChannels = freshchatSlice.actions.setChannels;
+export const freshchatSetCurrentChannelName =
+  freshchatSlice.actions.setCurrentChannelName;
 export const freshchatAddConversation = freshchatSlice.actions.addConversation;
 export const freshchatSetMessages = freshchatSlice.actions.setMessages;
 export const freshchatAppendMessages = freshchatSlice.actions.appendMessages;
