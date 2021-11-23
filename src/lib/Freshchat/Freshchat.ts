@@ -80,7 +80,6 @@ const initFreshchatSDK = async (
 export const registerPushNotificationToken = async (
   token: string
 ): Promise<void> => {
-  console.log('SET PUSH NOTIFICATION TOKEN ' + token);
   Freshchat.setPushRegistrationToken(token);
 };
 
@@ -93,7 +92,6 @@ export const tryGetNewMessagesOnPushNotificationEvent = (
     (n: FirebaseMessagingTypes.RemoteMessage) => {
       if (n) {
         // Handle the freshchat notification... retrieve new messages....
-        console.log('PUSH NOTIFICATION MESSAGE: ${n}');
         getNewMessages();
         return true;
       }
