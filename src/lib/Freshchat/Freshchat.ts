@@ -304,15 +304,15 @@ export const removeFreshchatFailedMessage = async (
 
 export const setFreshchatUnreadMessageCounts = async (
   channelName: string,
-  count = -1
+  count = 0
 ): Promise<void> => {
   try {
     const messageCounts = await getFreshchatUnreadMessageCounts();
 
-    if (count === -1) {
-      messageCounts[channelName] = (messageCounts[channelName] || 0) + 1;
+    if (count === 0) {
+      messageCounts[channelName] = 0;
     } else {
-      messageCounts[channelName] = count;
+      messageCounts[channelName] = (messageCounts[channelName] || 0) + count;
     }
 
     await AsyncStorage.setItem(
@@ -360,7 +360,7 @@ export const removeFreshchatUnreadMessageCounts = async (
   channelName: string
 ): Promise<void> => {
   try {
-    setFreshchatUnreadMessageCounts(channelName, 0);
+    setFreshchatUnreadMessageCounts(channelName);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     EventRegister.emit('error', {
