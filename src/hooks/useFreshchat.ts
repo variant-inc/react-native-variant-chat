@@ -553,13 +553,15 @@ export const useFreshchatGetNewMessages = (
       checkConversationUsers(dispatch, conversationUsers, response.messages);
 
       if (appState.current === 'background' && !isFullscreenVideo) {
-        if (lastBackgroundMessage.current === newMessages[0].id) {
+        const lastMessage = newMessages[newMessages.length - 1];
+
+        if (lastBackgroundMessage.current === lastMessage.id) {
           return;
         }
 
-        lastBackgroundMessage.current = newMessages[0]?.id;
+        lastBackgroundMessage.current = lastMessage?.id;
 
-        let newMessage = newMessages[0]?.message_parts[0]?.text?.content || '';
+        let newMessage = lastMessage?.message_parts[0]?.text?.content || '';
 
         if (newMessage.includes(urgentMessageMark)) {
           // urgent message
@@ -574,7 +576,7 @@ export const useFreshchatGetNewMessages = (
           !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
           !reopenedMessageMark.some((s) => newMessage.includes(s))
         ) {
-          EventRegister.emit('messageReceivedInBackground', {
+          EventRegister.emit('messageReceived', {
             type: 'background',
             message: newMessage,
           });
