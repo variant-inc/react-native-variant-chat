@@ -310,7 +310,7 @@ Property | Description | Type
 
 You can force an on-demand fetching of messages from the chat provider by calling `syncMessages()`.
 
-Note: `handlePushNotification()` automatically fetches chat provider messages as needed. Foreground push notifications are received from Freshchat. However, background notifications on iOS are not received. Freshchat does not set the APNs property `contentAvailable` which is required for receiving background notifications. It's possible to simulate the handling of background message fetching by forcing on-demand fetching of messages using `syncMessages()`. Although having nothing to do with receiving a push notification, fetching messages when the app comes to the foreground will catch the case when the driver is responding to the reciept of a background push notification (e.g. presentation of a banner).
+Note: `handlePushNotification()` automatically fetches chat provider messages as needed. Foreground push notifications are received from Freshchat. However, background notifications on iOS are not received. Freshchat does not set the APNs property `contentAvailable` which is required for receiving background notifications. It's possible to simulate the handling of background message fetching by forcing on-demand fetching of messages using `syncMessages()`. Although having nothing to do with receiving a push notification, fetching messages when the app comes to the foreground will catch the case when the driver is responding to the receipt of a background push notification (e.g. presentation of a banner).
 
 ```javascript
 import { syncMessages } from 'react-native-variant-chat';
