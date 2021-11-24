@@ -1,7 +1,7 @@
 import { removeFreshchatUnreadMessageCounts } from 'lib/Freshchat/Freshchat';
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import { Keyboard, StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, TextStyle, View } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
@@ -298,7 +298,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
-        textStyle={[styles.textGeneral, textStyle]}
+        textStyle={{ ...styles.textGeneral, ...(textStyle as TextStyle) }}
         lightboxProps={{
           renderHeader: renderLightBoxClose,
           backgroundColor: styles.lightbox.backgroundColor,
