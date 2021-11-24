@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.6 (11/24/2021)
+- Push notification and sync messages implementation [#23](https://github.com/variant-inc/react-native-variant-chat/pull/23) 
+
 ### v1.0.5 (11/23/2021)
 - Set message polling interval via LD flag [#21](https://github.com/variant-inc/react-native-variant-chat/pull/21) 
 
