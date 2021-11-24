@@ -1,4 +1,3 @@
-import { removeFreshchatUnreadMessageCounts } from 'lib/Freshchat/Freshchat';
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, TextStyle, View } from 'react-native';
@@ -21,6 +20,7 @@ import {
   useFreshchatSendMessage,
   useFreshchatSetIsFullscreenVideo,
 } from '../hooks/useFreshchat';
+import { removeFreshchatUnreadMessageCounts } from '../lib/Freshchat/Freshchat';
 import {
   selectFreshchatChannel,
   selectFreshchatConversationInfo,
