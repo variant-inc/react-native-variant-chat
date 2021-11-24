@@ -86,19 +86,19 @@ export const registerPushNotificationToken = async (
 export const tryGetNewMessagesOnPushNotificationEvent = (
   notification: FirebaseMessagingTypes.RemoteMessage,
   getNewMessages: () => void
+): boolean => {
+  if (notification.data?.source === 'freshchat_user') {
+    // Handle the freshchat notification by retrieving new messages.
+    getNewMessages();
+    return true;
+  }
+  return false;
+};
+
+export const getNewMessagesOnSyncRequest = (
+  getNewMessages: () => void
 ): void => {
-  return Freshchat.isFreshchatNotification(
-    notification,
-    (n: FirebaseMessagingTypes.RemoteMessage) => {
-      if (n) {
-        // Handle the freshchat notification... retrieve new messages....
-        getNewMessages();
-        return true;
-      }
-      // Notification not handled here.
-      return false;
-    }
-  );
+  getNewMessages();
 };
 
 export async function getFreshchatUser(userId: string): Promise<FreshchatUser> {
