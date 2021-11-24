@@ -5,9 +5,6 @@ import { DriverStatus } from './types/DriverStatus';
 export * from './types/VariantChatEvent';
 export * from './types/VariantChatState';
 
-// export { VariantChatEventType };
-// export { VariantChatState };
-
 /**
  * Initialize the component libary.
  */
@@ -21,6 +18,11 @@ export { useVariantChat } from './lib/VariantChat';
  */
 export { registerPushNotificationToken } from './lib/VariantChat';
 export { handlePushNotification } from './lib/VariantChat';
+
+/**
+ * Provides a remote synchonization of messages.
+ */
+export { syncMessages } from './lib/VariantChat';
 
 /**
  * Provides the user interface component.
