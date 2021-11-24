@@ -19,6 +19,11 @@ export { registerPushNotificationToken } from './lib/VariantChat';
 export { handlePushNotification } from './lib/VariantChat';
 
 /**
+ * Provides a remote synchonization of messages.
+ */
+export { syncMessages } from './lib/VariantChat';
+
+/**
  * Provides the user interface component.
  */
 export { VariantChat } from './components/VariantChat';
