@@ -9,6 +9,7 @@ import { variantChatSetDriverStatus } from '../store/slices/chat/chat';
 import { DriverStatus } from '../types/DriverStatus';
 import { VariantChatConfig } from '../types/VariantChat';
 import {
+  getNewMessagesOnSyncRequest,
   registerPushNotificationToken,
   tryGetNewMessagesOnPushNotificationEvent,
 } from './Freshchat/Freshchat';
@@ -36,8 +37,12 @@ const useVariantChat = (
 
 const handlePushNotification = (
   notification: FirebaseMessagingTypes.RemoteMessage
-): void => {
+): boolean => {
   return tryGetNewMessagesOnPushNotificationEvent(notification, getNewMessages);
+};
+
+const syncMessages = (): void => {
+  getNewMessagesOnSyncRequest(getNewMessages);
 };
 
 const setDriverStatus = (status: DriverStatus): void => {
@@ -48,5 +53,6 @@ export {
   handlePushNotification,
   registerPushNotificationToken,
   setDriverStatus,
+  syncMessages,
   useVariantChat,
 };

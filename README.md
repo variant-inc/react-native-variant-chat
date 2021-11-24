@@ -9,10 +9,18 @@ A React Native chat component for Variant apps. This component wraps a selected 
 - [Initialization](#initialization)
 - [State](#state)
 - [Events](#events)
+- [Synchronize Messages](#synchronize-messages)
 - [Push Notifications](#push-notifications)
 - [Driver Status](#driver-status)
 - [Performance tuning for Freshchat interaction using the Launch Darkly service](#performance-tuning-for-freshchat-interaction-using-the-launch-darkly-service)
 
+## Chat Provider
+
+The chat provider managed by Variant Chat is Freshchat. Freshchat does not provide a real-time (socket) connection to its servers making it challenging to know whena new chat message has been sent from the remote server. To address this condition this component provides some built-in and callable features promoting timely and guaranteed chat message delivery.
+
+- Polling - this component polls the Freshchat server to fetch messages. See [Message polling capability](message-polling-capability).
+- Push notifications - arrival of push notifications create events that stimulate this component to fetch new messages. See [Push Notifications](#push-notifications).
+- App events - app state transitions can be used to stimulate the fetching of messages. See [Synchronize Messages](#synchronize-messages).
 
 ## Installation
 
@@ -168,7 +176,7 @@ useVariantChat = (
   dispatch: appDispatch);
 ```
 
-### Basic VariantChat configuration.
+### Basic VariantChat configuration
 
 Argument | Description | Type | Default
 ------ | ------ | ------ | ------
@@ -176,7 +184,7 @@ Argument | Description | Type | Default
 **`config`** | Service configuration including `chatProvider`, `variantApi`, and `capabilities` | **Required** (`capabilities` optional)
 **`dispatch`** | Your redux store dispatch function | Dispatch<any> | **Required**
 
-### Chat provider configuration.
+### Chat provider configuration
 
 Chat provider specific configuration; `chatProvider: ChatProviderConfig`.
 
@@ -188,7 +196,7 @@ Argument | Description | Type | Default
 **`appKey`** | .. | String | **Required**
 **`channelNames`** | .. | Array | **Required**
 
-### Variant API service configuration.
+### Variant API service configuration
 
 Variant app backend specific configuration; `variantApi: VariantApiConfig`.
 
@@ -197,7 +205,7 @@ Argument | Description | Type | Default
 **`accessToken`** | .. | String | **Required**
 **`url`** | .. | String | **Required**
 
-### Capability settings.
+### Capability settings
 
 VariantChat capability settings; `capabilities: ChatCapabilities`.
 
@@ -205,7 +213,7 @@ Argument | Description | Type | Default
 ------ | ------ | ------ | ------
 **`messagePolling`** | Third-party chat provider message polling settings | ChatCapabilities | See [Message polling capability](message-polling-capabillity)
 
-#### Message polling capability.
+#### Message polling capability
 
 Third-party chat provider message polling settings; `messagePolling`.
 
@@ -298,6 +306,18 @@ Property | Description | Type
 **`type`** | The type of event received | String
 **`message`** | The event description | String
 
+## Synchronize Messages
+
+You can force an on-demand fetching of messages from the chat provider by calling `syncMessages()`.
+
+Note: `handlePushNotification()` automatically fetches chat provider messages as needed. Foreground push notifications are received from Freshchat. However, background notifications on iOS are not received. Freshchat does not set the APNs property `contentAvailable` which is required for receiving background notifications. It's possible to simulate the handling of background message fetching by forcing on-demand fetching of messages using `syncMessages()`. Although having nothing to do with receiving a push notification, fetching messages when the app comes to the foreground will catch the case when the driver is responding to the receipt of a background push notification (e.g. presentation of a banner).
+
+```javascript
+import { syncMessages } from 'react-native-variant-chat';
+
+syncMessages();
+```
+
 ### Push Notifications
 
 The chat provider can send push notifications to the app. To enable the chat provider to target the app the push notification token should be provided to Variant chat.
@@ -368,7 +388,3 @@ Launch Darkly can be used to provide the remote management of polling intervals.
 ```
 
 All driver message polling changes in the consuming mobile app are applied immediately upon committing changes on Launch Darkly. If the consuming mobile app is not presently running then the changes will be picked up next time the app launches. If the consuming mobile app is presently running then the changes are applied dynamically within a few seconds.
-
-## License
-
-MIT
