@@ -321,7 +321,7 @@ export const setFreshchatUnreadMessageCounts = async (
     );
 
     EventRegister.emit('unreadMessageCounts', {
-      type: 'background',
+      type: 'unreadMessageCounts',
       message: messageCounts,
     });
 

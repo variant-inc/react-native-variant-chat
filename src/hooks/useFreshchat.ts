@@ -574,7 +574,7 @@ export const useFreshchatGetNewMessages = (
           !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
           !reopenedMessageMark.some((s) => newMessage.includes(s))
         ) {
-          EventRegister.emit('messageReceivedInBackground', {
+          EventRegister.emit('messageReceived', {
             type: 'background',
             message: newMessage,
           });
