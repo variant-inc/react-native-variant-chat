@@ -94,7 +94,8 @@ export const useFreshchatInit = (
 ): FreshchatInit => {
   dispatch = consumerDispatch;
 
-  const [initialized, setInitialized] = useState(FreshchatInit.None);
+  // const [initialized, setInitialized] = useState(FreshchatInit.None);
+  const initializedRef = useRef(FreshchatInit.None);
 
   const init = async (providerConfig: ChatProviderConfig) => {
     if (driverId) {
@@ -102,6 +103,9 @@ export const useFreshchatInit = (
       let conversationInfo: FreshchatConversationInfo = null;
 
       try {
+        // reset reducer
+        resetVariantChat();
+
         conversationInfo = await getFreshchatConversations(driverId);
         if (conversationInfo) {
           await dispatch(freshchatSetConversationInfo({ conversationInfo }));
@@ -202,14 +206,17 @@ export const useFreshchatInit = (
           });
       }
 
-      setInitialized(FreshchatInit.Success);
+      // setInitialized(FreshchatInit.Success);
+      initializedRef.current = FreshchatInit.Success;
     }
 
     Tts.getInitStatus();
   };
 
   const conversationError = (message: string) => {
-    setInitialized(FreshchatInit.Fail);
+    // setInitialized(FreshchatInit.Fail);
+    initializedRef.current = FreshchatInit.Fail;
+
     EventRegister.emit('error', {
       type: 'conversation',
       message: `Conversation error: ${message}`,
@@ -217,7 +224,9 @@ export const useFreshchatInit = (
   };
 
   const serviceError = (message: string) => {
-    setInitialized(FreshchatInit.Fail);
+    // setInitialized(FreshchatInit.Fail);
+    initializedRef.current = FreshchatInit.Fail;
+
     EventRegister.emit('error', {
       type: 'service',
       message: `Service error: ${message}`,
@@ -227,15 +236,19 @@ export const useFreshchatInit = (
   useEffect(() => {
     try {
       if (
-        initialized !== FreshchatInit.Success &&
-        initialized !== FreshchatInit.InProgress
+        initializedRef.current !== FreshchatInit.Success &&
+        initializedRef.current !== FreshchatInit.InProgress
       ) {
-        setInitialized(FreshchatInit.InProgress);
+        // setInitialized(FreshchatInit.InProgress);
+        initializedRef.current = FreshchatInit.InProgress;
+
         init(config);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setInitialized(FreshchatInit.Fail);
+      // setInitialized(FreshchatInit.Fail);
+      initializedRef.current = FreshchatInit.Fail;
+
       if (error instanceof FreshchatCommunicationError) {
         serviceError(
           `Chat provider error: ${error.message} (driver ${driverId})`
@@ -246,9 +259,14 @@ export const useFreshchatInit = (
         );
       }
     }
-  }, []);
 
-  return initialized;
+    return () => {
+      // setInitialized(FreshchatInit.None);
+      initializedRef.current = FreshchatInit.None;
+    };
+  }, [driverId]);
+
+  return initializedRef.current;
 };
 
 const getChannels = async (): Promise<FreshchatChannel[] | null> => {
