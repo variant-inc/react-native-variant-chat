@@ -36,6 +36,49 @@ npm install react-native-tts
 npm install react-native-freshchat-sdk
 ```
 
+### Android specific installation
+
+Make the following changes to Android configuration to avoid Freshchat SDK runtime warnings about a file provider for the camera.
+
+In `android/app/build.gradle` add the following lines. Modify appropriatley for the consuming app.
+
+```javascript
+defaultConfig {
+  ...
+  resValue "string", "freshchat_file_provider_authority", "com.drivevariant.driver_app.freshchat.provider" // Add this line
+}
+
+productFlavors {
+  development {
+    ...
+    resValue "string", "freshchat_file_provider_authority", "com.drivevariant.driver_app.dev.freshchat.provider" // Add this line
+  }
+  staging {
+    ...
+    resValue "string", "freshchat_file_provider_authority", "com.drivevariant.driver_app.staging.freshchat.provider" // Add this line
+  }
+}
+
+```
+
+In `android/app/src/main/AndroidManifest.xml` add the following lines.
+
+```javascript
+<application
+  ...
+  <provider
+    android:name="androidx.core.content.FileProvider"
+    android:authorities="${applicationId}.freshchat.provider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+      android:name="android.support.FILE_PROVIDER_PATHS"
+      android:resource="@xml/freshchat_file_provider_paths" />
+  </provider>
+  ...
+</application>
+```
+
 ## Integration Steps
 
 Several steps are required to integrate this component.
