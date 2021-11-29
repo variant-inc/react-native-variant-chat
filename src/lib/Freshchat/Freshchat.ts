@@ -67,14 +67,20 @@ const initFreshchatSDK = async (
     (error: string) => {
       EventRegister.emit('error', {
         type: 'internal',
-        message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
+        data: {
+          message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
+        },
       });
     }
   );
 
   EventRegister.emit('debug', {
     type: 'log',
-    message: `Init Freshchat SDK with user: ${JSON.stringify(freshchatUser)})`,
+    data: {
+      message: `Init Freshchat SDK with user: ${JSON.stringify(
+        freshchatUser
+      )})`,
+    },
   });
 };
 
@@ -249,7 +255,9 @@ export const setFreshchatFailedMessage = async (
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not save failed message: ${error.message}`,
+      data: {
+        message: `Could not save failed message: ${error.message}`,
+      },
     });
   }
 };
@@ -269,7 +277,9 @@ export const getFreshchatFailedMessages = async (
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not get failed message: ${error.message}`,
+      data: {
+        message: `Could not get failed message: ${error.message}`,
+      },
     });
   }
   return [];
@@ -295,7 +305,9 @@ export const removeFreshchatFailedMessage = async (
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not save failed message: ${error.message}`,
+      data: {
+        message: `Could not save failed message: ${error.message}`,
+      },
     });
   }
 };
@@ -320,14 +332,16 @@ export const setFreshchatUnreadMessageCounts = async (
 
     EventRegister.emit('unreadMessageCounts', {
       type: 'unreadMessageCounts',
-      message: messageCounts,
+      data: messageCounts,
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not save the unread message counts: ${error.message}`,
+      data: {
+        message: `Could not save the unread message counts: ${error.message}`,
+      },
     });
   }
 };
@@ -347,7 +361,9 @@ export const getFreshchatUnreadMessageCounts = async (): Promise<
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not get the unread message counts: ${error.message}`,
+      data: {
+        message: `Could not get the unread message counts: ${error.message}`,
+      },
     });
   }
 
@@ -363,7 +379,9 @@ export const removeFreshchatUnreadMessageCounts = async (
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not save the unread message counts: ${error.message}`,
+      data: {
+        message: `Could not save the unread message counts: ${error.message}`,
+      },
     });
   }
 };

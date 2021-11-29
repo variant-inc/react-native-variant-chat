@@ -120,9 +120,11 @@ export const useFreshchatInit = (
 
         EventRegister.emit('debug', {
           type: 'log',
-          message: `Conversations available for driver: ${JSON.stringify(
-            conversationInfo
-          )})`,
+          data: {
+            message: `Conversations available for driver: ${JSON.stringify(
+              conversationInfo
+            )})`,
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -219,7 +221,9 @@ export const useFreshchatInit = (
 
     EventRegister.emit('error', {
       type: 'conversation',
-      message: `Conversation error: ${message}`,
+      data: {
+        message: `Conversation error: ${message}`,
+      },
     });
   };
 
@@ -229,7 +233,9 @@ export const useFreshchatInit = (
 
     EventRegister.emit('error', {
       type: 'service',
-      message: `Service error: ${message}`,
+      data: {
+        message: `Service error: ${message}`,
+      },
     });
   };
 
@@ -540,7 +546,9 @@ export const useFreshchatGetNewMessages = (
     } catch (error: any) {
       EventRegister.emit('error', {
         type: 'internal',
-        message: `Chat message fetch failed: ${error.message}`,
+        data: {
+          message: `Chat message fetch failed: ${error.message}`,
+        },
       });
     }
   };
@@ -596,7 +604,10 @@ export const useFreshchatGetNewMessages = (
         ) {
           EventRegister.emit('messageReceived', {
             type: 'background',
-            message: newMessage,
+            data: {
+              channelName: conversation.channel,
+              message: newMessage,
+            },
           });
 
           setFreshchatUnreadMessageCounts(conversation.channel);

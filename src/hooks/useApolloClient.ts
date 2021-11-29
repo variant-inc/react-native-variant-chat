@@ -39,7 +39,9 @@ export const useApolloClient = (
         ) {
           EventRegister.emit('error', {
             type: 'internal',
-            message: `GraphQL error: ${operation.operationName} - ${message}`,
+            data: {
+              message: `GraphQL error: ${operation.operationName} - ${message}`,
+            },
           });
         }
       });
@@ -48,7 +50,9 @@ export const useApolloClient = (
     if (networkError) {
       EventRegister.emit('error', {
         type: 'internal',
-        message: `GraphQL network error: ${operation.operationName} - ${networkError.message}`,
+        data: {
+          message: `GraphQL network error: ${operation.operationName} - ${networkError.message}`,
+        },
       });
     }
   });
