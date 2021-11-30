@@ -307,16 +307,6 @@ export const rootReducer = combineReducers({
 });
 ```
 
-### Clearing State
-
-It is possible to clear the persistent state of the component. For example, this might need to be done when the consuming apps user changes (i.e. on logout).
-
-```javascript
-import {resetVariantChat} from 'react-native-variant-chat';
-
-resetVariantChat();
-```
-
 ## Events
 
 ```javascript
