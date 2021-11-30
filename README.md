@@ -330,7 +330,6 @@ The following events are emitted from the library. Your app should register for 
 Event name | Description | Types | Data
 ------ | ------ | ------ | ------
 **`error`** | Variant chat has encountered an error | `conversation`, `internal`, `service` | {message: String}
-**`info`** | Variant chat has provided some useful information | `notYetImplemented` | {message: String}
 **`messageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `background` | {channelName: String, message: String}
 **`unreadMessageCounts`** | For each channel, the number of unread messages | `unreadMessageCounts` | {'channel-name': Number, ...} e.g. channel-name may be 'Chat with Team'.
 
