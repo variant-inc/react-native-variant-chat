@@ -1,6 +1,6 @@
 # react-native-variant-chat
 
-A React Native chat component for Variant apps. This component wraps a selected chat provider to provide a uniform experience across multiple consuming app. The chat provider is currently Freshchat. This component may be upgraded in the future to adapt a newly selected chat provider (ideally withou changing the interface exposed by this component).
+A React Native chat component for Variant apps. This component wraps a selected chat provider to create a uniform user experience across multiple consuming apps. The chat provider is currently Freshchat. This component may be upgraded in the future to adapt a newly selected chat provider (ideally without changing the interface exposed by this component).
 
 - [Installation](#installation)
 - [Integration Steps](#integration-steps)
@@ -16,7 +16,7 @@ A React Native chat component for Variant apps. This component wraps a selected 
 
 ## Chat Provider
 
-The chat provider managed by Variant Chat is Freshchat. Freshchat does not provide a real-time (socket) connection to its servers making it challenging to know whena new chat message has been sent from the remote server. To address this condition this component provides some built-in and callable features promoting timely and guaranteed chat message delivery.
+The chat provider managed by Variant Chat is Freshchat. Freshchat does not provide a real-time (socket) connection to its servers making it challenging to know when a new chat message has been sent by the remote server. To address this condition this component provides some built-in and callable features promoting timely and guaranteed chat message delivery.
 
 - Polling - this component polls the Freshchat server to fetch messages. See [Message polling capability](message-polling-capability).
 - Push notifications - arrival of push notifications create events that stimulate this component to fetch new messages. See [Push Notifications](#push-notifications).
@@ -39,8 +39,9 @@ npm install react-native-freshchat-sdk
 ### Android specific installation
 
 Make the following changes to Android configuration to avoid Freshchat SDK runtime warnings about a file provider for the camera.
+_Note: These steps support the use of the Freshchat SDK only. Changing chat providers will likely remove the need for these steps._
 
-In `android/app/build.gradle` add the following lines. Modify appropriatley for the consuming app.
+In the consuming apps `android/app/build.gradle` add the following lines.
 
 ```javascript
 defaultConfig {
@@ -61,10 +62,10 @@ productFlavors {
 
 ```
 
-In `android/app/src/main/AndroidManifest.xml` add the following lines.
+In the consuming apps `android/app/src/main/AndroidManifest.xml` add the following lines.
 
 ```javascript
-<application
+<application>
   ...
   <provider
     android:name="androidx.core.content.FileProvider"
@@ -95,7 +96,7 @@ Several steps are required to integrate this component.
 ```javascript
 import {VariantChat, VariantChatEventType} from "react-native-variant-chat";
 
-export const ChatModal: React.FC = () => {
+export const ChatScreen: React.FC = () => {
 
   useEffect(() => {
     const errorListener = VariantChatEvent.addEventListener(
@@ -164,33 +165,33 @@ export interface LeftRightStyle<T> {
 
 Prop | Description | Type
 ------ | ------ | ------
-**containerStyle** | TBD | StyleProp<ViewStyle>
-**scrollToBottomStyle** | TBD | StyleProp<ViewStyle>
-**messagesContainerStyle** | TBD | StyleProp<ViewStyle>
-**textInputStyle** | TBD | StyleProp<TextStyle>
-**textStyle** | TBD | StyleProp<TextStyle>
-**timeTextStyle** | TBD | LeftRightStyle<TextStyle>
-**imageStyle** | TBD | StyleProp<TextStyle>
-**sendContainerStyle** | TBD | StyleProp<ViewStyle>
-**sendTextStyle** | TBD | StyleProp<TextStyle>
-**messageContainerStyle** | TBD | LeftRightStyle<TextStyle>
-**videoMessageContainerStyle** | TBD | StyleProp<ViewStyle>
-**videoMessageVideoStyle** | TBD | StyleProp<ViewStyle>
-**textMessageTextStyle** | TBD | StyleProp<TextStyle>
-**userNameTextStyle** | TBD | LeftRightStyle<TextStyle>
-**actionsContainerStyle** | TBD | StyleProp<ViewStyle>
-**actionWrapperSyle** | TBD | StyleProp<ViewStyle>
-**bubbleContainerStyle** | TBD | LeftRightStyle<ViewStyle>
-**bubbleWrapperStyle** | TBD | LeftRightStyle<ViewStyle>
-**bubbleTextStyle** | TBD | LeftRightStyle<TextStyle>
-**bubbleBottomContainerStyle** | TBD | LeftRightStyle<ViewStyle>
-**bubbleTickStyle** | TBD | StyleProp<TextStyle>
-**lightboxCloseButtonStyle** | TBD | StyleProp<ViewStyle>
-**lightboxProps** | TBD | any
+**`containerStyle`** | TBD | StyleProp<ViewStyle>
+**`scrollToBottomStyle`** | TBD | StyleProp<ViewStyle>
+**`messagesContainerStyle`** | TBD | StyleProp<ViewStyle>
+**`textInputStyle`** | TBD | StyleProp<TextStyle>
+**`textStyle`** | TBD | StyleProp<TextStyle>
+**`timeTextStyle`** | TBD | LeftRightStyle<TextStyle>
+**`imageStyle`** | TBD | StyleProp<TextStyle>
+**`sendContainerStyle`** | TBD | StyleProp<ViewStyle>
+**`sendTextStyle`** | TBD | StyleProp<TextStyle>
+**`messageContainerStyle`** | TBD | LeftRightStyle<TextStyle>
+**`videoMessageContainerStyle`** | TBD | StyleProp<ViewStyle>
+**`videoMessageVideoStyle`** | TBD | StyleProp<ViewStyle>
+**`textMessageTextStyle`** | TBD | StyleProp<TextStyle>
+**`userNameTextStyle`** | TBD | LeftRightStyle<TextStyle>
+**`actionsContainerStyle`** | TBD | StyleProp<ViewStyle>
+**`actionWrapperSyle`** | TBD | StyleProp<ViewStyle>
+**`bubbleContainerStyle`** | TBD | LeftRightStyle<ViewStyle>
+**`bubbleWrapperStyle`** | TBD | LeftRightStyle<ViewStyle>
+**`bubbleTextStyle`** | TBD | LeftRightStyle<TextStyle>
+**`bubbleBottomContainerStyle`** | TBD | LeftRightStyle<ViewStyle>
+**`bubbleTickStyle`** | TBD | StyleProp<TextStyle>
+**`lightboxCloseButtonStyle`** | TBD | StyleProp<ViewStyle>
+**`lightboxProps`** | TBD | any
 
 ## Initialization
 
-The library must be initialized before attempting to render the `<VariantChat>` component. The `useVariantChat` hook initializes the component library.
+Call the `useVariantChat` hook to initialize the component library before attempting to render the `<VariantChat>` component.
 
 ```javascript
 useVariantChat = (
@@ -229,7 +230,7 @@ Argument | Description | Type | Default
 
 ### Chat provider configuration
 
-Chat provider specific configuration; `chatProvider: ChatProviderConfig`.
+Chat provider specific configuration `chatProvider: ChatProviderConfig`.
 
 Argument | Description | Type | Default
 ------ | ------ | ------ | ------
@@ -241,7 +242,7 @@ Argument | Description | Type | Default
 
 ### Variant API service configuration
 
-Variant app backend specific configuration; `variantApi: VariantApiConfig`.
+Variant app backend specific configuration `variantApi: VariantApiConfig`.
 
 Argument | Description | Type | Default
 ------ | ------ | ------ | ------
@@ -250,7 +251,7 @@ Argument | Description | Type | Default
 
 ### Capability settings
 
-VariantChat capability settings; `capabilities: ChatCapabilities`.
+VariantChat capability settings `capabilities: ChatCapabilities`.
 
 Argument | Description | Type | Default
 ------ | ------ | ------ | ------
@@ -262,19 +263,19 @@ Third-party chat provider message polling settings; `messagePolling`.
 
 Argument | Description | Type | Default
 ------ | ------ | ------ | ------
-**`Driving`** | The number of milliseconds between checking for new messages while driver status is "Driving" | number | 900000 (15 mins)
-**`OnDuty`** | The number of milliseconds between checking for new messages while driver status is "OnDuty" | number | 900000 (15 mins)
-**`OffDuty`** | The number of milliseconds between checking for new messages while driver status is "OffDuty" | number | 900000 (15 mins)
-**`SleeperBerth`** | The number of milliseconds between checking for new messages while driver status is "SleeperBerth" | number | 900000 (15 mins)
-**`Unknown`** | The number of milliseconds between checking for new messages while driver status is "Unknown" | number | 900000 (15 mins)
+**`Driving`** | The number of milliseconds between checking for new messages while driver status is "Driving" | Number | 900000 (15 mins)
+**`OnDuty`** | The number of milliseconds between checking for new messages while driver status is "OnDuty" | Number | 900000 (15 mins)
+**`OffDuty`** | The number of milliseconds between checking for new messages while driver status is "OffDuty" | Number | 900000 (15 mins)
+**`SleeperBerth`** | The number of milliseconds between checking for new messages while driver status is "SleeperBerth" | Number | 900000 (15 mins)
+**`Unknown`** | The number of milliseconds between checking for new messages while driver status is "Unknown" | Number | 900000 (15 mins)
 
 Also see [Performance tuning for Freshchat interaction using the Launch Darkly service](#Performance-tuning-for-freshchat-interaction-using-the-launch-darkly-service)
 
 ## State
 
-Variant chat relies on redux state to share data within the component and to manage app offline functionality. The Variant chat store state and reducers need to be folded into the apps store. `useVariantChat()` receives the store `dispatch` to ensure that the Variant chat component can inter-operate with the apps redux store.
+This component relies on redux state to persist data across app launches. The internal store state and reducers need to be folded into the consuming apps store. `useVariantChat()` receives the store `dispatch` to ensure that this component inter-operates with the consuming apps redux store.
 
-Add chat to you app store state.
+Add chat to the consuming apps store state.
 
 ```javascript
 import { VariantChatState } from 'react-native-variant-chat';
@@ -285,7 +286,7 @@ export interface StoreState {
 }
 ```
 
-Add chat initial store state to your app initial store state.
+Add chat initial store state to the consuming apps initial store state.
 
 ```javascript
 export { initialVariantChatState } from './types/VariantChatState';
@@ -296,7 +297,7 @@ export const initialStoreState = Object.freeze<StoreState>({
 });
 ```
 
-Add the chat reducer to your apps combined reducer.
+Add the chat reducer to the consuming apps combined reducer.
 
 ```javascript
 import {variantChatReducer} from 'react-native-variant-chat';
@@ -306,17 +307,7 @@ export const rootReducer = combineReducers({
   chat: variantChatReducer,
 });
 ```
-
-### Clearing State
-
-It is possible to clear the persistent state of the component. For example, this might need to be done when the consuming apps user changes (i.e. on logout).
-
-```javascript
-import {resetVariantChat} from 'react-native-variant-chat';
-
-resetVariantChat();
-```
-
+  
 ## Events
 
 ```javascript
@@ -338,22 +329,22 @@ The following events are emitted from the library. Your app should register for 
 
 Event name | Description | Types | Data
 ------ | ------ | ------ | ------
-**`error`** | Variant chat has encountered an error | `conversation`, `internal`, `service` | {message: string}
-**`messageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `background` | {channelName: string, message: string}
-**`unreadMessageCounts`** | For each channel, the number of unread messages | `unreadMessageCounts` | {'channel-name': number, ...} e.g. channel-name may be 'Chat with Team'
+**`error`** | Variant chat has encountered an error | `conversation`, `internal`, `service` | {message: String}
+**`messageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `background` | {channelName: String, message: String}
+**`unreadMessageCounts`** | For each channel, the number of unread messages | `unreadMessageCounts` | {'channel-name': Number, ...} e.g. channel-name may be 'Chat with Team'.
 
 The event callback receives a single argument `event` of type `VariantChatEventType`.
 
 Property | Description | Type
 ------ | ------ | ------
-**`type`** | The type of event received | string
-**`data`** | The event data | object as defined by the event
+**`type`** | The type of event received | String
+**`data`** | The event data | Object as defined by the event
 
 ## Synchronize Messages
 
-You can force an on-demand fetching of messages from the chat provider by calling `syncMessages()`.
+You can force on-demand fetching of messages from the chat provider by calling `syncMessages()`.
 
-Note: `handlePushNotification()` automatically fetches chat provider messages as needed. Foreground push notifications are received from Freshchat. However, background notifications on iOS are not received. Freshchat does not set the APNs property `contentAvailable` which is required for receiving background notifications. It's possible to simulate the handling of background message fetching by forcing on-demand fetching of messages using `syncMessages()`. Although having nothing to do with receiving a push notification, fetching messages when the app comes to the foreground will catch the case when the driver is responding to the receipt of a background push notification (e.g. presentation of a banner).
+Note: `handlePushNotification()` automatically fetches chat provider messages as needed. Foreground push notifications are received from Freshchat. However, background notifications on iOS are not received. Freshchat does not set the APNs property `contentAvailable` which is required for receiving background notifications on iOS. It is possible to simulate the handling of background message fetching by forcing on-demand fetching of messages using `syncMessages()`. Although having nothing to do with receiving a push notification, fetching messages when the app comes to the foreground will catch the case when the driver is responding to the receipt of a background push notification (e.g. presentation of a banner).
 
 ```javascript
 import { syncMessages } from 'react-native-variant-chat';
@@ -363,7 +354,7 @@ syncMessages();
 
 ### Push Notifications
 
-The chat provider can send push notifications to the app. To enable the chat provider to target the app the push notification token should be provided to Variant chat.
+The chat provider can send push notifications to the app. To enable the chat provider to target the app the push notification token must be provided to this component.
 
 Register the apps push notification token.
 
@@ -373,14 +364,12 @@ import {registerPushNotificationToken} from 'react-native-variant-chat';
 registerPushNotificationToken(pushNotificationToken);
 ```
 
-When a push notification is received by the app Variant chat can handle the notification to provide additional services including the following.
-- Improve message delivery performance (future)
-- Manage badging (future)
+When a push notification is received by the consuming app it should be forwarded to this component for possible handing of the notification payload. If the notification payload is sent by the chat provider then this component will automatically fetch messages from the chat provider service. If the notification is not from the chat provider then no action is taken. Th return value of `handlePushNotification()` indicates whether or not the notification was handled.
 
 ```javascript
 import {handlePushNotification} from 'react-native-variant-chat';
 
-handlePushNotification(notification);
+const isHandled: boolean = handlePushNotification(notification);
 ```
 
 Argument | Description | Type | Default
@@ -389,7 +378,7 @@ Argument | Description | Type | Default
 
 ## Driver Status
 
-The following features of VariantChat are sensitive to the drivers status. You can provide driver status to VariantChat using the function `setDriverStatus()`.
+You can provide driver status to this component using the function `setDriverStatus()`. This example demonstrates how you can map the consuming apps driver status values to those used by this component.
 
 ```javascript
 import {
@@ -413,7 +402,7 @@ setVariantChatDriverStatus(driverStatusMap[driverStatus]);
 
 ## Performance tuning for Freshchat interaction using the Launch Darkly service
 
-VariantChat relies on Freshchat as the third-party provider for centralized messaging services. Unfortunatley Freshchat does not provide a mobile-friendly method to listen for new messages sent by Operations Specialists. The VariantChat solution in-part is to apply a message polling technique to pull new messages on some specified time interval. Since we have rate limits on the use of the Freshchat service the polling interval must be managed. VariantChat provides method to remotely set the polling interval. The polling interval setting is senstitive driver status. This allows VariantChat to request new messages based on the drivers current status. For example, VariantChat may be set to poll for new messsges less frequently when driver is `Driving` vs. in `SleeperBerth`.
+This component relies on Freshchat as the third-party provider for centralized messaging services. Unfortunatley Freshchat does not provide a mobile-friendly method to listen for new messages sent to the driver. The solution in-part is to apply a message polling technique to pull new messages on some specified time interval. Since rate limits are enforced on the Freshchat service the polling interval must be managed. This component provides a method to remotely set the polling interval. The polling interval setting is sensitive to driver status. This design allows this component to request new messages from the chat provider based on the drivers current status. For example, polling for new messsges may be less frequent when driver is `Driving` vs. in `SleeperBerth`.
 
 Launch Darkly can be used to provide the remote management of polling intervals. Launch Darkly "variations" provide for the configuration of the interval values. Each value is expressed as a number of milliseconds.
 
@@ -430,4 +419,4 @@ Launch Darkly can be used to provide the remote management of polling intervals.
 }
 ```
 
-All driver message polling changes in the consuming mobile app are applied immediately upon committing changes on Launch Darkly. If the consuming mobile app is not presently running then the changes will be picked up next time the app launches. If the consuming mobile app is presently running then the changes are applied dynamically within a few seconds.
+All driver message polling changes in the consuming app are applied immediately upon committing changes on Launch Darkly. If the consuming app is not presently running then the changes will be picked up next time the app launches. If the consuming app is presently running then the changes are applied dynamically within a few seconds.

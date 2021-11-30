@@ -18,8 +18,9 @@ import { FreshchatUser } from '../../types/FreshchatUser';
 import { ChatProviderConfig } from '../../types/VariantChat';
 import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
 
-const FRESHCHAT_FAILED_MESSAGES = '@ps-freshchat-failed-messages';
-const FRESHCHAT_UNREAD_MESSAGE_COUNTS = '@ps-freshchat-unread-message-counts';
+const FRESHCHAT_FAILED_MESSAGES = 'freshchat-failed-messages';
+const FRESHCHAT_UNREAD_MESSAGE_COUNTS = 'freshchat-unread-message-counts';
+const VARIANT_DRIVER_ID = 'variant-driver-id';
 const MESSAGES_PER_PAGE = 50;
 const AXIOS_REQUEST_TIMEOUT = 15;
 
@@ -384,4 +385,37 @@ export const removeFreshchatUnreadMessageCounts = async (
       },
     });
   }
+};
+
+export const setDriverId = async (driverId: string): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(VARIANT_DRIVER_ID, driverId);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      data: {
+        message: `Could not save the driver id: ${error.message}`,
+      },
+    });
+  }
+};
+
+export const getDriverId = async (): Promise<string | null> => {
+  try {
+    const driverId = await AsyncStorage.getItem(VARIANT_DRIVER_ID);
+
+    return driverId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      data: {
+        message: `Could not get the driver id: ${error.message}`,
+      },
+    });
+  }
+
+  return null;
 };
