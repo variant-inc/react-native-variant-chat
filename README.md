@@ -36,6 +36,49 @@ npm install react-native-tts
 npm install react-native-freshchat-sdk
 ```
 
+### Android specific installation
+
+Make the following changes to Android configuration to avoid Freshchat SDK runtime warnings about a file provider for the camera.
+
+In `android/app/build.gradle` add the following lines. Modify appropriatley for the consuming app.
+
+```javascript
+defaultConfig {
+  ...
+  resValue "string", "freshchat_file_provider_authority", "com.drivevariant.driver_app.freshchat.provider" // Add this line
+}
+
+productFlavors {
+  development {
+    ...
+    resValue "string", "freshchat_file_provider_authority", "com.drivevariant.driver_app.dev.freshchat.provider" // Add this line
+  }
+  staging {
+    ...
+    resValue "string", "freshchat_file_provider_authority", "com.drivevariant.driver_app.staging.freshchat.provider" // Add this line
+  }
+}
+
+```
+
+In `android/app/src/main/AndroidManifest.xml` add the following lines.
+
+```javascript
+<application
+  ...
+  <provider
+    android:name="androidx.core.content.FileProvider"
+    android:authorities="${applicationId}.freshchat.provider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+      android:name="android.support.FILE_PROVIDER_PATHS"
+      android:resource="@xml/freshchat_file_provider_paths" />
+  </provider>
+  ...
+</application>
+```
+
 ## Integration Steps
 
 Several steps are required to integrate this component.
@@ -58,14 +101,14 @@ export const ChatModal: React.FC = () => {
     const errorListener = VariantChatEvent.addEventListener(
       'error',
       (event: VariantChatEventType) => {
-        console.log(`${event.type} ${event.message}`);
+        console.log(`${event.type} ${event.data.message}`);
       },
     );
 
     const messageReceivedListener = VariantChatEvent.addEventListener(
       'messageReceived',
       (event: VariantChatEventType) => {
-        console.log(`${event.type} ${event.message}`);
+        console.log(`${event.type} ${event.data.message}`);
       },
     );
 
@@ -283,7 +326,7 @@ import { VariantChatEvent, VariantChatEventType } from 'react-native-variant-cha
 const internalErrorListener = VariantChatEvent.addEventListener(
   'error',
   (event: VariantChatEventType) => {
-    console.log(`${event.type} ${event.message}`);
+    console.log(`${event.type} ${event.data.message}`);
   },
 );
 
@@ -293,18 +336,19 @@ VariantChatEvent.removeEventListener(internalErrorListener);
 
 The following events are emitted from the library. Your app should register for events by name.
 
-Event name | Description | Types
------- | ------ | ------
-**`error`** | Variant chat has encountered an error | `conversation`, `internal`, `service`
-**`info`** | Variant chat has provided some useful information | `notYetImplemented`
-**`messageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `background`
+Event name | Description | Types | Data
+------ | ------ | ------ | ------
+**`error`** | Variant chat has encountered an error | `conversation`, `internal`, `service` | {message: string}
+**`info`** | Variant chat has provided some useful information | `notYetImplemented` | {message: string}
+**`messageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `background` | {channelName: string, message: string}
+**`unreadMessageCounts`** | For each channel, the number of unread messages | `unreadMessageCounts` | {'channel-name': number, ...} e.g. channel-name may be 'Chat with Team'
 
-The event callback receives a single argument `event` of type `VariantChatEventType`. Properties of each `VariantChatEventType` are as follows.
+The event callback receives a single argument `event` of type `VariantChatEventType`.
 
 Property | Description | Type
 ------ | ------ | ------
-**`type`** | The type of event received | String
-**`message`** | The event description | String
+**`type`** | The type of event received | string
+**`data`** | The event data | object as defined by the event
 
 ## Synchronize Messages
 

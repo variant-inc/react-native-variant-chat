@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import { EventRegister } from 'react-native-event-listeners';
@@ -22,6 +22,7 @@ import {
   removeFreshchatFailedMessage,
   setFreshchatFailedMessage,
   setFreshchatMessage,
+  setFreshchatUnreadMessageCounts,
 } from '../lib/Freshchat/Freshchat';
 import { getFreshchatConversations } from '../lib/Freshchat/FreshchatConversation';
 import { filterNewMessages } from '../lib/Freshchat/Utils';
@@ -93,9 +94,13 @@ export const useFreshchatInit = (
 ): FreshchatInit => {
   dispatch = consumerDispatch;
 
-  const [initialized, setInitialized] = useState(FreshchatInit.None);
+  // const [initialized, setInitialized] = useState(FreshchatInit.None);
+  const initializedRef = useRef(FreshchatInit.None);
 
   const init = async (providerConfig: ChatProviderConfig) => {
+    // reset reducer
+    resetVariantChat();
+
     if (driverId) {
       // Get conversation id's from the messaging api.
       let conversationInfo: FreshchatConversationInfo = null;
@@ -115,9 +120,11 @@ export const useFreshchatInit = (
 
         EventRegister.emit('debug', {
           type: 'log',
-          message: `Conversations available for driver: ${JSON.stringify(
-            conversationInfo
-          )})`,
+          data: {
+            message: `Conversations available for driver: ${JSON.stringify(
+              conversationInfo
+            )})`,
+          },
         });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -201,40 +208,53 @@ export const useFreshchatInit = (
           });
       }
 
-      setInitialized(FreshchatInit.Success);
+      // setInitialized(FreshchatInit.Success);
+      initializedRef.current = FreshchatInit.Success;
     }
 
     Tts.getInitStatus();
   };
 
   const conversationError = (message: string) => {
-    setInitialized(FreshchatInit.Fail);
+    // setInitialized(FreshchatInit.Fail);
+    initializedRef.current = FreshchatInit.Fail;
+
     EventRegister.emit('error', {
       type: 'conversation',
-      message: `Conversation error: ${message}`,
+      data: {
+        message: `Conversation error: ${message}`,
+      },
     });
   };
 
   const serviceError = (message: string) => {
-    setInitialized(FreshchatInit.Fail);
+    // setInitialized(FreshchatInit.Fail);
+    initializedRef.current = FreshchatInit.Fail;
+
     EventRegister.emit('error', {
       type: 'service',
-      message: `Service error: ${message}`,
+      data: {
+        message: `Service error: ${message}`,
+      },
     });
   };
 
   useEffect(() => {
     try {
       if (
-        initialized !== FreshchatInit.Success &&
-        initialized !== FreshchatInit.InProgress
+        initializedRef.current !== FreshchatInit.Success &&
+        initializedRef.current !== FreshchatInit.InProgress
       ) {
-        setInitialized(FreshchatInit.InProgress);
+        // setInitialized(FreshchatInit.InProgress);
+        initializedRef.current = FreshchatInit.InProgress;
+
         init(config);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setInitialized(FreshchatInit.Fail);
+      // setInitialized(FreshchatInit.Fail);
+      initializedRef.current = FreshchatInit.Fail;
+
       if (error instanceof FreshchatCommunicationError) {
         serviceError(
           `Chat provider error: ${error.message} (driver ${driverId})`
@@ -245,9 +265,14 @@ export const useFreshchatInit = (
         );
       }
     }
-  }, []);
 
-  return initialized;
+    return () => {
+      // setInitialized(FreshchatInit.None);
+      initializedRef.current = FreshchatInit.None;
+    };
+  }, [driverId]);
+
+  return initializedRef.current;
 };
 
 const getChannels = async (): Promise<FreshchatChannel[] | null> => {
@@ -459,10 +484,12 @@ export const useFreshchatGetNewMessages = (
   const allMessages = useSelector(selectFreshchatAllMessages);
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
   const driverStatus = useSelector(selectDriverStatus);
+
   const appState = useRef(AppState.currentState);
   const lastBackgroundMessage = useRef<string | null>(null);
 
   let pollingInterval = NEW_MESSAGES_POLL_INTERVAL;
+
   if (driverStatus && capabilities?.messagePolling[driverStatus]) {
     pollingInterval = capabilities?.messagePolling[driverStatus];
   }
@@ -473,6 +500,34 @@ export const useFreshchatGetNewMessages = (
       AppState.removeEventListener('change', handleAppStateChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      // Android
+      const backgroundIntervalId = BackgroundTimer.setInterval(() => {
+        getNewMessages();
+      }, pollingInterval);
+
+      return () => {
+        BackgroundTimer.clearInterval(backgroundIntervalId);
+      };
+    }
+
+    // iOS
+    BackgroundTimer.runBackgroundTimer(() => {
+      getNewMessages();
+    }, pollingInterval);
+
+    return () => {
+      BackgroundTimer.stopBackgroundTimer();
+    };
+  }, [
+    conversationInfo,
+    conversationUsers,
+    allMessages,
+    isFullscreenVideo,
+    pollingInterval,
+  ]);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
     appState.current = nextAppState;
@@ -491,7 +546,9 @@ export const useFreshchatGetNewMessages = (
     } catch (error: any) {
       EventRegister.emit('error', {
         type: 'internal',
-        message: `Chat message fetch failed: ${error.message}`,
+        data: {
+          message: `Chat message fetch failed: ${error.message}`,
+        },
       });
     }
   };
@@ -522,13 +579,15 @@ export const useFreshchatGetNewMessages = (
       checkConversationUsers(dispatch, conversationUsers, response.messages);
 
       if (appState.current === 'background' && !isFullscreenVideo) {
-        if (lastBackgroundMessage.current === newMessages[0].id) {
+        const lastMessage = newMessages[newMessages.length - 1];
+
+        if (lastBackgroundMessage.current === lastMessage.id) {
           return;
         }
 
-        lastBackgroundMessage.current = newMessages[0]?.id;
+        lastBackgroundMessage.current = lastMessage?.id;
 
-        let newMessage = newMessages[0]?.message_parts[0]?.text?.content || '';
+        let newMessage = lastMessage?.message_parts[0]?.text?.content || '';
 
         if (newMessage.includes(urgentMessageMark)) {
           // urgent message
@@ -545,40 +604,17 @@ export const useFreshchatGetNewMessages = (
         ) {
           EventRegister.emit('messageReceived', {
             type: 'background',
-            message: newMessage,
+            data: {
+              channelName: conversation.channel,
+              message: newMessage,
+            },
           });
+
+          setFreshchatUnreadMessageCounts(conversation.channel);
         }
       }
     }
   };
-
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      // Android
-      const backgroundIntervalId = BackgroundTimer.setInterval(() => {
-        getNewMessages();
-      }, pollingInterval);
-
-      return () => {
-        BackgroundTimer.clearInterval(backgroundIntervalId);
-      };
-    }
-
-    // iOS
-    BackgroundTimer.runBackgroundTimer(() => {
-      getNewMessages();
-    }, pollingInterval);
-
-    return () => {
-      BackgroundTimer.stopBackgroundTimer();
-    };
-  }, [
-    conversationInfo,
-    conversationUsers,
-    allMessages,
-    isFullscreenVideo,
-    pollingInterval,
-  ]);
 
   return getNewMessages;
 };

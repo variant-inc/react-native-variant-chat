@@ -24,7 +24,9 @@ const CustomAction = (
     }
     EventRegister.emit('info', {
       type: 'notYetImplemented',
-      message: 'Take a picture coming soon.',
+      data: {
+        message: 'Take a picture coming soon.',
+      },
     });
   };
 
@@ -34,7 +36,9 @@ const CustomAction = (
     }
     EventRegister.emit('info', {
       type: 'notYetImplemented',
-      message: 'Add attachments coming soon.',
+      data: {
+        message: 'Add attachments coming soon.',
+      },
     });
   };
 
