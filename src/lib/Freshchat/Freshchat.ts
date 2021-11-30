@@ -18,7 +18,9 @@ import { FreshchatUser } from '../../types/FreshchatUser';
 import { ChatProviderConfig } from '../../types/VariantChat';
 import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
 
-const FRESHCHAT_FAILED_MESSAGES = '@ps-freshchat-failed-messages';
+const FRESHCHAT_FAILED_MESSAGES = 'freshchat-failed-messages';
+const FRESHCHAT_UNREAD_MESSAGE_COUNTS = 'freshchat-unread-message-counts';
+const VARIANT_DRIVER_ID = 'variant-driver-id';
 const MESSAGES_PER_PAGE = 50;
 const AXIOS_REQUEST_TIMEOUT = 15;
 
@@ -66,14 +68,20 @@ const initFreshchatSDK = async (
     (error: string) => {
       EventRegister.emit('error', {
         type: 'internal',
-        message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
+        data: {
+          message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
+        },
       });
     }
   );
 
   EventRegister.emit('debug', {
     type: 'log',
-    message: `Init Freshchat SDK with user: ${JSON.stringify(freshchatUser)})`,
+    data: {
+      message: `Init Freshchat SDK with user: ${JSON.stringify(
+        freshchatUser
+      )})`,
+    },
   });
 };
 
@@ -248,7 +256,9 @@ export const setFreshchatFailedMessage = async (
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not save failed message: ${error.message}`,
+      data: {
+        message: `Could not save failed message: ${error.message}`,
+      },
     });
   }
 };
@@ -268,7 +278,9 @@ export const getFreshchatFailedMessages = async (
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not get failed message: ${error.message}`,
+      data: {
+        message: `Could not get failed message: ${error.message}`,
+      },
     });
   }
   return [];
@@ -294,7 +306,116 @@ export const removeFreshchatFailedMessage = async (
   } catch (error: any) {
     EventRegister.emit('error', {
       type: 'internal',
-      message: `Could not save failed message: ${error.message}`,
+      data: {
+        message: `Could not save failed message: ${error.message}`,
+      },
     });
   }
+};
+
+export const setFreshchatUnreadMessageCounts = async (
+  channelName: string,
+  count = 0
+): Promise<void> => {
+  try {
+    const messageCounts = await getFreshchatUnreadMessageCounts();
+
+    if (count === 0) {
+      messageCounts[channelName] = 0;
+    } else {
+      messageCounts[channelName] = (messageCounts[channelName] || 0) + count;
+    }
+
+    await AsyncStorage.setItem(
+      `${FRESHCHAT_UNREAD_MESSAGE_COUNTS}`,
+      JSON.stringify(messageCounts)
+    );
+
+    EventRegister.emit('unreadMessageCounts', {
+      type: 'unreadMessageCounts',
+      data: messageCounts,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      data: {
+        message: `Could not save the unread message counts: ${error.message}`,
+      },
+    });
+  }
+};
+
+export const getFreshchatUnreadMessageCounts = async (): Promise<
+  Record<string, number>
+> => {
+  try {
+    const messageCounts = await AsyncStorage.getItem(
+      `${FRESHCHAT_UNREAD_MESSAGE_COUNTS}`
+    );
+
+    if (messageCounts) {
+      return JSON.parse(messageCounts);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      data: {
+        message: `Could not get the unread message counts: ${error.message}`,
+      },
+    });
+  }
+
+  return {};
+};
+
+export const removeFreshchatUnreadMessageCounts = async (
+  channelName: string
+): Promise<void> => {
+  try {
+    setFreshchatUnreadMessageCounts(channelName);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      data: {
+        message: `Could not save the unread message counts: ${error.message}`,
+      },
+    });
+  }
+};
+
+export const setDriverId = async (driverId: string): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(VARIANT_DRIVER_ID, driverId);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      data: {
+        message: `Could not save the driver id: ${error.message}`,
+      },
+    });
+  }
+};
+
+export const getDriverId = async (): Promise<string | null> => {
+  try {
+    const driverId = await AsyncStorage.getItem(VARIANT_DRIVER_ID);
+
+    return driverId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    EventRegister.emit('error', {
+      type: 'internal',
+      data: {
+        message: `Could not get the driver id: ${error.message}`,
+      },
+    });
+  }
+
+  return null;
 };

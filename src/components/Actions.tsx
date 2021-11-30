@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { EventRegister } from 'react-native-event-listeners';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ActionsProps } from 'react-native-gifted-chat';
 import { SvgXml } from 'react-native-svg';
 
@@ -22,20 +21,14 @@ const CustomAction = (
     if (onOpenCamera) {
       onOpenCamera();
     }
-    EventRegister.emit('info', {
-      type: 'notYetImplemented',
-      message: 'Take a picture coming soon.',
-    });
+    Alert.alert('Take a picture coming soon.');
   };
 
   const handleOpenAttachment = () => {
     if (onOpenAttachment) {
       onOpenAttachment();
     }
-    EventRegister.emit('info', {
-      type: 'notYetImplemented',
-      message: 'Add attachments coming soon.',
-    });
+    Alert.alert('Add attachments coming soon.');
   };
 
   return (

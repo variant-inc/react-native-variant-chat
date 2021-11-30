@@ -1,4 +1,4 @@
 export interface VariantChatEventType {
   type: string;
-  message: string;
+  message: unknown; // string | object
 }

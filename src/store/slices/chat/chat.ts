@@ -131,6 +131,7 @@ const handleAddMessage: CaseReducer<
   return {
     ...state,
     messages: {
+      ...state.messages,
       [payload.conversationId ?? '']: [
         payload.message,
         ...(state.messages[payload.conversationId ?? ''] || []),
@@ -150,6 +151,7 @@ const handleRemoveMessage: CaseReducer<
   return {
     ...state,
     messages: {
+      ...state.messages,
       [payload.conversationId ?? '']: filteredMessages,
     },
   };
@@ -176,6 +178,7 @@ const handleAppendMessages: CaseReducer<
   return {
     ...state,
     messages: {
+      ...state.messages,
       [payload.conversationId ?? '']: [
         ...(state.messages[payload.conversationId ?? ''] || []),
         ...newMessages,
@@ -211,6 +214,7 @@ const handleAppendNewMessages: CaseReducer<
   return {
     ...state,
     messages: {
+      ...state.messages,
       [payload.conversationId ?? '']: allMessage,
     },
   };

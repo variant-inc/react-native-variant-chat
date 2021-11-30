@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import { Keyboard, StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, TextStyle, View } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
@@ -20,6 +20,7 @@ import {
   useFreshchatSendMessage,
   useFreshchatSetIsFullscreenVideo,
 } from '../hooks/useFreshchat';
+import { removeFreshchatUnreadMessageCounts } from '../lib/Freshchat/Freshchat';
 import {
   selectFreshchatChannel,
   selectFreshchatConversationInfo,
@@ -121,6 +122,12 @@ const Chat = (props: VariantChatProps): ReactElement => {
       Keyboard.removeListener('keyboardDidHide', handleDidHideKeyboard);
     };
   }, []);
+
+  useEffect(() => {
+    if (channelName) {
+      removeFreshchatUnreadMessageCounts(channelName);
+    }
+  }, [channelName]);
 
   useEffect(() => {
     const allMessages: IOpsMessage[] = [];
@@ -291,7 +298,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
-        textStyle={[styles.textGeneral, textStyle]}
+        textStyle={{ ...styles.textGeneral, ...(textStyle as TextStyle) }}
         lightboxProps={{
           renderHeader: renderLightBoxClose,
           backgroundColor: styles.lightbox.backgroundColor,
