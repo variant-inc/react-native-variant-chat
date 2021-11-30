@@ -1,5 +1,11 @@
 ## Change Log
 
+### v1.0.7 (11/30/2021)
+- Remove export resetVariantChat [#26](https://github.com/variant-inc/react-native-variant-chat/pull/26) 
+- Automate chat message thread reset on driver change [#24](https://github.com/variant-inc/react-native-variant-chat/pull/24) 
+- Remove the nyi event and just add Alert placeholders [#25](https://github.com/variant-inc/react-native-variant-chat/pull/25) 
+- Implements the unread message count [#22](https://github.com/variant-inc/react-native-variant-chat/pull/22) 
+
 ### v1.0.6 (11/24/2021)
 - Push notification and sync messages implementation [#23](https://github.com/variant-inc/react-native-variant-chat/pull/23) 
 
