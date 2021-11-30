@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { FreshchatCommunicationError } from '../lib/Exception';
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
+  getDriverId,
   getFreshchatAgent,
   getFreshchatChannels,
   getFreshchatConversation,
@@ -20,6 +21,7 @@ import {
   initFreshchat,
   realtimeMessagePerPage,
   removeFreshchatFailedMessage,
+  setDriverId,
   setFreshchatFailedMessage,
   setFreshchatMessage,
   setFreshchatUnreadMessageCounts,
@@ -99,9 +101,14 @@ export const useFreshchatInit = (
 
   const init = async (providerConfig: ChatProviderConfig) => {
     // reset reducer
-    resetVariantChat();
-
     if (driverId) {
+      const savedDriverId = await getDriverId();
+
+      if (driverId !== savedDriverId) {
+        resetVariantChat();
+        setDriverId(driverId);
+      }
+
       // Get conversation id's from the messaging api.
       let conversationInfo: FreshchatConversationInfo = null;
 
