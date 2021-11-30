@@ -98,14 +98,14 @@ export const useFreshchatInit = (
   const initializedRef = useRef(FreshchatInit.None);
 
   const init = async (providerConfig: ChatProviderConfig) => {
+    // reset reducer
+    resetVariantChat();
+
     if (driverId) {
       // Get conversation id's from the messaging api.
       let conversationInfo: FreshchatConversationInfo = null;
 
       try {
-        // reset reducer
-        resetVariantChat();
-
         conversationInfo = await getFreshchatConversations(driverId);
         if (conversationInfo) {
           await dispatch(freshchatSetConversationInfo({ conversationInfo }));
