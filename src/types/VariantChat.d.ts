@@ -9,7 +9,7 @@ export interface ChatProviderConfig {
 }
 
 export interface VariantApiConfig {
-  accessToken: () => Promise<string>;
+  accessToken: () => Promise<string | null>;
   url: string;
 }
 
