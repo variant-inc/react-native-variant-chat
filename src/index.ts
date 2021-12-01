@@ -4,6 +4,7 @@ import { DriverStatus } from './types/DriverStatus';
 
 export * from './types/VariantChatEvent';
 export * from './types/VariantChatState';
+export type { VariantChatConfig } from './types/VariantChat';
 
 /**
  * Initialize the component libary.
