@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.9 (12/1/2021)
+- Fix some types [#28](https://github.com/variant-inc/react-native-variant-chat/pull/28) 
+
 ### v1.0.8 (12/1/2021)
 - A few cleanup items to address integration issues [#27](https://github.com/variant-inc/react-native-variant-chat/pull/27) 
 
