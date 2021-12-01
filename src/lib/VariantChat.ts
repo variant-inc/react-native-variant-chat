@@ -25,7 +25,7 @@ let getNewMessages = (): void => {
 };
 
 const useVariantChat = (
-  driverId: string,
+  driverId: string | null,
   config: VariantChatConfig,
   consumerDispatch: any
 ): void => {

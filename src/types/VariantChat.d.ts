@@ -31,7 +31,7 @@ export interface VariantChatConfig {
 
 export interface VariantChatProps {
   channelName: string;
-  defaultAvatarUrl: string;
-  NoConversationComponent: JSX.Element;
+  defaultAvatarUrl?: string;
+  NoConversationComponent?: JSX.Element;
   chatStyles?: VariantChatStyles;
 }

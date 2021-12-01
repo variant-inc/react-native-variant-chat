@@ -89,7 +89,7 @@ export const resetVariantChat = async (): Promise<void> => {
 };
 
 export const useFreshchatInit = (
-  driverId: string,
+  driverId: string | null,
   config: ChatProviderConfig,
   consumerDispatch: any
 ): FreshchatInit => {
