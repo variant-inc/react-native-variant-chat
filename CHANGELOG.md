@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.10 (12/1/2021)
+- Export the interface config type [#29](https://github.com/variant-inc/react-native-variant-chat/pull/29) 
+
 ### v1.0.9 (12/1/2021)
 - Fix some types [#28](https://github.com/variant-inc/react-native-variant-chat/pull/28) 
 
