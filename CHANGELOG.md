@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.8 (12/1/2021)
+- A few cleanup items to address integration issues [#27](https://github.com/variant-inc/react-native-variant-chat/pull/27) 
+
 ### v1.0.7 (11/30/2021)
 - Remove export resetVariantChat [#26](https://github.com/variant-inc/react-native-variant-chat/pull/26) 
 - Automate chat message thread reset on driver change [#24](https://github.com/variant-inc/react-native-variant-chat/pull/24) 
