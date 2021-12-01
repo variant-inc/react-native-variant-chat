@@ -28,7 +28,6 @@ import {
 } from '../lib/Freshchat/Freshchat';
 import { getFreshchatConversations } from '../lib/Freshchat/FreshchatConversation';
 import { filterNewMessages } from '../lib/Freshchat/Utils';
-import { AppDispatch } from '../store';
 import {
   selectDriverStatus,
   selectFreshchatAllMessages,
@@ -627,7 +626,8 @@ export const useFreshchatGetNewMessages = (
 };
 
 const checkConversationUsers = (
-  appDispatch: AppDispatch,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  appDispatch: any,
   conversationUsers: FreshchatUser[],
   messages: FreshchatMessage[]
 ) => {

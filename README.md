@@ -205,7 +205,7 @@ useVariantChat = (
       channelNames: ['Chat with Team', 'Ambassador Program'],
     },
     variantApi: {
-      accessToken: getAccessToken,
+      accessToken: getAccessToken, // This is a function returning the token as a string
       url: 'variant-api-url',
     },
     capabilities: {
@@ -246,7 +246,7 @@ Variant app backend specific configuration `variantApi: VariantApiConfig`.
 
 Argument | Description | Type | Default
 ------ | ------ | ------ | ------
-**`accessToken`** | .. | String | **Required**
+**`accessToken`** | A function returning the token string | Function | **Required**
 **`url`** | .. | String | **Required**
 
 ### Capability settings
