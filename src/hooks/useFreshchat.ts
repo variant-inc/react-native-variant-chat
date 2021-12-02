@@ -572,6 +572,7 @@ export const useFreshchatGetNewMessages = (
         allMessages[conversation.id],
         response.messages
       );
+
       if (newMessages.length === 0) {
         return;
       }
@@ -582,7 +583,9 @@ export const useFreshchatGetNewMessages = (
           messages: newMessages,
         })
       );
+
       checkConversationUsers(dispatch, conversationUsers, response.messages);
+      setFreshchatUnreadMessageCounts(conversation.channel, newMessages.length);
 
       if (appState.current === 'background' && !isFullscreenVideo) {
         const lastMessage = newMessages[newMessages.length - 1];
@@ -615,8 +618,6 @@ export const useFreshchatGetNewMessages = (
               message: newMessage,
             },
           });
-
-          setFreshchatUnreadMessageCounts(conversation.channel);
         }
       }
     }
