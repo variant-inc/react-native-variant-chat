@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.11 (12/2/2021)
+- Make sure counts are updated always [#31](https://github.com/variant-inc/react-native-variant-chat/pull/31) 
+
 ### v1.0.10 (12/1/2021)
 - Export the interface config type [#29](https://github.com/variant-inc/react-native-variant-chat/pull/29) 
 
