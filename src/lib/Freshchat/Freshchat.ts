@@ -46,6 +46,16 @@ export async function initFreshchat(
     timeout: AXIOS_REQUEST_TIMEOUT * SECOND,
   });
 
+  instance.interceptors.request.use((request) => {
+    EventRegister.emit('info', {
+      type: 'performance',
+      data: {
+        message: `Freshchat request: ${JSON.stringify(request)}`,
+      },
+    });
+    return request;
+  });
+
   // Freshchat SDK provides push notification functionality.
   initFreshchatSDK(driverId, freshchatUserId, config);
 }
