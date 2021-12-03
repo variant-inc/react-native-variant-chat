@@ -214,7 +214,6 @@ export const useFreshchatInit = (
           });
       }
 
-      // setInitialized(FreshchatInit.Success);
       initializedRef.current = FreshchatInit.Success;
     }
 
@@ -222,11 +221,10 @@ export const useFreshchatInit = (
   };
 
   const conversationError = (message: string) => {
-    // setInitialized(FreshchatInit.Fail);
     initializedRef.current = FreshchatInit.Fail;
 
     EventRegister.emit('error', {
-      type: 'conversation',
+      type: 'no-conversation',
       data: {
         message: `Conversation error: ${message}`,
       },
@@ -234,7 +232,6 @@ export const useFreshchatInit = (
   };
 
   const serviceError = (message: string) => {
-    // setInitialized(FreshchatInit.Fail);
     initializedRef.current = FreshchatInit.Fail;
 
     EventRegister.emit('error', {
@@ -251,14 +248,12 @@ export const useFreshchatInit = (
         initializedRef.current !== FreshchatInit.Success &&
         initializedRef.current !== FreshchatInit.InProgress
       ) {
-        // setInitialized(FreshchatInit.InProgress);
         initializedRef.current = FreshchatInit.InProgress;
 
         init(config);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      // setInitialized(FreshchatInit.Fail);
       initializedRef.current = FreshchatInit.Fail;
 
       if (error instanceof FreshchatCommunicationError) {
@@ -273,7 +268,6 @@ export const useFreshchatInit = (
     }
 
     return () => {
-      // setInitialized(FreshchatInit.None);
       initializedRef.current = FreshchatInit.None;
     };
   }, [driverId]);
