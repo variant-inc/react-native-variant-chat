@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.0.12 (12/3/2021)
+- Update no conversation type, remove commented lines [#33](https://github.com/variant-inc/react-native-variant-chat/pull/33) 
+- Fix the typescript compile issues [#30](https://github.com/variant-inc/react-native-variant-chat/pull/30) 
+
 ### v1.0.11 (12/2/2021)
 - Make sure counts are updated always [#31](https://github.com/variant-inc/react-native-variant-chat/pull/31) 
 
