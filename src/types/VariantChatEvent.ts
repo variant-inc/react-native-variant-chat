@@ -1,4 +1,6 @@
+import { EventMessageType } from './EventMessageType.enum';
+
 export interface VariantChatEventType {
-  type: string;
+  type: EventMessageType;
   data: Record<string, unknown>;
 }

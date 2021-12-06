@@ -5,8 +5,8 @@ import { DriverStatus } from './types/DriverStatus';
 export * from './types/VariantChatEvent';
 export * from './types/VariantChatState';
 export type { VariantChatConfig } from './types/VariantChat';
-export type { EventName } from './types/EventName.enum';
-export type { EventMessageType } from './types/EventMessageType.enum';
+export * from './types/EventName.enum';
+export * from './types/EventMessageType.enum';
 
 /**
  * Initialize the component libary.
