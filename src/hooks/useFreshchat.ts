@@ -58,6 +58,7 @@ import {
 import {
   reopenedMessageMark,
   resolvedMessageMark,
+  systemMessageMark,
   urgentMessageMark,
 } from '../theme/constants';
 import { FreshchatChannel } from '../types/FreshchatChannel.type';
@@ -605,7 +606,8 @@ export const useFreshchatGetNewMessages = (
 
         if (
           !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
-          !reopenedMessageMark.some((s) => newMessage.includes(s))
+          !reopenedMessageMark.some((s) => newMessage.includes(s)) &&
+          !systemMessageMark.some((s) => newMessage.includes(s))
         ) {
           EventRegister.emit(EventName.MessageReceived, {
             type: EventMessageType.Background,
