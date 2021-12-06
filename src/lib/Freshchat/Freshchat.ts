@@ -7,8 +7,6 @@ import {
   FreshchatConfig as FreshchatSDKConfig,
 } from 'react-native-freshchat-sdk';
 import { SECOND } from 'time-constants';
-import { EventMessageType } from 'types/EventMessageType.enum';
-import { EventName } from 'types/EventName.enum';
 
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
@@ -19,6 +17,8 @@ import {
 import { FreshchatUser } from '../../types/FreshchatUser';
 import { ChatProviderConfig } from '../../types/VariantChat';
 import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
+import { EventMessageType } from '../types/EventMessageType.enum';
+import { EventName } from '../types/EventName.enum';
 
 const FRESHCHAT_FAILED_MESSAGES = 'freshchat-failed-messages';
 const FRESHCHAT_UNREAD_MESSAGE_COUNTS = 'freshchat-unread-message-counts';

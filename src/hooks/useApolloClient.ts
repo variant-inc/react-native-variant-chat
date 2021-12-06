@@ -11,10 +11,10 @@ import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import fetch from 'cross-fetch';
 import { EventRegister } from 'react-native-event-listeners';
-import { EventMessageType } from 'types/EventMessageType.enum';
-import { EventName } from 'types/EventName.enum';
 import { v4 as uuidv4 } from 'uuid';
 
+import { EventMessageType } from '../types/EventMessageType.enum';
+import { EventName } from '../types/EventName.enum';
 import { VariantApiConfig } from '../types/VariantChat';
 
 const REQ_ID_HEADER = 'X-CORRELATION-ID';
