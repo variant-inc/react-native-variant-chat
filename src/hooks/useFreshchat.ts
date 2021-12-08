@@ -56,8 +56,11 @@ import {
 import {
   reopenedMessageMark,
   resolvedMessageMark,
+  systemMessageMark,
   urgentMessageMark,
 } from '../theme/constants';
+import { EventMessageType } from '../types/EventMessageType.enum';
+import { EventName } from '../types/EventName.enum';
 import { FreshchatChannel } from '../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../types/FreshchatConversation';
 import {
@@ -124,8 +127,8 @@ export const useFreshchatInit = (
           return;
         }
 
-        EventRegister.emit('debug', {
-          type: 'log',
+        EventRegister.emit(EventName.Debug, {
+          type: EventMessageType.Log,
           data: {
             message: `Conversations available for driver: ${JSON.stringify(
               conversationInfo
@@ -214,7 +217,6 @@ export const useFreshchatInit = (
           });
       }
 
-      // setInitialized(FreshchatInit.Success);
       initializedRef.current = FreshchatInit.Success;
     }
 
@@ -222,11 +224,10 @@ export const useFreshchatInit = (
   };
 
   const conversationError = (message: string) => {
-    // setInitialized(FreshchatInit.Fail);
     initializedRef.current = FreshchatInit.Fail;
 
-    EventRegister.emit('error', {
-      type: 'conversation',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.NoConversation,
       data: {
         message: `Conversation error: ${message}`,
       },
@@ -234,11 +235,10 @@ export const useFreshchatInit = (
   };
 
   const serviceError = (message: string) => {
-    // setInitialized(FreshchatInit.Fail);
     initializedRef.current = FreshchatInit.Fail;
 
-    EventRegister.emit('error', {
-      type: 'service',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Service,
       data: {
         message: `Service error: ${message}`,
       },
@@ -251,14 +251,12 @@ export const useFreshchatInit = (
         initializedRef.current !== FreshchatInit.Success &&
         initializedRef.current !== FreshchatInit.InProgress
       ) {
-        // setInitialized(FreshchatInit.InProgress);
         initializedRef.current = FreshchatInit.InProgress;
 
         init(config);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      // setInitialized(FreshchatInit.Fail);
       initializedRef.current = FreshchatInit.Fail;
 
       if (error instanceof FreshchatCommunicationError) {
@@ -273,7 +271,6 @@ export const useFreshchatInit = (
     }
 
     return () => {
-      // setInitialized(FreshchatInit.None);
       initializedRef.current = FreshchatInit.None;
     };
   }, [driverId]);
@@ -550,8 +547,8 @@ export const useFreshchatGetNewMessages = (
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      EventRegister.emit('error', {
-        type: 'internal',
+      EventRegister.emit(EventName.Error, {
+        type: EventMessageType.Internal,
         data: {
           message: `Chat message fetch failed: ${error.message}`,
         },
@@ -609,10 +606,11 @@ export const useFreshchatGetNewMessages = (
 
         if (
           !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
-          !reopenedMessageMark.some((s) => newMessage.includes(s))
+          !reopenedMessageMark.some((s) => newMessage.includes(s)) &&
+          !systemMessageMark.some((s) => newMessage.includes(s))
         ) {
-          EventRegister.emit('messageReceived', {
-            type: 'background',
+          EventRegister.emit(EventName.MessageReceived, {
+            type: EventMessageType.Background,
             data: {
               channelName: conversation.channel,
               message: newMessage,
