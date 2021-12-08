@@ -29,7 +29,11 @@ import {
   selectFreshchatMessages,
   selectFreshchatMoreMessage,
 } from '../store/selectors/freshchatSelectors';
-import { reopenedMessageMark, resolvedMessageMark } from '../theme/constants';
+import {
+  reopenedMessageMark,
+  resolvedMessageMark,
+  systemMessageMark,
+} from '../theme/constants';
 import Font from '../theme/fonts';
 import { FreshchatMessage } from '../types/FreshchatMessage';
 import { FreshchatUser } from '../types/FreshchatUser';
@@ -147,6 +151,9 @@ const Chat = (props: VariantChatProps): ReactElement => {
           currentMessage.text?.content?.includes(s)
         ) &&
         !reopenedMessageMark.some((s) =>
+          currentMessage.text?.content?.includes(s)
+        ) &&
+        !systemMessageMark.some((s) =>
           currentMessage.text?.content?.includes(s)
         )
       ) {

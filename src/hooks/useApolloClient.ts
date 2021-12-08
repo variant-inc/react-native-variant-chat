@@ -13,6 +13,8 @@ import fetch from 'cross-fetch';
 import { EventRegister } from 'react-native-event-listeners';
 import { v4 as uuidv4 } from 'uuid';
 
+import { EventMessageType } from '../types/EventMessageType.enum';
+import { EventName } from '../types/EventName.enum';
 import { VariantApiConfig } from '../types/VariantChat';
 
 const REQ_ID_HEADER = 'X-CORRELATION-ID';
@@ -37,8 +39,8 @@ export const useApolloClient = (
             message === 'Not authenticated'
           )
         ) {
-          EventRegister.emit('error', {
-            type: 'internal',
+          EventRegister.emit(EventName.Error, {
+            type: EventMessageType.Internal,
             data: {
               message: `GraphQL error: ${operation.operationName} - ${message}`,
             },
@@ -48,8 +50,8 @@ export const useApolloClient = (
     }
 
     if (networkError) {
-      EventRegister.emit('error', {
-        type: 'internal',
+      EventRegister.emit(EventName.Error, {
+        type: EventMessageType.Internal,
         data: {
           message: `GraphQL network error: ${operation.operationName} - ${networkError.message}`,
         },
