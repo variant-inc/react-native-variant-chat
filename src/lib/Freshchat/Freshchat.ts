@@ -49,8 +49,8 @@ export async function initFreshchat(
   });
 
   instance.interceptors.request.use((request) => {
-    EventRegister.emit('info', {
-      type: 'performance',
+    EventRegister.emit(EventName.Info, {
+      type: EventMessageType.Performance,
       data: {
         message: `Freshchat request: ${JSON.stringify(request)}`,
       },
