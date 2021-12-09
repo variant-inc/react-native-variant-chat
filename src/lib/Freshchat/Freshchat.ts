@@ -8,6 +8,8 @@ import {
 } from 'react-native-freshchat-sdk';
 import { SECOND } from 'time-constants';
 
+import { EventMessageType } from '../../types/EventMessageType.enum';
+import { EventName } from '../../types/EventName.enum';
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
 import {
@@ -46,6 +48,16 @@ export async function initFreshchat(
     timeout: AXIOS_REQUEST_TIMEOUT * SECOND,
   });
 
+  instance.interceptors.request.use((request) => {
+    EventRegister.emit(EventName.Info, {
+      type: EventMessageType.Performance,
+      data: {
+        message: `Freshchat request: ${JSON.stringify(request)}`,
+      },
+    });
+    return request;
+  });
+
   // Freshchat SDK provides push notification functionality.
   initFreshchatSDK(driverId, freshchatUserId, config);
 }
@@ -66,8 +78,8 @@ const initFreshchatSDK = async (
     driverId,
     freshchatUser.restore_id,
     (error: string) => {
-      EventRegister.emit('error', {
-        type: 'internal',
+      EventRegister.emit(EventName.Error, {
+        type: EventMessageType.Internal,
         data: {
           message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
         },
@@ -75,8 +87,8 @@ const initFreshchatSDK = async (
     }
   );
 
-  EventRegister.emit('debug', {
-    type: 'log',
+  EventRegister.emit(EventName.Debug, {
+    type: EventMessageType.Log,
     data: {
       message: `Init Freshchat SDK with user: ${JSON.stringify(
         freshchatUser
@@ -254,8 +266,8 @@ export const setFreshchatFailedMessage = async (
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit('error', {
-      type: 'internal',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
       data: {
         message: `Could not save failed message: ${error.message}`,
       },
@@ -276,8 +288,8 @@ export const getFreshchatFailedMessages = async (
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit('error', {
-      type: 'internal',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
       data: {
         message: `Could not get failed message: ${error.message}`,
       },
@@ -304,8 +316,8 @@ export const removeFreshchatFailedMessage = async (
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit('error', {
-      type: 'internal',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
       data: {
         message: `Could not save failed message: ${error.message}`,
       },
@@ -331,15 +343,15 @@ export const setFreshchatUnreadMessageCounts = async (
       JSON.stringify(messageCounts)
     );
 
-    EventRegister.emit('unreadMessageCounts', {
-      type: 'unreadMessageCounts',
+    EventRegister.emit(EventName.UnreadMessageCounts, {
+      type: EventMessageType.UnreadMessageCounts,
       data: messageCounts,
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit('error', {
-      type: 'internal',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
       data: {
         message: `Could not save the unread message counts: ${error.message}`,
       },
@@ -360,8 +372,8 @@ export const getFreshchatUnreadMessageCounts = async (): Promise<
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit('error', {
-      type: 'internal',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
       data: {
         message: `Could not get the unread message counts: ${error.message}`,
       },
@@ -378,8 +390,8 @@ export const removeFreshchatUnreadMessageCounts = async (
     setFreshchatUnreadMessageCounts(channelName);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit('error', {
-      type: 'internal',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
       data: {
         message: `Could not save the unread message counts: ${error.message}`,
       },
@@ -393,8 +405,8 @@ export const setDriverId = async (driverId: string): Promise<void> => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit('error', {
-      type: 'internal',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
       data: {
         message: `Could not save the driver id: ${error.message}`,
       },
@@ -409,8 +421,8 @@ export const getDriverId = async (): Promise<string | null> => {
     return driverId;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    EventRegister.emit('error', {
-      type: 'internal',
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
       data: {
         message: `Could not get the driver id: ${error.message}`,
       },
