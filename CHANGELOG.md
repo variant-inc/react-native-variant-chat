@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.0.13 (12/9/2021)
+- Update doc [#35](https://github.com/variant-inc/react-native-variant-chat/pull/35) 
+- RGR-609 RGR-610 Log every http request [#32](https://github.com/variant-inc/react-native-variant-chat/pull/32) 
+- Updates the event name and message type [#34](https://github.com/variant-inc/react-native-variant-chat/pull/34) 
+
 ### v1.0.12 (12/3/2021)
 - Update no conversation type, remove commented lines [#33](https://github.com/variant-inc/react-native-variant-chat/pull/33) 
 - Fix the typescript compile issues [#30](https://github.com/variant-inc/react-native-variant-chat/pull/30) 
