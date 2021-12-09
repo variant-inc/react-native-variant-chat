@@ -315,7 +315,7 @@ import { VariantChatEvent, VariantChatEventType } from 'react-native-variant-cha
 
 // Add a listner to handle the desired event.
 const internalErrorListener = VariantChatEvent.addEventListener(
-  'error',
+  EventName.Error,
   (event: VariantChatEventType) => {
     console.log(`${event.type} ${event.data.message}`);
   },
@@ -325,20 +325,21 @@ const internalErrorListener = VariantChatEvent.addEventListener(
 VariantChatEvent.removeEventListener(internalErrorListener);
 ```
 
-The following events are emitted from the library. Your app should register for events by name.
+The following events are emitted from the library. Your app should register for events by name. The event `type` identifies the specific event.
 
 Event name | Description | Types | Data
 ------ | ------ | ------ | ------
-**`error`** | Variant chat has encountered an error | `no-conversation`, `internal`, `service` | {message: String}
-**`messageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `background` | {channelName: String, message: String}
-**`unreadMessageCounts`** | For each channel, the number of unread messages | `unreadMessageCounts` | {'channel-name': Number, ...} e.g. channel-name may be 'Chat with Team'.
+**`EventName.Info`** | Variant chat informational event | `EventMessageType.Performance` | {message: String}
+**`EventName.Error`** | Variant chat has encountered an error | `EventMessageType.NoConversation`, `EventMessageType.Internal`, `EventMessageType.Service` | {message: String}
+**`EventName.MessageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `EventMessageType.Background` | {channelName: String, message: String}
+**`EventName.UnreadMessageCounts`** | For each channel, the number of unread messages | `EventMessageType.UnreadMessageCounts` | {'channel-name': Number, ...} e.g. channel-name may be 'Chat with Team'.
 
 The event callback receives a single argument `event` of type `VariantChatEventType`.
 
 Property | Description | Type
 ------ | ------ | ------
-**`type`** | The type of event received | String
-**`data`** | The event data | Object as defined by the event
+**`type`** | The type of event received | `EventMessageType`
+**`data`** | The event data | `Record<string, unknown>`
 
 ## Synchronize Messages
 
