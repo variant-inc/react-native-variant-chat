@@ -49,10 +49,16 @@ export async function initFreshchat(
   });
 
   instance.interceptors.request.use((request) => {
+    const requestData = {
+      url: request.url,
+      method: request.method,
+      data: request.data,
+    };
+
     EventRegister.emit(EventName.Info, {
       type: EventMessageType.Performance,
       data: {
-        message: `Freshchat request: ${JSON.stringify(request)}`,
+        message: `Freshchat request: ${JSON.stringify(requestData)}`,
       },
     });
     return request;
