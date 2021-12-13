@@ -1,4 +1,3 @@
-import { responsePathAsArray } from 'graphql';
 import { useCallback, useEffect, useRef } from 'react';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
