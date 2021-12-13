@@ -1,3 +1,4 @@
+import { responsePathAsArray } from 'graphql';
 import { useCallback, useEffect, useRef } from 'react';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
@@ -284,8 +285,12 @@ const getChannels = async (): Promise<FreshchatChannel[] | null> => {
 };
 
 const getUser = async (userId: string): Promise<FreshchatUser | null> => {
-  const response = await getFreshchatUser(userId);
-  return response;
+  try {
+    const response = await getFreshchatUser(userId);
+    return response;
+  } catch (error) {
+    return null;
+  }
 };
 
 const getConversation = async (
@@ -542,8 +547,10 @@ export const useFreshchatGetNewMessages = (
     }
 
     try {
-      for (const conversation of conversationInfo.conversations) {
-        getNewMessagesForConversation(conversation);
+      if (conversationInfo.conversations) {
+        for (const conversation of conversationInfo.conversations) {
+          getNewMessagesForConversation(conversation);
+        }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -649,7 +656,7 @@ const checkConversationUsers = (
     newUsers.forEach(async (user: Record<string, string>) => {
       let responseUser = null;
       if (user.type === ActorType.User) {
-        responseUser = await getFreshchatUser(user.id);
+        responseUser = await getUser(user.id);
       } else if (user.type === ActorType.Agent) {
         responseUser = await getFreshchatAgent(user.id);
       }
