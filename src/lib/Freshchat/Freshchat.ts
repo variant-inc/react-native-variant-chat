@@ -78,7 +78,7 @@ const initFreshchatSDK = async (
     config.appKey
   );
 
-  let freshchatUser = null;
+  let freshchatUser: FreshchatUser | null = null;
   try {
     freshchatUser = await getFreshchatUser(freshchatUserId);
 
@@ -90,7 +90,7 @@ const initFreshchatSDK = async (
         EventRegister.emit(EventName.Error, {
           type: EventMessageType.Internal,
           data: {
-            message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
+            message: `Freshchat user identification failed: ${error} (user id ${freshchatUser?.id}, restore id ${freshchatUser?.restore_id})`,
           },
         });
       }
@@ -103,7 +103,9 @@ const initFreshchatSDK = async (
   EventRegister.emit(EventName.Debug, {
     type: EventMessageType.Log,
     data: {
-      message: `Init Freshchat SDK with user: ${JSON.stringify(freshchatUser)}`,
+      message: `Init Freshchat SDK with user: ${
+        freshchatUser ? JSON.stringify(freshchatUser) : 'undefined'
+      }`,
     },
   });
 };
