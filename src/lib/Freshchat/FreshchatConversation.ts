@@ -21,7 +21,8 @@ export async function getFreshchatConversations(
 
       const conversations: FreshchatConversationResponse =
         data?.driver?.conversations ?? null;
-      return conversations;
+
+      return conversations?.conversations ? conversations : null;
     }
   } catch {
     // Error emitted by ApolloClient

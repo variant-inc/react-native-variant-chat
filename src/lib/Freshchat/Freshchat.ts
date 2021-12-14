@@ -30,11 +30,7 @@ export const realtimeMessagePerPage = 10;
 
 let instance: AxiosInstance;
 
-export async function initFreshchat(
-  driverId: string,
-  freshchatUserId: string,
-  config: ChatProviderConfig
-): Promise<void> {
+export async function initAxios(config: ChatProviderConfig): Promise<void> {
   if (!config) {
     return;
   }
@@ -63,14 +59,11 @@ export async function initFreshchat(
     });
     return request;
   });
-
-  // Freshchat SDK provides push notification functionality.
-  initFreshchatSDK(driverId, freshchatUserId, config);
 }
 
-const initFreshchatSDK = async (
+export const initFreshchatSDK = async (
   driverId: string,
-  freshchatUserId: string,
+  freshchatUser: FreshchatUser,
   config: ChatProviderConfig
 ): Promise<void> => {
   const freshchatSDKConfig = new FreshchatSDKConfig(
