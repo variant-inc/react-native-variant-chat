@@ -18,7 +18,8 @@ import {
   getFreshchatMessages,
   getFreshchatMoreMessages,
   getFreshchatUser,
-  initFreshchat,
+  initAxios,
+  initFreshchatSDK,
   realtimeMessagePerPage,
   removeFreshchatFailedMessage,
   setDriverId,
@@ -79,6 +80,8 @@ import { IOpsMessage } from '../types/Message.interface';
 import { ChatCapabilities, ChatProviderConfig } from '../types/VariantChat';
 
 let dispatch: any;
+let allSimpleChatUsers: Record<string, string>[] = [];
+
 const NEW_MESSAGES_POLL_INTERVAL = 15 * MINUTE;
 
 export const useConsumerDispatch = (): any => {
@@ -110,6 +113,8 @@ export const useFreshchatInit = (
         resetVariantChat();
         setDriverId(driverId);
       }
+
+      await initAxios(providerConfig);
 
       // Get conversation id's from the messaging api.
       let conversationInfo: FreshchatConversationInfo = null;
@@ -151,8 +156,6 @@ export const useFreshchatInit = (
         throw error;
       }
 
-      await initFreshchat(driverId, conversationInfo.userId, providerConfig);
-
       // Get channels from Freshchat.
       const channels = await getChannels();
 
@@ -175,6 +178,16 @@ export const useFreshchatInit = (
         return;
       }
 
+      allSimpleChatUsers = [
+        {
+          id: user.id,
+          type: ActorType.User,
+        },
+      ];
+
+      // Freshchat SDK provides push notification functionality.
+      initFreshchatSDK(driverId, user, config);
+
       // For each channel get the conversations and messages.
       // Channel is specified with the conversation info.
       for (const conversation of conversationInfo.conversations) {
@@ -194,7 +207,7 @@ export const useFreshchatInit = (
                 message: response,
               })
             );
-            checkConversationUsers(dispatch, [], response.messages);
+            checkConversationUsers(dispatch, response.messages);
             return getFreshchatFailedMessages(conversation.id);
           })
           .then((failedMessages: FreshchatMessage[]) => {
@@ -451,7 +464,6 @@ export const useFreshchatGetMoreMessages = (
   const currentConversation = useSelector(
     selectFreshchatConversation(channelName)
   );
-  const conversationUsers = useSelector(selectFreshchatConversationUsers);
   const moreMessages = useSelector(selectFreshchatMoreMessage(channelName));
   const isFetching = useRef(false);
 
@@ -471,10 +483,10 @@ export const useFreshchatGetMoreMessages = (
           })
         );
 
-        checkConversationUsers(dispatch, conversationUsers, response.messages);
+        checkConversationUsers(dispatch, response.messages);
       }
     }
-  }, [currentConversation, conversationUsers, moreMessages, dispatch]);
+  }, [currentConversation, moreMessages, dispatch]);
 
   return getMoreMessages;
 };
@@ -487,6 +499,8 @@ export const useFreshchatGetNewMessages = (
   const allMessages = useSelector(selectFreshchatAllMessages);
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
   const driverStatus = useSelector(selectDriverStatus);
+
+  const allMessagesRef = useRef(allMessages);
 
   const appState = useRef(AppState.currentState);
   const lastBackgroundMessage = useRef<string | null>(null);
@@ -503,6 +517,10 @@ export const useFreshchatGetNewMessages = (
       AppState.removeEventListener('change', handleAppStateChange);
     };
   }, []);
+
+  useEffect(() => {
+    allMessagesRef.current = allMessages;
+  }, [allMessages]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -524,13 +542,7 @@ export const useFreshchatGetNewMessages = (
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [
-    conversationInfo,
-    conversationUsers,
-    allMessages,
-    isFullscreenVideo,
-    pollingInterval,
-  ]);
+  }, [conversationInfo, conversationUsers, isFullscreenVideo, pollingInterval]);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
     appState.current = nextAppState;
@@ -564,9 +576,13 @@ export const useFreshchatGetNewMessages = (
       1,
       realtimeMessagePerPage
     );
-    if (response && allMessages && allMessages[conversation.id]) {
+    if (
+      response &&
+      allMessagesRef.current &&
+      allMessagesRef.current[conversation.id]
+    ) {
       const newMessages = filterNewMessages(
-        allMessages[conversation.id],
+        allMessagesRef.current[conversation.id],
         response.messages
       );
 
@@ -581,7 +597,7 @@ export const useFreshchatGetNewMessages = (
         })
       );
 
-      checkConversationUsers(dispatch, conversationUsers, response.messages);
+      checkConversationUsers(dispatch, response.messages);
       setFreshchatUnreadMessageCounts(conversation.channel, newMessages.length);
 
       if (appState.current === 'background' && !isFullscreenVideo) {
@@ -627,21 +643,23 @@ export const useFreshchatGetNewMessages = (
 const checkConversationUsers = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   appDispatch: any,
-  conversationUsers: FreshchatUser[],
   messages: FreshchatMessage[]
 ) => {
   const newUsers: Record<string, string>[] = [];
 
   messages.forEach((message: FreshchatMessage) => {
     if (
-      conversationUsers.findIndex(
-        (item: FreshchatUser) => item.id === message.actor_id
+      allSimpleChatUsers.findIndex(
+        (item: Record<string, string>) => item.id === message.actor_id
       ) === -1
     ) {
-      newUsers.push({
+      const user = {
         id: message.actor_id,
         type: message.actor_type,
-      });
+      };
+
+      allSimpleChatUsers.push(user);
+      newUsers.push(user);
     }
   });
 
@@ -653,6 +671,7 @@ const checkConversationUsers = (
       } else if (user.type === ActorType.Agent) {
         responseUser = await getFreshchatAgent(user.id);
       }
+
       if (responseUser) {
         appDispatch(freshchatSetConversationUser({ user: responseUser }));
       }
