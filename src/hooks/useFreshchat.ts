@@ -500,6 +500,8 @@ export const useFreshchatGetNewMessages = (
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
   const driverStatus = useSelector(selectDriverStatus);
 
+  const allMessagesRef = useRef(allMessages);
+
   const appState = useRef(AppState.currentState);
   const lastBackgroundMessage = useRef<string | null>(null);
 
@@ -515,6 +517,10 @@ export const useFreshchatGetNewMessages = (
       AppState.removeEventListener('change', handleAppStateChange);
     };
   }, []);
+
+  useEffect(() => {
+    allMessagesRef.current = allMessages;
+  }, [allMessages]);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -536,13 +542,7 @@ export const useFreshchatGetNewMessages = (
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [
-    conversationInfo,
-    conversationUsers,
-    allMessages,
-    isFullscreenVideo,
-    pollingInterval,
-  ]);
+  }, [conversationInfo, conversationUsers, isFullscreenVideo, pollingInterval]);
 
   const handleAppStateChange = (nextAppState: AppStateStatus) => {
     appState.current = nextAppState;
@@ -576,9 +576,13 @@ export const useFreshchatGetNewMessages = (
       1,
       realtimeMessagePerPage
     );
-    if (response && allMessages && allMessages[conversation.id]) {
+    if (
+      response &&
+      allMessagesRef.current &&
+      allMessagesRef.current[conversation.id]
+    ) {
       const newMessages = filterNewMessages(
-        allMessages[conversation.id],
+        allMessagesRef.current[conversation.id],
         response.messages
       );
 
