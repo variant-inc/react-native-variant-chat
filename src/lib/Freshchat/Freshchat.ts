@@ -71,27 +71,19 @@ export const initFreshchatSDK = async (
     config.appKey
   );
 
-  let freshchatUser: FreshchatUser | null = null;
-  try {
-    freshchatUser = await getFreshchatUser(freshchatUserId);
-
-    Freshchat.init(freshchatSDKConfig);
-    Freshchat.identifyUser(
-      driverId,
-      freshchatUser.restore_id,
-      (error: string) => {
-        EventRegister.emit(EventName.Error, {
-          type: EventMessageType.Internal,
-          data: {
-            message: `Freshchat user identification failed: ${error} (user id ${freshchatUser?.id}, restore id ${freshchatUser?.restore_id})`,
-          },
-        });
-      }
-    );
-  } catch (error) {
-    // Nothing to do
-    // Exception already thrown for log entry
-  }
+  Freshchat.init(freshchatSDKConfig);
+  Freshchat.identifyUser(
+    driverId,
+    freshchatUser.restore_id,
+    (error: string) => {
+      EventRegister.emit(EventName.Error, {
+        type: EventMessageType.Internal,
+        data: {
+          message: `Freshchat user identification failed: ${error} (user id ${freshchatUser?.id}, restore id ${freshchatUser?.restore_id})`,
+        },
+      });
+    }
+  );
 
   EventRegister.emit(EventName.Debug, {
     type: EventMessageType.Log,
