@@ -70,6 +70,7 @@ export const initFreshchatSDK = async (
     config.appId,
     config.appKey
   );
+
   Freshchat.init(freshchatSDKConfig);
   Freshchat.identifyUser(
     driverId,
@@ -78,7 +79,7 @@ export const initFreshchatSDK = async (
       EventRegister.emit(EventName.Error, {
         type: EventMessageType.Internal,
         data: {
-          message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
+          message: `Freshchat user identification failed: ${error} (user id ${freshchatUser?.id}, restore id ${freshchatUser?.restore_id})`,
         },
       });
     }
@@ -87,9 +88,9 @@ export const initFreshchatSDK = async (
   EventRegister.emit(EventName.Debug, {
     type: EventMessageType.Log,
     data: {
-      message: `Init Freshchat SDK with user: ${JSON.stringify(
-        freshchatUser
-      )})`,
+      message: `Init Freshchat SDK with user: ${
+        freshchatUser ? JSON.stringify(freshchatUser) : 'undefined'
+      }`,
     },
   });
 };
