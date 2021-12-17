@@ -30,25 +30,7 @@ export const useApolloClient = (
     };
   });
 
-  const errorLink = onError(({ operation, graphQLErrors, networkError }) => {
-    if (graphQLErrors) {
-      graphQLErrors.map(({ message }) => {
-        if (
-          !(
-            operation.operationName === 'GetDriverStatus' &&
-            message === 'Not authenticated'
-          )
-        ) {
-          EventRegister.emit(EventName.Error, {
-            type: EventMessageType.Internal,
-            data: {
-              message: `GraphQL error: ${operation.operationName} - ${message}`,
-            },
-          });
-        }
-      });
-    }
-
+  const errorLink = onError(({ operation, networkError }) => {
     if (networkError) {
       EventRegister.emit(EventName.Error, {
         type: EventMessageType.Internal,

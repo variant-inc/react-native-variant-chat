@@ -4,6 +4,7 @@ export enum EventMessageType {
   Service = 'service',
   Performance = 'performance',
   NoConversation = 'no-conversation',
+  NoDriver = 'no-driver',
   Background = 'background',
   UnreadMessageCounts = 'unreadMessageCounts',
 }

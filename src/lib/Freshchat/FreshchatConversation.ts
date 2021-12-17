@@ -11,21 +11,16 @@ export async function getFreshchatConversations(
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const apolloClient = useApolloClient();
 
-  try {
-    if (apolloClient) {
-      const { data } =
-        await apolloClient.query<DriverConversationQueryResponse>({
-          query: GET_DRIVER_CONVERSATION,
-          variables: { driverId: currentDriverId },
-        });
+  if (apolloClient) {
+    const { data } = await apolloClient.query<DriverConversationQueryResponse>({
+      query: GET_DRIVER_CONVERSATION,
+      variables: { driverId: currentDriverId },
+    });
 
-      const conversations: FreshchatConversationResponse =
-        data?.driver?.conversations ?? null;
+    const conversations: FreshchatConversationResponse =
+      data?.driver?.conversations ?? null;
 
-      return conversations?.conversations ? conversations : null;
-    }
-  } catch {
-    // Error emitted by ApolloClient
+    return conversations?.conversations ? conversations : null;
   }
 
   return null;

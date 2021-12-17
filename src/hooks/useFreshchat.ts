@@ -143,16 +143,19 @@ export const useFreshchatInit = (
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        // ENOTFOUND indicates the messaging service could not find the specified driver id.
-        if (error.message.includes('ENOTFOUND')) {
-          conversationError(
-            `${error.message} (driver ${driverId}, conversation ${conversationInfo?.userId})`
-          );
-        } else {
-          serviceError(
-            `${error.message} (driver ${driverId}, conversation ${conversationInfo?.userId})`
-          );
+        const { graphQLErrors } = error;
+
+        if (graphQLErrors) {
+          graphQLErrors.map(({ message, code }: any) => {
+            // 404: cannot get joomla driver
+            if (code === 404) {
+              driverError(`${message} (driver ${driverId})`);
+            } else {
+              serviceError(`${message} (driver ${driverId})`);
+            }
+          });
         }
+
         throw error;
       }
 
@@ -234,6 +237,17 @@ export const useFreshchatInit = (
     }
 
     Tts.getInitStatus();
+  };
+
+  const driverError = (message: string) => {
+    initializedRef.current = FreshchatInit.Fail;
+
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.NoDriver,
+      data: {
+        message: `Conversation error: ${message}`,
+      },
+    });
   };
 
   const conversationError = (message: string) => {
