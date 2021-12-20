@@ -121,41 +121,30 @@ export const useFreshchatInit = (
 
       try {
         conversationInfo = await getFreshchatConversations(driverId);
-        if (conversationInfo) {
+        if (conversationInfo?.conversations) {
           await dispatch(freshchatSetConversationInfo({ conversationInfo }));
-        }
 
-        if (!conversationInfo) {
+          EventRegister.emit(EventName.Debug, {
+            type: EventMessageType.Log,
+            data: {
+              message: `Conversations available for driver: ${JSON.stringify(
+                conversationInfo
+              )})`,
+            },
+          });
+        } else if (conversationInfo?.statusCode === 404) {
+          driverError(`${conversationInfo?.message} (driver ${driverId})`);
+          return;
+        } else if (!conversationInfo?.conversations) {
           conversationError(
             `No conversation info from messaging service for driver ${driverId}`
           );
           return;
         }
 
-        EventRegister.emit(EventName.Debug, {
-          type: EventMessageType.Log,
-          data: {
-            message: `Conversations available for driver: ${JSON.stringify(
-              conversationInfo
-            )})`,
-          },
-        });
-
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        const { graphQLErrors } = error;
-
-        if (graphQLErrors) {
-          graphQLErrors.map(({ message, code }: any) => {
-            // 404: cannot get joomla driver
-            if (code === 404) {
-              driverError(`${message} (driver ${driverId})`);
-            } else {
-              serviceError(`${message} (driver ${driverId})`);
-            }
-          });
-        }
-
+        serviceError(`${error.message} (driver ${driverId})`);
         throw error;
       }
 

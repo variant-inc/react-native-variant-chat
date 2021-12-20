@@ -3,11 +3,11 @@ import {
   GET_DRIVER_CONVERSATION,
 } from '../../graphql/queries/getDriverConversation';
 import { useApolloClient } from '../../hooks/useApolloClient';
-import { FreshchatConversationResponse } from '../../types/FreshchatConversationResponse.type';
+import { FreshchatConversationInfo } from '../../types/FreshchatConversationInfo';
 
 export async function getFreshchatConversations(
   currentDriverId: string
-): Promise<FreshchatConversationResponse | null> {
+): Promise<FreshchatConversationInfo | null> {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const apolloClient = useApolloClient();
 
@@ -17,10 +17,7 @@ export async function getFreshchatConversations(
       variables: { driverId: currentDriverId },
     });
 
-    const conversations: FreshchatConversationResponse =
-      data?.driver?.conversations ?? null;
-
-    return conversations?.conversations ? conversations : null;
+    return data?.driver?.conversations ?? null;
   }
 
   return null;
