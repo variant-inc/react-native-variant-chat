@@ -121,38 +121,30 @@ export const useFreshchatInit = (
 
       try {
         conversationInfo = await getFreshchatConversations(driverId);
-        if (conversationInfo) {
+        if (conversationInfo?.conversations) {
           await dispatch(freshchatSetConversationInfo({ conversationInfo }));
-        }
 
-        if (!conversationInfo) {
+          EventRegister.emit(EventName.Debug, {
+            type: EventMessageType.Log,
+            data: {
+              message: `Conversations available for driver: ${JSON.stringify(
+                conversationInfo
+              )})`,
+            },
+          });
+        } else if (conversationInfo?.statusCode === 404) {
+          driverError(`${conversationInfo?.message} (driver ${driverId})`);
+          return;
+        } else if (!conversationInfo?.conversations) {
           conversationError(
             `No conversation info from messaging service for driver ${driverId}`
           );
           return;
         }
 
-        EventRegister.emit(EventName.Debug, {
-          type: EventMessageType.Log,
-          data: {
-            message: `Conversations available for driver: ${JSON.stringify(
-              conversationInfo
-            )})`,
-          },
-        });
-
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        // ENOTFOUND indicates the messaging service could not find the specified driver id.
-        if (error.message.includes('ENOTFOUND')) {
-          conversationError(
-            `${error.message} (driver ${driverId}, conversation ${conversationInfo?.userId})`
-          );
-        } else {
-          serviceError(
-            `${error.message} (driver ${driverId}, conversation ${conversationInfo?.userId})`
-          );
-        }
+        serviceError(`${error.message} (driver ${driverId})`);
         throw error;
       }
 
@@ -234,6 +226,17 @@ export const useFreshchatInit = (
     }
 
     Tts.getInitStatus();
+  };
+
+  const driverError = (message: string) => {
+    initializedRef.current = FreshchatInit.Fail;
+
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.NoDriver,
+      data: {
+        message: `Conversation error: ${message}`,
+      },
+    });
   };
 
   const conversationError = (message: string) => {

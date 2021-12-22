@@ -350,9 +350,7 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
       resizeMode: 'contain',
       marginTop: 74,
     },
-    textGeneral: {
-      paddingHorizontal: 15,
-    },
+    textGeneral: {},
     closeButton: {
       marginRight: 10,
       marginTop: 74,
