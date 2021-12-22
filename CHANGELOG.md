@@ -1,5 +1,11 @@
 ## Change Log
 
+### v1.0.14 (12/22/2021)
+- Implements the error message for no driver [#39](https://github.com/variant-inc/react-native-variant-chat/pull/39) 
+- Handle exceptions when conversation data is null [#38](https://github.com/variant-inc/react-native-variant-chat/pull/38) 
+- Fixes the user / agent request issue and no conversation issue [#37](https://github.com/variant-inc/react-native-variant-chat/pull/37) 
+- Filters the request data in the axios [#36](https://github.com/variant-inc/react-native-variant-chat/pull/36) 
+
 ### v1.0.13 (12/9/2021)
 - Update doc [#35](https://github.com/variant-inc/react-native-variant-chat/pull/35) 
 - RGR-609 RGR-610 Log every http request [#32](https://github.com/variant-inc/react-native-variant-chat/pull/32) 
