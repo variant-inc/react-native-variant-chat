@@ -34,6 +34,7 @@ Add the following dependencies.
 npm install react-native-background-timer
 npm install react-native-tts
 npm install react-native-freshchat-sdk
+npm install react-native-video
 ```
 
 ### Android specific installation
@@ -330,7 +331,7 @@ The following events are emitted from the library. Your app should register for 
 Event name | Description | Types | Data
 ------ | ------ | ------ | ------
 **`EventName.Info`** | Variant chat informational event | `EventMessageType.Performance` | {message: String}
-**`EventName.Error`** | Variant chat has encountered an error | `EventMessageType.NoConversation`, `EventMessageType.Internal`, `EventMessageType.Service` | {message: String}
+**`EventName.Error`** | Variant chat has encountered an error | `EventMessageType.NoDriver`, `EventMessageType.NoConversation`, `EventMessageType.Internal`, `EventMessageType.Service` | {message: String}
 **`EventName.MessageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `EventMessageType.Background` | {channelName: String, message: String}
 **`EventName.UnreadMessageCounts`** | For each channel, the number of unread messages | `EventMessageType.UnreadMessageCounts` | {'channel-name': Number, ...} e.g. channel-name may be 'Chat with Team'.
 

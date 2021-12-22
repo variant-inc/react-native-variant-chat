@@ -9,6 +9,9 @@ export interface DriverConversationQueryResponse {
         id: string;
         channel: string;
       }[];
+      statusCode: number;
+      message: string;
+      error: string;
     };
   };
 }
@@ -23,6 +26,9 @@ export const GET_DRIVER_CONVERSATION = gql`
           id
           channel
         }
+        statusCode
+        message
+        error
       }
     }
   }

@@ -30,11 +30,7 @@ export const realtimeMessagePerPage = 10;
 
 let instance: AxiosInstance;
 
-export async function initFreshchat(
-  driverId: string,
-  freshchatUserId: string,
-  config: ChatProviderConfig
-): Promise<void> {
+export async function initAxios(config: ChatProviderConfig): Promise<void> {
   if (!config) {
     return;
   }
@@ -49,29 +45,31 @@ export async function initFreshchat(
   });
 
   instance.interceptors.request.use((request) => {
+    const requestData = {
+      url: request.url,
+      method: request.method,
+      data: request.data,
+    };
+
     EventRegister.emit(EventName.Info, {
       type: EventMessageType.Performance,
       data: {
-        message: `Freshchat request: ${JSON.stringify(request)}`,
+        message: `Freshchat request: ${JSON.stringify(requestData)}`,
       },
     });
     return request;
   });
-
-  // Freshchat SDK provides push notification functionality.
-  initFreshchatSDK(driverId, freshchatUserId, config);
 }
 
-const initFreshchatSDK = async (
+export const initFreshchatSDK = async (
   driverId: string,
-  freshchatUserId: string,
+  freshchatUser: FreshchatUser,
   config: ChatProviderConfig
 ): Promise<void> => {
   const freshchatSDKConfig = new FreshchatSDKConfig(
     config.appId,
     config.appKey
   );
-  const freshchatUser = await getFreshchatUser(freshchatUserId);
 
   Freshchat.init(freshchatSDKConfig);
   Freshchat.identifyUser(
@@ -81,7 +79,7 @@ const initFreshchatSDK = async (
       EventRegister.emit(EventName.Error, {
         type: EventMessageType.Internal,
         data: {
-          message: `Freshchat user identification failed: ${error} (user id ${freshchatUser.id}, restore id ${freshchatUser.restore_id})`,
+          message: `Freshchat user identification failed: ${error} (user id ${freshchatUser?.id}, restore id ${freshchatUser?.restore_id})`,
         },
       });
     }
@@ -90,9 +88,9 @@ const initFreshchatSDK = async (
   EventRegister.emit(EventName.Debug, {
     type: EventMessageType.Log,
     data: {
-      message: `Init Freshchat SDK with user: ${JSON.stringify(
-        freshchatUser
-      )})`,
+      message: `Init Freshchat SDK with user: ${
+        freshchatUser ? JSON.stringify(freshchatUser) : 'undefined'
+      }`,
     },
   });
 };
