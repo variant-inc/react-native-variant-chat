@@ -9,6 +9,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
+import { RetryLink } from '@apollo/client/link/retry';
 import fetch from 'cross-fetch';
 import { EventRegister } from 'react-native-event-listeners';
 import { v4 as uuidv4 } from 'uuid';
@@ -54,11 +55,20 @@ export const useApolloClient = (
     fetch,
   });
 
+  const retryLink = new RetryLink();
+
   if (apiConfig) {
     configRef = apiConfig;
   }
+
   return new ApolloClient({
-    link: ApolloLink.from([requestIdLink, errorLink, authLink, httpLink]),
+    link: ApolloLink.from([
+      requestIdLink,
+      errorLink,
+      authLink,
+      httpLink,
+      retryLink,
+    ]),
     cache: new InMemoryCache({}),
   });
 };
