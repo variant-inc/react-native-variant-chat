@@ -21,6 +21,8 @@ import { VariantApiConfig } from '../types/VariantChat';
 const REQ_ID_HEADER = 'X-CORRELATION-ID';
 let configRef: VariantApiConfig;
 
+const retryLink = new RetryLink();
+
 export const useApolloClient = (
   apiConfig: VariantApiConfig | void
 ): ApolloClient<NormalizedCacheObject> | void => {
@@ -54,8 +56,6 @@ export const useApolloClient = (
     uri: configRef?.url,
     fetch,
   });
-
-  const retryLink = new RetryLink();
 
   if (apiConfig) {
     configRef = apiConfig;
