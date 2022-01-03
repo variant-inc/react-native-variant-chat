@@ -323,6 +323,25 @@ export const removeFreshchatFailedMessage = async (
   }
 };
 
+export const reportCurrentFreshchatUnreadMessageCounts =
+  async (): Promise<void> => {
+    try {
+      const messageCounts = await getFreshchatUnreadMessageCounts();
+      EventRegister.emit(EventName.UnreadMessageCounts, {
+        type: EventMessageType.UnreadMessageCounts,
+        data: messageCounts,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      EventRegister.emit(EventName.Error, {
+        type: EventMessageType.Internal,
+        data: {
+          message: `Could not report the unread message counts: ${error.message}`,
+        },
+      });
+    }
+  };
+
 export const setFreshchatUnreadMessageCounts = async (
   channelName: string,
   count = 0

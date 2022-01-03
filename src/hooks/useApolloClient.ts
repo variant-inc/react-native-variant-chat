@@ -9,6 +9,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
+import { RetryLink } from '@apollo/client/link/retry';
 import fetch from 'cross-fetch';
 import { EventRegister } from 'react-native-event-listeners';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +20,8 @@ import { VariantApiConfig } from '../types/VariantChat';
 
 const REQ_ID_HEADER = 'X-CORRELATION-ID';
 let configRef: VariantApiConfig;
+
+const retryLink = new RetryLink();
 
 export const useApolloClient = (
   apiConfig: VariantApiConfig | void
@@ -57,8 +60,15 @@ export const useApolloClient = (
   if (apiConfig) {
     configRef = apiConfig;
   }
+
   return new ApolloClient({
-    link: ApolloLink.from([requestIdLink, errorLink, authLink, httpLink]),
+    link: ApolloLink.from([
+      requestIdLink,
+      errorLink,
+      authLink,
+      httpLink,
+      retryLink,
+    ]),
     cache: new InMemoryCache({}),
   });
 };
