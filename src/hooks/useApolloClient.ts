@@ -10,6 +10,7 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import ApolloLinkTimeout from 'apollo-link-timeout';
 import fetch from 'cross-fetch';
 import { EventRegister } from 'react-native-event-listeners';
 import { v4 as uuidv4 } from 'uuid';
@@ -22,6 +23,8 @@ const REQ_ID_HEADER = 'X-CORRELATION-ID';
 let configRef: VariantApiConfig;
 
 const retryLink = new RetryLink();
+
+const timeoutLink = new ApolloLinkTimeout(60 * 1000); // 60 seconds timeout
 
 export const useApolloClient = (
   apiConfig: VariantApiConfig | void
@@ -57,6 +60,8 @@ export const useApolloClient = (
     fetch,
   });
 
+  const timeoutHttpLink = timeoutLink.concat(httpLink);
+
   if (apiConfig) {
     configRef = apiConfig;
   }
@@ -66,7 +71,7 @@ export const useApolloClient = (
       requestIdLink,
       errorLink,
       authLink,
-      httpLink,
+      timeoutHttpLink,
       retryLink,
     ]),
     cache: new InMemoryCache({}),
