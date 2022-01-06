@@ -15,6 +15,7 @@ export async function getFreshchatConversations(
     const { data } = await apolloClient.query<DriverConversationQueryResponse>({
       query: GET_DRIVER_CONVERSATION,
       variables: { driverId: currentDriverId },
+      context: { timeout: 60 * 1000 },
     });
 
     return data?.driver?.conversations ?? null;
