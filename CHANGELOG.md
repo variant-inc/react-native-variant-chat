@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.0.15 (1/6/2022)
+- Sets the timeout in the Apollo request [#41](https://github.com/variant-inc/react-native-variant-chat/pull/41) 
+- Fixes some issues [#40](https://github.com/variant-inc/react-native-variant-chat/pull/40) 
+
 ### v1.0.14 (12/22/2021)
 - Implements the error message for no driver [#39](https://github.com/variant-inc/react-native-variant-chat/pull/39) 
 - Handle exceptions when conversation data is null [#38](https://github.com/variant-inc/react-native-variant-chat/pull/38) 
