@@ -22,6 +22,7 @@ import {
   initFreshchatSDK,
   realtimeMessagePerPage,
   removeFreshchatFailedMessage,
+  reportCurrentFreshchatUnreadMessageCounts,
   setDriverId,
   setFreshchatFailedMessage,
   setFreshchatMessage,
@@ -221,6 +222,9 @@ export const useFreshchatInit = (
             return;
           });
       }
+
+      // reports current unread messages' count
+      reportCurrentFreshchatUnreadMessageCounts();
 
       initializedRef.current = FreshchatInit.Success;
     }
