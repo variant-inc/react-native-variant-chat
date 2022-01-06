@@ -71,8 +71,8 @@ export const useApolloClient = (
       requestIdLink,
       errorLink,
       authLink,
-      timeoutHttpLink,
       retryLink,
+      timeoutHttpLink,
     ]),
     cache: new InMemoryCache({}),
   });
