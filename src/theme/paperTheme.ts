@@ -14,6 +14,7 @@ export const paperTheme: ReactNativePaper.Theme = {
     error: colors.red.light,
     common: colors.common,
     gray: colors.gray,
+    orange: colors.orange.light,
     transparent: colors.transparent,
 
     chat: colors.chat,
