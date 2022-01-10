@@ -43,13 +43,21 @@ export const selectFreshchatChannel = (channelName: string) =>
     }
   );
 
-export const selectFreshchatConversation = (conversationId: string) =>
+export const selectFreshchatConversation = (channelName: string) =>
   createSelector<StoreState, VariantChatState, FreshchatConversation | null>(
     selectFreshchatState,
     (freshchatState) => {
+      const channel = freshchatState?.channels.find(
+        (c) => c.name === channelName
+      );
+      if (!channel) {
+        return null;
+      }
+
       const conversation = freshchatState.conversations.find((c) => {
-        return c.conversation_id === conversationId;
+        return c.channel_id === channel.id;
       });
+
       return conversation || null;
     }
   );
