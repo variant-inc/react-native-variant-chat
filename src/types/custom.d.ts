@@ -80,6 +80,7 @@ namespace ReactNativePaper {
     transparentModal: string;
     onTransparentModal: string;
     gray: Required<VariantColor>;
+    orange: string;
     traffic: {
       green: string;
       red: string;

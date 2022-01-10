@@ -1,6 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-import { Keyboard, StyleSheet, TextStyle, View } from 'react-native';
+import {
+  Alert,
+  Keyboard,
+  Linking,
+  StyleSheet,
+  TextStyle,
+  View,
+} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
@@ -190,6 +197,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
     [currentUser, currentChannel]
   );
 
+  const onLinkPressed = (url: string) => {
+    Linking.openURL(url).catch(() => Alert.alert(`Couldn't load page`));
+  };
+
   const handleFailedSend = useCallback(
     (sendMessages: IOpsMessage) => {
       Keyboard.dismiss();
@@ -302,6 +313,15 @@ const Chat = (props: VariantChatProps): ReactElement => {
         renderActions={renderActions}
         renderComposer={renderComposer}
         renderSend={renderSend}
+        parsePatterns={() => [
+          {
+            pattern:
+              // eslint-disable-next-line no-useless-escape
+            /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi,
+            style: styles.link,
+            onPress: onLinkPressed,
+          },
+        ]}
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
@@ -349,6 +369,10 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
       flex: 1,
       resizeMode: 'contain',
       marginTop: 74,
+    },
+    link: {
+      color: theme.colors.orange,
+      textDecoration: 'underline',
     },
     textGeneral: {},
     closeButton: {
