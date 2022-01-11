@@ -431,12 +431,7 @@ const CustomBubble = (
     }
 
     return (
-      <Text
-        style={[
-          styles.content.textTick,
-          !currentMessage?.sent ? styles.content.textTickError : null,
-        ]}
-      >
+      <Text style={styles.content.textTick}>
         {currentMessage?.sent ? 'Sent' : 'Not Sent'}
       </Text>
     );
@@ -706,9 +701,6 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         letterSpacing: 0.4,
         color: theme.colors.gray.dark,
         opacity: 0.75,
-      },
-      textTickError: {
-        color: theme.colors.error,
       },
       trySendingButton: {
         flexDirection: 'row',
