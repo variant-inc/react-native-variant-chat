@@ -70,7 +70,7 @@ export const tabs = {
 
 export const chat = {
   primary: teal.dark,
-  bubbleSent: common.white,
+  bubbleSent: '#D1D1D1',
   bubbleReceive: teal.medium,
   bubbleUrgent: yellow.dark,
   send: teal.light,
