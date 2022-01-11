@@ -10,6 +10,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import {isTablet} from 'react-native-device-info';
 import {
   LeftRightStyle,
   MessageImage,
@@ -418,16 +419,25 @@ const CustomBubble = (
         return null;
       }
 
-      return (
-        <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
-          <Text style={styles.content.textTick}>Audible Message</Text>
-          <SvgXml
-            style={styles.content.iconMic}
-            xml={getSvg('iconMic')}
-            accessibilityLabel="mic"
-          />
-        </View>
-      );
+      if (isTablet()) {
+        return (
+          <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
+            <Text style={styles.content.textTick}>Audible Message</Text>
+            <SvgXml
+              style={styles.content.iconMic}
+              xml={getSvg('iconMic')}
+              accessibilityLabel="mic"
+            />
+          </View>
+        );
+      } else {
+        return (
+          <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
+            <Text style={styles.content.textTick}>Audible In-Cab Only</Text>
+          </View>
+        )
+      }
+      
     }
 
     return (
