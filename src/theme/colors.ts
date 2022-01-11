@@ -38,6 +38,10 @@ export const green = {
   dark: '#3AC936',
 };
 
+export const orange = {
+  light: '#E78E3C',
+};
+
 // typically used for internal-facing, authed screens
 export const bright = {
   primary: teal.light,
@@ -70,7 +74,7 @@ export const tabs = {
 
 export const chat = {
   primary: teal.dark,
-  bubbleSent: common.white,
+  bubbleSent: '#D1D1D1',
   bubbleReceive: teal.medium,
   bubbleUrgent: yellow.dark,
   send: teal.light,
