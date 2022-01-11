@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.0.16 (1/11/2022)
+- Fixed the resend issue for the failed message [#43](https://github.com/variant-inc/react-native-variant-chat/pull/43) 
+- Updated the bubble format [#44](https://github.com/variant-inc/react-native-variant-chat/pull/44) 
+- [RGR-634] Added link support [#42](https://github.com/variant-inc/react-native-variant-chat/pull/42) 
+
 ### v1.0.15 (1/6/2022)
 - Sets the timeout in the Apollo request [#41](https://github.com/variant-inc/react-native-variant-chat/pull/41) 
 - Fixes some issues [#40](https://github.com/variant-inc/react-native-variant-chat/pull/40) 
