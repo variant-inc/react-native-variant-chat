@@ -372,7 +372,7 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
     },
     link: {
       color: theme.colors.orange,
-      textDecoration: 'underline',
+      textDecorationLine: 'underline',
     },
     textGeneral: {},
     closeButton: {
