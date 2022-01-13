@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Avatar, AvatarProps } from 'react-native-gifted-chat';
+import { ViewStyle } from 'react-native';
+import { Avatar, AvatarProps, LeftRightStyle } from 'react-native-gifted-chat';
 
 import { IOpsMessage } from '../types/Message.interface';
 
@@ -8,18 +8,24 @@ const CustomAvatar = (props: AvatarProps<IOpsMessage>): ReactElement => {
   const styles = localStyleSheet();
 
   return (
-    <View style={styles.container}>
-      <Avatar {...props} />
-    </View>
+    <Avatar
+      {...props}
+      containerStyle={styles.container as LeftRightStyle<ViewStyle>}
+    />
   );
 };
 
 function localStyleSheet() {
-  return StyleSheet.create({
+  return {
     container: {
-      marginTop: 5,
+      left: {
+        marginTop: 5,
+      },
+      right: {
+        marginTop: 5,
+      },
     },
-  });
+  };
 }
 
 export default CustomAvatar;
