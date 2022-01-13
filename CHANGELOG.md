@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.0.17 (1/13/2022)
+- RGR-656 Alignment of name and avatar  [#46](https://github.com/variant-inc/react-native-variant-chat/pull/46) 
+- Fixes the underline issue [#45](https://github.com/variant-inc/react-native-variant-chat/pull/45) 
+
 ### v1.0.16 (1/11/2022)
 - Fixed the resend issue for the failed message [#43](https://github.com/variant-inc/react-native-variant-chat/pull/43) 
 - Updated the bubble format [#44](https://github.com/variant-inc/react-native-variant-chat/pull/44) 
