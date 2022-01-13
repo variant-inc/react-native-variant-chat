@@ -11,6 +11,7 @@ import {
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
+  AvatarProps,
   ComposerProps,
   IMessage,
   MessageProps,
@@ -48,6 +49,7 @@ import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatProps } from '../types/VariantChat';
 import Accessory from './Accessory';
 import Actions from './Actions';
+import Avatar from './Avatar';
 import { Button } from './Button';
 import Composer from './Composer';
 import Message from './Message';
@@ -278,6 +280,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
     />
   );
 
+  const renderAvatar = (avatarProps: AvatarProps<IOpsMessage>): JSX.Element => (
+    <Avatar {...avatarProps} />
+  );
+
   return (
     <View style={[styles.container, containerStyle]}>
       <GiftedChat
@@ -298,6 +304,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         infiniteScroll
         showAvatarForEveryMessage
         showUserAvatar
+        renderAvatarOnTop
         alwaysShowSend
         messages={chatMessages}
         user={{
@@ -313,11 +320,12 @@ const Chat = (props: VariantChatProps): ReactElement => {
         renderActions={renderActions}
         renderComposer={renderComposer}
         renderSend={renderSend}
+        renderAvatar={renderAvatar}
         parsePatterns={() => [
           {
             pattern:
               // eslint-disable-next-line no-useless-escape
-            /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi,
+              /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi,
             style: styles.link,
             onPress: onLinkPressed,
           },
