@@ -10,7 +10,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {isTablet} from 'react-native-device-info';
 import {
   LeftRightStyle,
   MessageImage,
@@ -42,6 +41,7 @@ import { getSvg } from '../theme/Svg';
 import { FreshchatMessagePart } from '../types/FreshchatMessagePart.type';
 import { FreshchatMessageParts } from '../types/FreshchatMessageParts.type';
 import { IOpsMessage } from '../types/Message.interface';
+import { appName } from '../lib/VariantChat';
 import MessagePdf from './MessagePdf';
 
 export declare type RenderMessageImageProps<TMessage extends IMessage> = Omit<
@@ -418,8 +418,7 @@ const CustomBubble = (
       if (!isHasUrgent) {
         return null;
       }
-
-      if (isTablet()) {
+      if (appName === 'Ops Chat') {
         return (
           <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
             <Text style={styles.content.textTick}>Audible Message</Text>
@@ -435,7 +434,7 @@ const CustomBubble = (
           <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
             <Text style={styles.content.textTick}>Audible In-Cab Only</Text>
           </View>
-        )
+        );
       }
       
     }
