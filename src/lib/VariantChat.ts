@@ -15,7 +15,7 @@ import {
 } from './Freshchat/Freshchat';
 
 let dispatch: any;
-export var appName: string;
+export let appName: string;
 
 export const useConsumerDispatch = (): any => {
   return dispatch;
