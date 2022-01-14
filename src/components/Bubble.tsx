@@ -423,7 +423,7 @@ const CustomBubble = (
       } else {
         return (
           <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
-            <Text style={styles.content.textTick}>Audible Message TESTING</Text>
+            <Text style={styles.content.textTick}>Audible Message</Text>
             <SvgXml
               style={styles.content.iconMic}
               xml={getSvg('iconMic')}
