@@ -198,7 +198,6 @@ Call the `useVariantChat` hook to initialize the component library before attemp
 useVariantChat = (
   driverId: '123456',
   config: {
-    appName: 'Ops Chat',
     chatProvider: {
       baseUrl: 'freshchat-url',
       accessToken: 'freshchat-access-token',

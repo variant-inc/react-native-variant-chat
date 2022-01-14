@@ -41,8 +41,8 @@ import { getSvg } from '../theme/Svg';
 import { FreshchatMessagePart } from '../types/FreshchatMessagePart.type';
 import { FreshchatMessageParts } from '../types/FreshchatMessageParts.type';
 import { IOpsMessage } from '../types/Message.interface';
-import { appName } from '../lib/VariantChat';
 import MessagePdf from './MessagePdf';
+import UrgentMessageComponent from '../components/Chat';
 
 export declare type RenderMessageImageProps<TMessage extends IMessage> = Omit<
   CustomBubbleProps<TMessage>,
@@ -418,7 +418,9 @@ const CustomBubble = (
       if (!isHasUrgent) {
         return null;
       }
-      if (appName === 'Ops Chat') {
+      if (UrgentMessageComponent) {
+        return UrgentMessageComponent;
+      } else {
         return (
           <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
             <Text style={styles.content.textTick}>Audible Message</Text>
@@ -429,13 +431,8 @@ const CustomBubble = (
             />
           </View>
         );
-      } else {
-        return (
-          <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
-            <Text style={styles.content.textTick}>Audible In-Cab Only</Text>
-          </View>
-        );
       }
+      
       
     }
 
