@@ -42,7 +42,7 @@ import { FreshchatMessagePart } from '../types/FreshchatMessagePart.type';
 import { FreshchatMessageParts } from '../types/FreshchatMessageParts.type';
 import { IOpsMessage } from '../types/Message.interface';
 import MessagePdf from './MessagePdf';
-import UrgentMessageComponent from '../components/Chat';
+import {VariantChat} from '../components/VariantChat';
 
 export declare type RenderMessageImageProps<TMessage extends IMessage> = Omit<
   CustomBubbleProps<TMessage>,
@@ -418,9 +418,8 @@ const CustomBubble = (
       if (!isHasUrgent) {
         return null;
       }
-      if (UrgentMessageComponent) {
-        console.log('urgent message component is present');
-        return UrgentMessageComponent;
+      if (VariantChat.UrgentMessageComponent) {
+        return VariantChat.UrgentMessageComponent;
       } else {
         return (
           <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>

@@ -15,7 +15,6 @@ import {
 } from './Freshchat/Freshchat';
 
 let dispatch: any;
-export let appName: string;
 
 export const useConsumerDispatch = (): any => {
   return dispatch;
@@ -30,7 +29,6 @@ const useVariantChat = (
   config: VariantChatConfig,
   consumerDispatch: any
 ): void => {
-  appName = config.appName;
   dispatch = consumerDispatch;
   useApolloClient(config.variantApi);
   useFreshchatInit(driverId, config.chatProvider, dispatch);
