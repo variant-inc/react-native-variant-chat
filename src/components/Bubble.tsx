@@ -419,6 +419,7 @@ const CustomBubble = (
         return null;
       }
       if (UrgentMessageComponent) {
+        console.log('urgent message component is present');
         return UrgentMessageComponent;
       } else {
         return (
