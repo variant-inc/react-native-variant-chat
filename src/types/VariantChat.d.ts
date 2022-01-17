@@ -24,7 +24,6 @@ export interface ChatCapabilities {
 }
 
 export interface VariantChatConfig {
-  appName: string;
   chatProvider: ChatProviderConfig;
   variantApi: VariantApiConfig;
   capabilities?: ChatCapabilities;
