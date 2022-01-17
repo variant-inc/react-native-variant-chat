@@ -131,6 +131,7 @@ const CustomBubble = (
     // bubbleTextStyle,
     bubbleBottomContainerStyle,
     // bubbleTickStyle,
+    urgentMessageComponent,
   } = props;
 
   const sendingMessageId = useSelector(selectFreshchatSendingMessageId);
@@ -409,21 +410,17 @@ const CustomBubble = (
 
   const renderTicks = () => {
     const { currentMessage } = props;
-
     if (props.renderTicks && currentMessage) {
       return props.renderTicks(currentMessage);
     }
 
     if (currentMessage && props.position === 'left') {
-      console.log('made it to this block');
       if (!isHasUrgent) {
         return null;
       }
-      if (props.urgentMessageComponent) {
-        console.log('component is present');
-        return props.urgentMessageComponent;
+      if (urgentMessageComponent) {
+        return urgentMessageComponent;
       } else {
-        console.log('component is not present');
         return (
           <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
             <Text style={styles.content.textTick}>Audible Message</Text>

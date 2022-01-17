@@ -57,7 +57,6 @@ import Send from './Send';
 
 const Chat = (props: VariantChatProps): ReactElement => {
   const { chatStyles = {}, channelName, defaultAvatarUrl, UrgentMessageComponent } = props;
-
   const {
     containerStyle = {},
     scrollToBottomStyle = {},
@@ -373,7 +372,7 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
     },
     link: {
       color: theme.colors.orange,
-      textDecoration: 'underline',
+      textDecorationLine: 'underline',
     },
     textGeneral: {},
     closeButton: {
