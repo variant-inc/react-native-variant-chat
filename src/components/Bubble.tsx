@@ -422,7 +422,7 @@ const CustomBubble = (
         return urgentMessageComponent;
       } else {
         return (
-          <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
+          <View style={styles.content.audibleContainer}>
             <Text style={styles.content.textTick}>Audible Message</Text>
             <SvgXml
               style={styles.content.iconMic}
