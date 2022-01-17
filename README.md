@@ -159,7 +159,7 @@ Prop | Description | Type | Default
 **`chatStyles`** | Styles for the user interface | VariantChatStyles  | **Default styles**
 **`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar | String | **The chat users initials**
 **`NoConversationComponent`** | Rendered if the specified `channelName` does not resolve a conversation | Component, Element | **Text stating the conversation does not exist**
-**`UrgentMessageComponent`** | Rendered if the message beings with the [URGENT] tag |Component, Element | **Text specifying whether the message is audible**
+**`UrgentMessageComponent`** | Rendered if the message begins with the [URGENT] tag |Component, Element | **Text specifying whether the message is audible**
 
 ### ChatStyles
 
