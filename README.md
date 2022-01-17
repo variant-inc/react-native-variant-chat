@@ -128,6 +128,12 @@ export const ChatScreen: React.FC = () => {
     );
   };
 
+  const urgentMessageComponent = (
+    <View style={styles.audibleContainer}>
+      <Text style={styles.textTick}>Audible In-cab Only</Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.view}>
       <Modal title="Chat">
@@ -136,6 +142,7 @@ export const ChatScreen: React.FC = () => {
           chatStyles={chatStyles}
           defaultAvatarUrl={'https://some-domain/my-avatar.jpg'}
           NoConversationComponent={noConversationComponent()}
+          UrgentMessageComponent={urgentMessageComponent}
         />
       </Modal>
     </SafeAreaView>
@@ -152,6 +159,7 @@ Prop | Description | Type | Default
 **`chatStyles`** | Styles for the user interface | VariantChatStyles  | **Default styles**
 **`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar | String | **The chat users initials**
 **`NoConversationComponent`** | Rendered if the specified `channelName` does not resolve a conversation | Component, Element | **Text stating the conversation does not exist**
+**`UrgentMessageComponent`** | Rendered if the message beings with the [URGENT] tag |Component, Element | **Text specifying whether the message is audible**
 
 ### ChatStyles
 
