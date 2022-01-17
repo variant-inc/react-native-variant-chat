@@ -419,8 +419,10 @@ const CustomBubble = (
         return null;
       }
       if (props.urgentMessageComponent) {
+        console.log('component is present');
         return props.urgentMessageComponent;
       } else {
+        console.log('component is not present');
         return (
           <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
             <Text style={styles.content.textTick}>Audible Message</Text>
