@@ -42,7 +42,6 @@ import { FreshchatMessagePart } from '../types/FreshchatMessagePart.type';
 import { FreshchatMessageParts } from '../types/FreshchatMessageParts.type';
 import { IOpsMessage } from '../types/Message.interface';
 import MessagePdf from './MessagePdf';
-import {VariantChat} from '../components/VariantChat';
 
 export declare type RenderMessageImageProps<TMessage extends IMessage> = Omit<
   CustomBubbleProps<TMessage>,
@@ -97,6 +96,7 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
   bubbleTextStyle?: LeftRightStyle<TextStyle>;
   bubbleBottomContainerStyle?: LeftRightStyle<ViewStyle>;
   bubbleTickStyle?: StyleProp<TextStyle>;
+  urgentMessageComponent?: JSX.Element;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onLongPress?(context?: any, message?: any): void;
   onQuickReply?(replies: Reply[]): void;
@@ -418,8 +418,8 @@ const CustomBubble = (
       if (!isHasUrgent) {
         return null;
       }
-      if (VariantChat.UrgentMessageComponent) {
-        return VariantChat.UrgentMessageComponent;
+      if (props.urgentMessageComponent) {
+        return props.urgentMessageComponent;
       } else {
         return (
           <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
@@ -432,8 +432,6 @@ const CustomBubble = (
           </View>
         );
       }
-      
-      
     }
 
     return (
