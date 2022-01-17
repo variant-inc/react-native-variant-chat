@@ -415,6 +415,7 @@ const CustomBubble = (
     }
 
     if (currentMessage && props.position === 'left') {
+      console.log('made it to this block');
       if (!isHasUrgent) {
         return null;
       }
