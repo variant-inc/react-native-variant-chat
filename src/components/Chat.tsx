@@ -58,7 +58,12 @@ import MessageVideo from './MessageVideo';
 import Send from './Send';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const { chatStyles = {}, channelName, defaultAvatarUrl, UrgentMessageComponent } = props;
+  const {
+    chatStyles = {},
+    channelName,
+    defaultAvatarUrl,
+    UrgentMessageComponent,
+  } = props;
   const {
     containerStyle = {},
     scrollToBottomStyle = {},
@@ -114,7 +119,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const currentUser = useSelector(selectFreshchatCurrentUser);
   const currentChannel = useSelector(selectFreshchatChannel(channelName));
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
-  const moreMessages = useSelector(selectFreshchatMoreMessage);
+  const moreMessages = useSelector(selectFreshchatMoreMessage(channelName));
   const [isDidShowKeyboard, setIsDidShowKeyboard] = useState(false);
 
   const sendMessage = useFreshchatSendMessage(conversationId);
@@ -343,8 +348,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
             style: styles.lightboxActive,
           },
           springConfig: {
-            speed: 2147483647,
-            bounciness: 0,
+            tension: 90000,
+            friction: 90000,
           },
           ...lightboxProps,
         }}
