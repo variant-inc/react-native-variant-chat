@@ -24,7 +24,7 @@ let configRef: VariantApiConfig;
 
 const retryLink = new RetryLink();
 
-const timeoutLink = new ApolloLinkTimeout(60 * 1000); // 60 seconds timeout
+const timeoutLink = new ApolloLinkTimeout(120 * 1000); // 120 seconds timeout
 
 export const useApolloClient = (
   apiConfig: VariantApiConfig | void
