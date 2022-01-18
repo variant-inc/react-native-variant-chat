@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.0.18 (1/18/2022)
+- Updating ReadMe with info about UrgentMessageComponent [#50](https://github.com/variant-inc/react-native-variant-chat/pull/50) 
+- Rgr 657 format of urgent messages on roger [#47](https://github.com/variant-inc/react-native-variant-chat/pull/47) 
+
 ### v1.0.17 (1/13/2022)
 - RGR-656 Alignment of name and avatar  [#46](https://github.com/variant-inc/react-native-variant-chat/pull/46) 
 - Fixes the underline issue [#45](https://github.com/variant-inc/react-native-variant-chat/pull/45) 
