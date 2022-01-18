@@ -86,11 +86,26 @@ export const selectFreshchatAllMessages = createSelector<
   return freshchatState?.messages;
 });
 
-export const selectFreshchatMoreMessage = (conversationId: string) =>
+export const selectFreshchatMoreMessage = (channelName: string) =>
   createSelector<StoreState, VariantChatState, FreshchatMessagesLink | null>(
     selectFreshchatState,
     (freshchatState) => {
-      return freshchatState?.messagesLink[conversationId ?? ''];
+      const channel = freshchatState?.channels.find(
+        (c) => c.name === channelName
+      );
+      if (!channel) {
+        return null;
+      }
+
+      const conversation = freshchatState.conversations.find((c) => {
+        return c.channel_id === channel.id;
+      });
+
+      if (!conversation || !conversation.conversation_id) {
+        return null;
+      }
+
+      return freshchatState?.messagesLink[conversation.conversation_id];
     }
   );
 
