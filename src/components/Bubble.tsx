@@ -96,6 +96,7 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
   bubbleTextStyle?: LeftRightStyle<TextStyle>;
   bubbleBottomContainerStyle?: LeftRightStyle<ViewStyle>;
   bubbleTickStyle?: StyleProp<TextStyle>;
+  urgentMessageComponent?: JSX.Element;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onLongPress?(context?: any, message?: any): void;
   onQuickReply?(replies: Reply[]): void;
@@ -130,6 +131,7 @@ const CustomBubble = (
     // bubbleTextStyle,
     bubbleBottomContainerStyle,
     // bubbleTickStyle,
+    urgentMessageComponent,
   } = props;
 
   const sendingMessageId = useSelector(selectFreshchatSendingMessageId);
@@ -408,7 +410,6 @@ const CustomBubble = (
 
   const renderTicks = () => {
     const { currentMessage } = props;
-
     if (props.renderTicks && currentMessage) {
       return props.renderTicks(currentMessage);
     }
@@ -417,17 +418,20 @@ const CustomBubble = (
       if (!isHasUrgent) {
         return null;
       }
-
-      return (
-        <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
-          <Text style={styles.content.textTick}>Audible Message</Text>
-          <SvgXml
-            style={styles.content.iconMic}
-            xml={getSvg('iconMic')}
-            accessibilityLabel="mic"
-          />
-        </View>
-      );
+      if (urgentMessageComponent) {
+        return urgentMessageComponent;
+      } else {
+        return (
+          <View style={styles.content.audibleContainer}>
+            <Text style={styles.content.textTick}>Audible Message</Text>
+            <SvgXml
+              style={styles.content.iconMic}
+              xml={getSvg('iconMic')}
+              accessibilityLabel="mic"
+            />
+          </View>
+        );
+      }
     }
 
     return (

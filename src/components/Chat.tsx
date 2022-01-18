@@ -58,8 +58,7 @@ import MessageVideo from './MessageVideo';
 import Send from './Send';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const { chatStyles = {}, channelName, defaultAvatarUrl } = props;
-
+  const { chatStyles = {}, channelName, defaultAvatarUrl, UrgentMessageComponent } = props;
   const {
     containerStyle = {},
     scrollToBottomStyle = {},
@@ -261,6 +260,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
       bubbleTextStyle={bubbleTextStyle}
       bubbleBottomContainerStyle={bubbleBottomContainerStyle}
       bubbleTickStyle={bubbleTickStyle}
+      urgentMessageComponent={UrgentMessageComponent}
     />
   );
 
