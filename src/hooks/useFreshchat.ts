@@ -224,11 +224,15 @@ export const useFreshchatInit = (
     Tts.getInitStatus();
   };
 
-  const reportInitializationComplete = (conversationInfo: FreshchatConversationInfo) => {
+  const reportInitializationComplete = (
+    conversationInfo: FreshchatConversationInfo
+  ) => {
     EventRegister.emit(EventName.Initialized, {
       type: EventMessageType.Internal,
       data: {
-        conversationInfo,
+        channelNames: conversationInfo?.conversations.map((c) => {
+          return c.channel;
+        }),
       },
     });
   };
