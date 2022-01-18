@@ -124,15 +124,6 @@ export const useFreshchatInit = (
         conversationInfo = await getFreshchatConversations(driverId);
         if (conversationInfo?.conversations) {
           await dispatch(freshchatSetConversationInfo({ conversationInfo }));
-
-          EventRegister.emit(EventName.Debug, {
-            type: EventMessageType.Log,
-            data: {
-              message: `Conversations available for driver: ${JSON.stringify(
-                conversationInfo
-              )})`,
-            },
-          });
         } else if (conversationInfo?.statusCode === 404) {
           driverError(`${conversationInfo?.message} (driver ${driverId})`);
           return;
@@ -225,11 +216,21 @@ export const useFreshchatInit = (
 
       // reports current unread messages' count
       reportCurrentFreshchatUnreadMessageCounts();
+      reportInitializationComplete(conversationInfo);
 
       initializedRef.current = FreshchatInit.Success;
     }
 
     Tts.getInitStatus();
+  };
+
+  const reportInitializationComplete = (conversationInfo: FreshchatConversationInfo) => {
+    EventRegister.emit(EventName.Initialized, {
+      type: EventMessageType.Internal,
+      data: {
+        conversationInfo,
+      },
+    });
   };
 
   const driverError = (message: string) => {
