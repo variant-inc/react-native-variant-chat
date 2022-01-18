@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.19 (1/18/2022)
+- RGR-663 Several tap to open Image file on Platform Science  [#51](https://github.com/variant-inc/react-native-variant-chat/pull/51) 
+
 ### v1.0.18 (1/18/2022)
 - Updating ReadMe with info about UrgentMessageComponent [#50](https://github.com/variant-inc/react-native-variant-chat/pull/50) 
 - Rgr 657 format of urgent messages on roger [#47](https://github.com/variant-inc/react-native-variant-chat/pull/47) 
