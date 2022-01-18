@@ -348,8 +348,6 @@ const Chat = (props: VariantChatProps): ReactElement => {
             style: styles.lightboxActive,
           },
           springConfig: {
-            // speed: 2147483647,
-            // bounciness: 0,
             tension: 90000,
             friction: 90000,
           },
