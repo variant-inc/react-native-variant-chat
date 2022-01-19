@@ -459,7 +459,7 @@ export const useFreshchatSendFailedMessage = (
             sendMessage._id
           );
         }
-      } catch (error) {
+      } catch (error: any) {
         EventRegister.emit(EventName.Error, {
           type: EventMessageType.Internal,
           data: {
