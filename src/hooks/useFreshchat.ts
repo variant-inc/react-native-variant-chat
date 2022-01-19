@@ -428,39 +428,47 @@ export const useFreshchatSendFailedMessage = (
 
       dispatch(freshchatSetSendingMessageId({ id: sendMessage._id }));
 
-      const response = await setFreshchatMessage(
-        currentUser.id,
-        currentConversation.conversation_id,
-        message
-      );
-
-      if (response) {
-        // Success
-
-        // remove the failed message
-        dispatch(
-          freshchatRemoveMessage({
-            conversationId: currentConversation.conversation_id,
-            id: sendMessage._id,
-          })
-        );
-
-        dispatch(
-          freshchatAddMessage({
-            conversationId: currentConversation.conversation_id,
-            message: response,
-          })
-        );
-
-        // Remove the failed messages from storage
-        removeFreshchatFailedMessage(
+      try {
+        const response = await setFreshchatMessage(
+          currentUser.id,
           currentConversation.conversation_id,
-          sendMessage._id
+          message
         );
+
+        if (response) {
+          // Success
+
+          // remove the failed message
+          dispatch(
+            freshchatRemoveMessage({
+              conversationId: currentConversation.conversation_id,
+              id: sendMessage._id,
+            })
+          );
+
+          dispatch(
+            freshchatAddMessage({
+              conversationId: currentConversation.conversation_id,
+              message: response,
+            })
+          );
+
+          // Remove the failed messages from storage
+          removeFreshchatFailedMessage(
+            currentConversation.conversation_id,
+            sendMessage._id
+          );
+        }
+      } catch (error) {
+        EventRegister.emit(EventName.Error, {
+          type: EventMessageType.Internal,
+          data: {
+            message: `Chat message send failed: ${error.message}`,
+          },
+        });
       }
 
       dispatch(freshchatSetSendingMessageId({ id: null }));
-
       isSending.current = false;
     },
     [currentUser, currentConversation, dispatch]
