@@ -96,6 +96,7 @@ export interface CustomBubbleProps<TMessage extends IMessage> {
   bubbleTextStyle?: LeftRightStyle<TextStyle>;
   bubbleBottomContainerStyle?: LeftRightStyle<ViewStyle>;
   bubbleTickStyle?: StyleProp<TextStyle>;
+  urgentMessageComponent?: JSX.Element;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onLongPress?(context?: any, message?: any): void;
   onQuickReply?(replies: Reply[]): void;
@@ -130,6 +131,7 @@ const CustomBubble = (
     // bubbleTextStyle,
     bubbleBottomContainerStyle,
     // bubbleTickStyle,
+    urgentMessageComponent,
   } = props;
 
   const sendingMessageId = useSelector(selectFreshchatSendingMessageId);
@@ -408,7 +410,6 @@ const CustomBubble = (
 
   const renderTicks = () => {
     const { currentMessage } = props;
-
     if (props.renderTicks && currentMessage) {
       return props.renderTicks(currentMessage);
     }
@@ -417,26 +418,24 @@ const CustomBubble = (
       if (!isHasUrgent) {
         return null;
       }
-
-      return (
-        <View style={styles.content.audibleContainer as StyleProp<ViewStyle>}>
-          <Text style={styles.content.textTick}>Audible Message</Text>
-          <SvgXml
-            style={styles.content.iconMic}
-            xml={getSvg('iconMic')}
-            accessibilityLabel="mic"
-          />
-        </View>
-      );
+      if (urgentMessageComponent) {
+        return urgentMessageComponent;
+      } else {
+        return (
+          <View style={styles.content.audibleContainer}>
+            <Text style={styles.content.textTick}>Audible Message</Text>
+            <SvgXml
+              style={styles.content.iconMic}
+              xml={getSvg('iconMic')}
+              accessibilityLabel="mic"
+            />
+          </View>
+        );
+      }
     }
 
     return (
-      <Text
-        style={[
-          styles.content.textTick,
-          !currentMessage?.sent ? styles.content.textTickError : null,
-        ]}
-      >
+      <Text style={styles.content.textTick}>
         {currentMessage?.sent ? 'Sent' : 'Not Sent'}
       </Text>
     );
@@ -616,15 +615,13 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         alignItems: 'flex-start',
       },
       wrapper: {
-        borderRadius: 12,
+        borderRadius: 10,
         backgroundColor: theme.colors.chat.bubbleReceive,
         marginRight: 60,
         minHeight: 20,
         justifyContent: 'flex-end',
-        paddingLeft: 5,
-        paddingRight: 17,
         paddingVertical: 4,
-        borderBottomStartRadius: 12,
+        borderBottomStartRadius: 10,
         borderTopStartRadius: 2,
         maxWidth: '70%',
       },
@@ -646,14 +643,13 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         alignItems: 'flex-end',
       },
       wrapper: {
-        borderRadius: 12,
+        borderRadius: 10,
         backgroundColor: theme.colors.chat.bubbleSent,
         marginLeft: 60,
         minHeight: 20,
         justifyContent: 'flex-end',
-        paddingLeft: 5,
-        paddingRight: 17,
         paddingVertical: 4,
+        borderBottomEndRadius: 10,
         borderTopEndRadius: 2,
         maxWidth: '70%',
       },
@@ -706,9 +702,6 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         letterSpacing: 0.4,
         color: theme.colors.gray.dark,
         opacity: 0.75,
-      },
-      textTickError: {
-        color: theme.colors.error,
       },
       trySendingButton: {
         flexDirection: 'row',

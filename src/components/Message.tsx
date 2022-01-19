@@ -19,6 +19,7 @@ export interface IOpsMessageProps extends MessageProps<IOpsMessage> {
   bubbleTextStyle?: LeftRightStyle<TextStyle>;
   bubbleBottomContainerStyle?: LeftRightStyle<ViewStyle>;
   bubbleTickStyle?: StyleProp<TextStyle>;
+  urgentMessageComponent?: JSX.Element;
 }
 
 const CustomMessage = (props: IOpsMessageProps): ReactElement => {
@@ -30,6 +31,7 @@ const CustomMessage = (props: IOpsMessageProps): ReactElement => {
     bubbleTextStyle,
     bubbleBottomContainerStyle,
     bubbleTickStyle,
+    urgentMessageComponent,
   } = props;
 
   const theme = useTheme();
@@ -54,6 +56,7 @@ const CustomMessage = (props: IOpsMessageProps): ReactElement => {
             bubbleTextStyle={bubbleTextStyle}
             bubbleBottomContainerStyle={bubbleBottomContainerStyle}
             bubbleTickStyle={bubbleTickStyle}
+            urgentMessageComponent={urgentMessageComponent}
           />
         </View>
       );
@@ -97,7 +100,8 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         lineHeight: Font.LineHeight.extraLarge,
         color: theme.colors.common.white,
         textAlign: 'left',
-        marginBottom: 5,
+        marginTop: 9,
+        marginBottom: 7,
       },
       right: {
         fontFamily: Font.Family.semiBold,
@@ -106,7 +110,8 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         lineHeight: Font.LineHeight.extraLarge,
         color: theme.colors.common.white,
         textAlign: 'right',
-        marginBottom: 5,
+        marginTop: 9,
+        marginBottom: 7,
       },
     },
   };

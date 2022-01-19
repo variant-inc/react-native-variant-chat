@@ -128,6 +128,12 @@ export const ChatScreen: React.FC = () => {
     );
   };
 
+  const urgentMessageComponent = (
+    <View style={styles.audibleContainer}>
+      <Text style={styles.textTick}>Audible In-cab Only</Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.view}>
       <Modal title="Chat">
@@ -136,6 +142,7 @@ export const ChatScreen: React.FC = () => {
           chatStyles={chatStyles}
           defaultAvatarUrl={'https://some-domain/my-avatar.jpg'}
           NoConversationComponent={noConversationComponent()}
+          UrgentMessageComponent={urgentMessageComponent}
         />
       </Modal>
     </SafeAreaView>
@@ -152,6 +159,7 @@ Prop | Description | Type | Default
 **`chatStyles`** | Styles for the user interface | VariantChatStyles  | **Default styles**
 **`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar | String | **The chat users initials**
 **`NoConversationComponent`** | Rendered if the specified `channelName` does not resolve a conversation | Component, Element | **Text stating the conversation does not exist**
+**`UrgentMessageComponent`** | Rendered if the message begins with the [URGENT] tag |Component, Element | **Text specifying whether the message is audible**
 
 ### ChatStyles
 
@@ -332,6 +340,7 @@ Event name | Description | Types | Data
 ------ | ------ | ------ | ------
 **`EventName.Info`** | Variant chat informational event | `EventMessageType.Performance` | {message: String}
 **`EventName.Error`** | Variant chat has encountered an error | `EventMessageType.NoDriver`, `EventMessageType.NoConversation`, `EventMessageType.Internal`, `EventMessageType.Service` | {message: String}
+**`EventName.Initialized`** | Variant chat has successfully initialized | `EventMessageType.Internal` | {channelNames: String[]}
 **`EventName.MessageReceived`** | Variant chat has received a chat message from the provider, message received while the app is in the background | `EventMessageType.Background` | {channelName: String, message: String}
 **`EventName.UnreadMessageCounts`** | For each channel, the number of unread messages | `EventMessageType.UnreadMessageCounts` | {'channel-name': Number, ...} e.g. channel-name may be 'Chat with Team'.
 

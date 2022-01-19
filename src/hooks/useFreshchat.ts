@@ -124,15 +124,6 @@ export const useFreshchatInit = (
         conversationInfo = await getFreshchatConversations(driverId);
         if (conversationInfo?.conversations) {
           await dispatch(freshchatSetConversationInfo({ conversationInfo }));
-
-          EventRegister.emit(EventName.Debug, {
-            type: EventMessageType.Log,
-            data: {
-              message: `Conversations available for driver: ${JSON.stringify(
-                conversationInfo
-              )})`,
-            },
-          });
         } else if (conversationInfo?.statusCode === 404) {
           driverError(`${conversationInfo?.message} (driver ${driverId})`);
           return;
@@ -225,11 +216,25 @@ export const useFreshchatInit = (
 
       // reports current unread messages' count
       reportCurrentFreshchatUnreadMessageCounts();
+      reportInitializationComplete(conversationInfo);
 
       initializedRef.current = FreshchatInit.Success;
     }
 
     Tts.getInitStatus();
+  };
+
+  const reportInitializationComplete = (
+    conversationInfo: FreshchatConversationInfo
+  ) => {
+    EventRegister.emit(EventName.Initialized, {
+      type: EventMessageType.Internal,
+      data: {
+        channelNames: conversationInfo?.conversations.map((c) => {
+          return c.channel;
+        }),
+      },
+    });
   };
 
   const driverError = (message: string) => {
@@ -428,39 +433,47 @@ export const useFreshchatSendFailedMessage = (
 
       dispatch(freshchatSetSendingMessageId({ id: sendMessage._id }));
 
-      const response = await setFreshchatMessage(
-        currentUser.id,
-        currentConversation.conversation_id,
-        message
-      );
-
-      if (response) {
-        // Success
-
-        // remove the failed message
-        dispatch(
-          freshchatRemoveMessage({
-            conversationId: currentConversation.conversation_id,
-            id: sendMessage._id,
-          })
-        );
-
-        dispatch(
-          freshchatAddMessage({
-            conversationId: currentConversation.conversation_id,
-            message: response,
-          })
-        );
-
-        // Remove the failed messages from storage
-        removeFreshchatFailedMessage(
+      try {
+        const response = await setFreshchatMessage(
+          currentUser.id,
           currentConversation.conversation_id,
-          sendMessage._id
+          message
         );
+
+        if (response) {
+          // Success
+
+          // remove the failed message
+          dispatch(
+            freshchatRemoveMessage({
+              conversationId: currentConversation.conversation_id,
+              id: sendMessage._id,
+            })
+          );
+
+          dispatch(
+            freshchatAddMessage({
+              conversationId: currentConversation.conversation_id,
+              message: response,
+            })
+          );
+
+          // Remove the failed messages from storage
+          removeFreshchatFailedMessage(
+            currentConversation.conversation_id,
+            sendMessage._id
+          );
+        }
+      } catch (error: any) {
+        EventRegister.emit(EventName.Error, {
+          type: EventMessageType.Internal,
+          data: {
+            message: `Chat message send failed: ${error.message}`,
+          },
+        });
       }
 
       dispatch(freshchatSetSendingMessageId({ id: null }));
-
       isSending.current = false;
     },
     [currentUser, currentConversation, dispatch]

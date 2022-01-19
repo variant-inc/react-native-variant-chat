@@ -11,6 +11,7 @@ import {
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
+  AvatarProps,
   ComposerProps,
   IMessage,
   MessageProps,
@@ -48,6 +49,7 @@ import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatProps } from '../types/VariantChat';
 import Accessory from './Accessory';
 import Actions from './Actions';
+import Avatar from './Avatar';
 import { Button } from './Button';
 import Composer from './Composer';
 import Message from './Message';
@@ -56,8 +58,12 @@ import MessageVideo from './MessageVideo';
 import Send from './Send';
 
 const Chat = (props: VariantChatProps): ReactElement => {
-  const { chatStyles = {}, channelName, defaultAvatarUrl } = props;
-
+  const {
+    chatStyles = {},
+    channelName,
+    defaultAvatarUrl,
+    UrgentMessageComponent,
+  } = props;
   const {
     containerStyle = {},
     scrollToBottomStyle = {},
@@ -113,7 +119,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const currentUser = useSelector(selectFreshchatCurrentUser);
   const currentChannel = useSelector(selectFreshchatChannel(channelName));
   const conversationUsers = useSelector(selectFreshchatConversationUsers);
-  const moreMessages = useSelector(selectFreshchatMoreMessage);
+  const moreMessages = useSelector(selectFreshchatMoreMessage(channelName));
   const [isDidShowKeyboard, setIsDidShowKeyboard] = useState(false);
 
   const sendMessage = useFreshchatSendMessage(conversationId);
@@ -259,6 +265,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
       bubbleTextStyle={bubbleTextStyle}
       bubbleBottomContainerStyle={bubbleBottomContainerStyle}
       bubbleTickStyle={bubbleTickStyle}
+      urgentMessageComponent={UrgentMessageComponent}
     />
   );
 
@@ -276,6 +283,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
       onDidPresentFullscreen={() => setIsFullscreenVideo(true)}
       onDidDismissFullscreen={() => setIsFullscreenVideo(false)}
     />
+  );
+
+  const renderAvatar = (avatarProps: AvatarProps<IOpsMessage>): JSX.Element => (
+    <Avatar {...avatarProps} />
   );
 
   return (
@@ -298,6 +309,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         infiniteScroll
         showAvatarForEveryMessage
         showUserAvatar
+        renderAvatarOnTop
         alwaysShowSend
         messages={chatMessages}
         user={{
@@ -313,6 +325,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         renderActions={renderActions}
         renderComposer={renderComposer}
         renderSend={renderSend}
+        renderAvatar={renderAvatar}
         parsePatterns={() => [
           {
             pattern:
@@ -335,8 +348,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
             style: styles.lightboxActive,
           },
           springConfig: {
-            speed: 2147483647,
-            bounciness: 0,
+            tension: 90000,
+            friction: 90000,
           },
           ...lightboxProps,
         }}
@@ -372,7 +385,7 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
     },
     link: {
       color: theme.colors.orange,
-      textDecoration: 'underline',
+      textDecorationLine: 'underline',
     },
     textGeneral: {},
     closeButton: {
