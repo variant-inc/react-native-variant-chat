@@ -204,7 +204,9 @@ const Chat = (props: VariantChatProps): ReactElement => {
   );
 
   const onLinkPressed = (url: string) => {
-    Linking.openURL(url).catch(() => Alert.alert(`Couldn't load page`));
+    Linking.openURL(
+      url.toLowerCase().startsWith('http') ? url : `https://${url}`
+    ).catch(() => Alert.alert(`Couldn't load page`));
   };
 
   const handleFailedSend = useCallback(
@@ -330,7 +332,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
           {
             pattern:
               // eslint-disable-next-line no-useless-escape
-              /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi,
+            /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
             style: styles.link,
             onPress: onLinkPressed,
           },

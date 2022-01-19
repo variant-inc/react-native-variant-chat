@@ -436,7 +436,7 @@ const CustomBubble = (
 
     return (
       <Text style={styles.content.textTick}>
-        {currentMessage?.sent ? 'Sent' : 'Not Sent'}
+        {currentMessage?.sent ? 'Sent' : 'Not sent'}
       </Text>
     );
   };
@@ -508,7 +508,7 @@ const CustomBubble = (
     );
   };
 
-  const { position, containerStyle, wrapperStyle, bottomContainerStyle } =
+  const { position, containerStyle, wrapperStyle, bottomContainerStyle, currentMessage } =
     props;
   const messages = parseMessage();
   const isHasUrgent =
@@ -523,6 +523,15 @@ const CustomBubble = (
     right: {},
   };
 
+  const bubbleNotSentWrapper = {
+    left: {},
+    right: {
+      backgroundColor: currentMessage?.sent
+      ? theme.colors.chat.bubbleSent
+      : theme.colors.chat.bubbleNotSent,
+    },
+  };
+
   return (
     <View
       style={[
@@ -535,6 +544,7 @@ const CustomBubble = (
         style={[
           styles[position].wrapper,
           bubbleUrgentWrapper[position],
+          bubbleNotSentWrapper[position],
           styledBubbleToNext(),
           styledBubbleToPrevious(),
           wrapperStyle && wrapperStyle[position],
@@ -615,15 +625,13 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         alignItems: 'flex-start',
       },
       wrapper: {
-        borderRadius: 12,
+        borderRadius: 10,
         backgroundColor: theme.colors.chat.bubbleReceive,
         marginRight: 60,
         minHeight: 20,
         justifyContent: 'flex-end',
-        paddingLeft: 5,
-        paddingRight: 17,
         paddingVertical: 4,
-        borderBottomStartRadius: 12,
+        borderBottomStartRadius: 10,
         borderTopStartRadius: 2,
         maxWidth: '70%',
       },
@@ -645,14 +653,13 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         alignItems: 'flex-end',
       },
       wrapper: {
-        borderRadius: 12,
+        borderRadius: 10,
         backgroundColor: theme.colors.chat.bubbleSent,
         marginLeft: 60,
         minHeight: 20,
         justifyContent: 'flex-end',
-        paddingLeft: 5,
-        paddingRight: 17,
         paddingVertical: 4,
+        borderBottomEndRadius: 10,
         borderTopEndRadius: 2,
         maxWidth: '70%',
       },
