@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { current } from 'immer';
 import React from 'react';
 import {
   StyleProp,
@@ -436,7 +437,7 @@ const CustomBubble = (
 
     return (
       <Text style={styles.content.textTick}>
-        {currentMessage?.sent ? 'Sent' : 'Not Sent'}
+        {currentMessage?.sent ? 'Sent' : 'Not sent'}
       </Text>
     );
   };
@@ -508,7 +509,7 @@ const CustomBubble = (
     );
   };
 
-  const { position, containerStyle, wrapperStyle, bottomContainerStyle } =
+  const { position, containerStyle, wrapperStyle, bottomContainerStyle, currentMessage } =
     props;
   const messages = parseMessage();
   const isHasUrgent =
@@ -523,6 +524,15 @@ const CustomBubble = (
     right: {},
   };
 
+  const bubbleNotSentWrapper = {
+    left: {},
+    right: {
+      backgroundColor: currentMessage?.sent
+      ? theme.colors.chat.bubbleSent
+      : theme.colors.chat.bubbleNotSent,
+    },
+  };
+
   return (
     <View
       style={[
@@ -535,6 +545,7 @@ const CustomBubble = (
         style={[
           styles[position].wrapper,
           bubbleUrgentWrapper[position],
+          bubbleNotSentWrapper[position],
           styledBubbleToNext(),
           styledBubbleToPrevious(),
           wrapperStyle && wrapperStyle[position],

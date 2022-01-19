@@ -90,6 +90,7 @@ namespace ReactNativePaper {
     chat: {
       primary: string;
       bubbleSent: string;
+      bubbleNotSent: string;
       bubbleReceive: string;
       bubbleUrgent: string;
       send: string;
