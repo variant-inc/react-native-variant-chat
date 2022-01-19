@@ -166,14 +166,16 @@ const CustomBubble = (
         messagePart.file.content_type.toLowerCase().includes('image')
       ) {
         // image (attachment)
-        item.text = messagePart.file.name;
+        // we don't feel the need to show image file name
+        // item.text = messagePart.file.name;
         item.image = messagePart.file.url;
       } else if (
         messagePart.file &&
         messagePart.file.content_type.toLowerCase().includes('video')
       ) {
         // video (attachment)
-        item.text = messagePart.file.name;
+        // we don't feel the need to show video file name
+        // item.text = messagePart.file.name;
         item.video = messagePart.file.url;
       } else if (
         messagePart.file &&
@@ -333,6 +335,17 @@ const CustomBubble = (
       currentMessage: {
         ...messageImageProps.currentMessage,
         image: message.image,
+      },
+      containerStyle: {
+        padding: 8,
+        width: 250,
+        minHeight: 100,
+        maxWidth: '100%',
+      },
+      imageStyle: {
+        width: '100%',
+        margin: 0,
+        resizeMode: 'contain',
       },
     };
 

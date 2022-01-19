@@ -1,9 +1,15 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { ActivityIndicator, useTheme } from 'react-native-paper';
 import Video from 'react-native-video';
 
 import { IOpsVideoMessage } from '../types/VideoMessage.interface';
+
+enum VideoStatus {
+  NONE = 'NONE',
+  LOADING = 'LOADING',
+  LOADED = 'LOADED',
+}
 
 const CustomMessageVideo = (props: IOpsVideoMessage): ReactElement => {
   const {
@@ -15,6 +21,8 @@ const CustomMessageVideo = (props: IOpsVideoMessage): ReactElement => {
 
   const theme = useTheme();
   const styles = localStyleSheet(theme);
+  const [status, setStatus] = useState(VideoStatus.NONE);
+  const isLoading = status === VideoStatus.LOADING;
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -23,13 +31,17 @@ const CustomMessageVideo = (props: IOpsVideoMessage): ReactElement => {
         source={{ uri: props.currentMessage?.video }}
         controls
         paused
-        onFullscreenPlayerDidPresent={() =>
-          onDidPresentFullscreen && onDidPresentFullscreen()
-        }
-        onFullscreenPlayerDidDismiss={() =>
-          onDidDismissFullscreen && onDidDismissFullscreen()
-        }
+        resizeMode="contain"
+        onFullscreenPlayerDidPresent={onDidPresentFullscreen}
+        onFullscreenPlayerDidDismiss={onDidDismissFullscreen}
+        onLoadStart={() => setStatus(VideoStatus.LOADING)}
+        onLoad={() => setStatus(VideoStatus.LOADED)}
       />
+      {isLoading && (
+        <View style={styles.loadingSpinner}>
+          <ActivityIndicator animating color={theme.colors.primary} />
+        </View>
+      )}
     </View>
   );
 };
@@ -37,16 +49,26 @@ const CustomMessageVideo = (props: IOpsVideoMessage): ReactElement => {
 function localStyleSheet(theme: ReactNativePaper.Theme) {
   return StyleSheet.create({
     container: {
-      height: 150,
       width: 250,
-      marginLeft: 12,
-      paddingHorizontal: 15,
+      height: 150,
+      maxWidth: '100%',
+      padding: 8,
       alignSelf: 'center',
     },
+    loadingSpinner: {
+      position: 'absolute',
+      top: 8,
+      left: 8,
+      right: 8,
+      bottom: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     video: {
-      height: 150,
+      width: '100%',
+      height: '100%',
       backgroundColor: theme.colors.common.black,
-      borderRadius: 12,
+      borderRadius: 10,
     },
   });
 }
