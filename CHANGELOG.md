@@ -1,5 +1,11 @@
 ## Change Log
 
+### v1.0.21 (1/19/2022)
+- RGR-655 Formatting of sent / read / failed to send messages [#55](https://github.com/variant-inc/react-native-variant-chat/pull/55) 
+- Fixed lint error [#58](https://github.com/variant-inc/react-native-variant-chat/pull/58) 
+- [RGR-559] Fixed Regex for links [#57](https://github.com/variant-inc/react-native-variant-chat/pull/57) 
+- reduce bubble's padding and border radius to match with the design [#56](https://github.com/variant-inc/react-native-variant-chat/pull/56) 
+
 ### v1.0.20 (1/19/2022)
 - RGR-677 Add event to signal successful chat initialization [#53](https://github.com/variant-inc/react-native-variant-chat/pull/53) 
 - RGR-654 When a failed messages is attempted to resend it does not work [#54](https://github.com/variant-inc/react-native-variant-chat/pull/54) 
