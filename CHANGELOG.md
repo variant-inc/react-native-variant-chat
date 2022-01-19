@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.0.20 (1/19/2022)
+- RGR-677 Add event to signal successful chat initialization [#53](https://github.com/variant-inc/react-native-variant-chat/pull/53) 
+- RGR-654 When a failed messages is attempted to resend it does not work [#54](https://github.com/variant-inc/react-native-variant-chat/pull/54) 
+- RGR-677 Update network timeout [#52](https://github.com/variant-inc/react-native-variant-chat/pull/52) 
+
 ### v1.0.19 (1/18/2022)
 - RGR-663 Several tap to open Image file on Platform Science  [#51](https://github.com/variant-inc/react-native-variant-chat/pull/51) 
 
