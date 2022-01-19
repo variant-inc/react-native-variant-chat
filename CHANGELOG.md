@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.23 (1/19/2022)
+- updates for video and image messages: [#60](https://github.com/variant-inc/react-native-variant-chat/pull/60) 
+
 ### v1.0.22 (1/19/2022)
 - Make protocol optional on url pattern [#59](https://github.com/variant-inc/react-native-variant-chat/pull/59) 
 
