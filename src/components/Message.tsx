@@ -100,7 +100,8 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         lineHeight: Font.LineHeight.extraLarge,
         color: theme.colors.common.white,
         textAlign: 'left',
-        marginBottom: 5,
+        marginTop: 9,
+        marginBottom: 7,
       },
       right: {
         fontFamily: Font.Family.semiBold,
@@ -109,7 +110,8 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
         lineHeight: Font.LineHeight.extraLarge,
         color: theme.colors.common.white,
         textAlign: 'right',
-        marginBottom: 5,
+        marginTop: 9,
+        marginBottom: 7,
       },
     },
   };
