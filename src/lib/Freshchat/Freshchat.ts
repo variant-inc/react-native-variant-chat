@@ -24,7 +24,7 @@ const FRESHCHAT_FAILED_MESSAGES = 'freshchat-failed-messages';
 const FRESHCHAT_UNREAD_MESSAGE_COUNTS = 'freshchat-unread-message-counts';
 const VARIANT_DRIVER_ID = 'variant-driver-id';
 const MESSAGES_PER_PAGE = 50;
-const AXIOS_REQUEST_TIMEOUT = 15;
+const AXIOS_REQUEST_TIMEOUT = 120;
 
 export const realtimeMessagePerPage = 10;
 
