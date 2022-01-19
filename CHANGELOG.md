@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.22 (1/19/2022)
+- Make protocol optional on url pattern [#59](https://github.com/variant-inc/react-native-variant-chat/pull/59) 
+
 ### v1.0.21 (1/19/2022)
 - RGR-655 Formatting of sent / read / failed to send messages [#55](https://github.com/variant-inc/react-native-variant-chat/pull/55) 
 - Fixed lint error [#58](https://github.com/variant-inc/react-native-variant-chat/pull/58) 
