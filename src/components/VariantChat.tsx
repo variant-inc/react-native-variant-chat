@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
 import { selectFreshchatConversationInfo } from '../store/selectors/freshchatSelectors';
@@ -9,7 +10,8 @@ import Chat from './Chat';
 export const VariantChat = (props: VariantChatProps): ReactElement => {
   const { channelName, NoConversationComponent } = props;
 
-  const styles = localStyleSheet();
+  const theme = useTheme();
+  const styles = localStyleSheet(theme);
 
   const conversationInfo = useSelector(selectFreshchatConversationInfo);
   const conversation = conversationInfo?.conversations.find((item) => {
@@ -25,18 +27,19 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
   } else {
     return (
       <View style={styles.container}>
-        <Text>{`Conversation '${channelName}' does not exist.`}</Text>
+        <Text>{`Conversation '${channelName}' could not be loaded.`}</Text>
       </View>
     );
   }
 };
 
-function localStyleSheet() {
+function localStyleSheet(theme: ReactNativePaper.Theme) {
   return StyleSheet.create({
     container: {
       alignItems: 'center',
       justifyContent: 'center',
       flexGrow: 1,
+      backgroundColor: theme.colors.common.white,
     },
   });
 }
