@@ -8,6 +8,7 @@ import {
   TextStyle,
   View,
 } from 'react-native';
+import { useBatteryLevelIsLow } from 'react-native-device-info';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
@@ -204,7 +205,11 @@ const Chat = (props: VariantChatProps): ReactElement => {
   );
 
   const onLinkPressed = (url: string) => {
-    Linking.openURL(url).catch(() => Alert.alert(`Couldn't load page`));
+    let linkUrl = url;
+    if (!url.startsWith("http")) {
+      linkUrl = `https://${url}`
+    }
+    Linking.openURL(linkUrl).catch(() => Alert.alert(`Couldn't load page`));
   };
 
   const handleFailedSend = useCallback(
