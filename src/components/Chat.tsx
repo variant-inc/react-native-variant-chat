@@ -205,11 +205,9 @@ const Chat = (props: VariantChatProps): ReactElement => {
   );
 
   const onLinkPressed = (url: string) => {
-    let linkUrl = url;
-    if (!url.startsWith("http")) {
-      linkUrl = `https://${url}`
-    }
-    Linking.openURL(linkUrl).catch(() => Alert.alert(`Couldn't load page`));
+    Linking.openURL(
+      url.toLowerCase().startsWith('http') ? url : `https://${url}`
+    ).catch(() => Alert.alert(`Couldn't load page`));
   };
 
   const handleFailedSend = useCallback(
