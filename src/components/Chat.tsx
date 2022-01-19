@@ -8,7 +8,6 @@ import {
   TextStyle,
   View,
 } from 'react-native';
-import { useBatteryLevelIsLow } from 'react-native-device-info';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
