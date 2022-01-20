@@ -35,4 +35,5 @@ export interface VariantChatProps {
   NoConversationComponent?: JSX.Element;
   UrgentMessageComponent?: JSX.Element;
   chatStyles?: VariantChatStyles;
+  allowUrlLinks?: boolean;
 }
