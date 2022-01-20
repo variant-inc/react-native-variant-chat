@@ -235,7 +235,7 @@ useVariantChat = (
 Argument | Description | Type | Default
 ------ | ------ | ------ | ------
 **`driverId`** | The driver id of the user | String | **Required**
-**`config`** | Service configuration including `chatProvider`, `variantApi`, and `capabilities` | VariantChatConfig | **Required** (`capabilities` optional)
+**`config`** | Service configuration | VariantChatConfig | **Required** (`capabilities` optional)
 **`dispatch`** | Your redux store dispatch function | Dispatch<any> | **Required**
 
 ### Chat configuration
