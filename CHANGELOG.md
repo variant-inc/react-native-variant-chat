@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.24 (1/20/2022)
+- Add ability to enable/disable url links in chat [#61](https://github.com/variant-inc/react-native-variant-chat/pull/61) 
+
 ### v1.0.23 (1/19/2022)
 - updates for video and image messages: [#60](https://github.com/variant-inc/react-native-variant-chat/pull/60) 
 
