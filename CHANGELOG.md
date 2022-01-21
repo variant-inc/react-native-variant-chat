@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.25 (1/21/2022)
+- PDF bubble content alignment, remove filename [#62](https://github.com/variant-inc/react-native-variant-chat/pull/62) 
+
 ### v1.0.24 (1/20/2022)
 - Add ability to enable/disable url links in chat [#61](https://github.com/variant-inc/react-native-variant-chat/pull/61) 
 
