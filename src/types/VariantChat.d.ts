@@ -5,7 +5,6 @@ export interface ChatProviderConfig {
   accessToken: string;
   appId: string;
   appKey: string;
-  channelNames: string[];
 }
 
 export interface VariantApiConfig {
