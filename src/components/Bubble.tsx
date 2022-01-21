@@ -182,7 +182,8 @@ const CustomBubble = (
         messagePart.file.content_type.toLowerCase().includes('pdf')
       ) {
         // pdf document (attachment)
-        item.text = messagePart.file.name;
+        // we don't feel the need to show pdf file name
+        // item.text = messagePart.file.name;
         item.pdf = messagePart.file.url;
       }
 
