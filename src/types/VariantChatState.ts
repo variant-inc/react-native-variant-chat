@@ -2,7 +2,6 @@ import { DriverStatus } from './DriverStatus';
 import { FreshchatChannel } from './FreshchatChannel.type';
 import { FreshchatConversation } from './FreshchatConversation';
 import { FreshchatConversationInfo } from './FreshchatConversationInfo';
-import { FreshchatInit } from './FreshchatInit.enum';
 import { FreshchatMessage, FreshchatMessagesLink } from './FreshchatMessage';
 import { FreshchatUser } from './FreshchatUser';
 
@@ -17,5 +16,5 @@ export interface VariantChatState {
   isFullscreenVideo: boolean;
   sendingMessageId: string | number | null;
   driverStatus: DriverStatus;
-  initStatus: FreshchatInit;
+  initErrorMessage: string | null;
 }

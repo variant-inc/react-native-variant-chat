@@ -5,7 +5,6 @@ import { DriverStatus } from '../../types/DriverStatus';
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
 import { FreshchatConversationInfo } from '../../types/FreshchatConversationInfo';
-import { FreshchatInit } from '../../types/FreshchatInit.enum';
 import {
   FreshchatMessage,
   FreshchatMessagesLink,
@@ -134,10 +133,10 @@ export const selectDriverStatus = createSelector<
   return variantChatState?.driverStatus;
 });
 
-export const selectInitStatus = createSelector<
+export const selectInitErrorMessage = createSelector<
   StoreState,
   VariantChatState,
-  FreshchatInit | null
+  string | null
 >(selectFreshchatState, (variantChatState) => {
-  return variantChatState?.initStatus;
+  return variantChatState?.initErrorMessage;
 });
