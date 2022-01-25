@@ -28,7 +28,7 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
     } else if (initErrorMessage) {
       return (
         <View style={styles.container}>
-          <Text style={styles.textNoCoversation}>{initErrorMessage}</Text>
+          <Text style={styles.textNoConversation}>{initErrorMessage}</Text>
         </View>
       );
     }
@@ -47,7 +47,7 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
       paddingHorizontal: 16,
       backgroundColor: theme.colors.chat.primary,
     },
-    textNoCoversation: {
+    textNoConversation: {
       color: theme.colors.common.white,
       textAlign: 'center',
     },
