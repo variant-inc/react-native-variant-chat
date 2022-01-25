@@ -3,7 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
-import { selectFreshchatConversationInfo } from '../store/selectors/freshchatSelectors';
+import { selectInitStatus } from '../store/selectors/freshchatSelectors';
+import { FreshchatInit } from '../types/FreshchatInit.enum';
 import { VariantChatProps } from '../types/VariantChat';
 import Chat from './Chat';
 
@@ -13,33 +14,37 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
-  const conversationInfo = useSelector(selectFreshchatConversationInfo);
-  const conversation = conversationInfo?.conversations.find((item) => {
-    return item.channel === channelName;
-  });
+  const initStatus = useSelector(selectInitStatus);
 
-  if (conversation) {
-    return <Chat {...props} />;
+  if (initStatus === FreshchatInit.Fail) {
+    if (NoConversationComponent) {
+      return NoConversationComponent;
+    } else {
+      return (
+        <View style={styles.container}>
+          <Text
+            style={styles.textNoCoversation}
+          >{`Conversation ${channelName} could not be loaded.`}</Text>
+        </View>
+      );
+    }
   }
 
-  if (NoConversationComponent) {
-    return NoConversationComponent;
-  } else {
-    return (
-      <View style={styles.container}>
-        <Text>{`Conversation '${channelName}' could not be loaded.`}</Text>
-      </View>
-    );
-  }
+  return <Chat {...props} />;
 };
 
 function localStyleSheet(theme: ReactNativePaper.Theme) {
   return StyleSheet.create({
     container: {
+      flexGrow: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      flexGrow: 1,
-      backgroundColor: theme.colors.common.white,
+      backgroundColor: theme.colors.chat.primary,
+    },
+    textNoCoversation: {
+      color: theme.colors.common.white,
+      textAlign: 'center',
+      height: 36,
     },
   });
 }
