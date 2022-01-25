@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.26 (1/25/2022)
+- RGR-688 Error messages within the ops chat on PS tablet not consistent with ACs [#63](https://github.com/variant-inc/react-native-variant-chat/pull/63) 
+
 ### v1.0.25 (1/21/2022)
 - PDF bubble content alignment, remove filename [#62](https://github.com/variant-inc/react-native-variant-chat/pull/62) 
 
