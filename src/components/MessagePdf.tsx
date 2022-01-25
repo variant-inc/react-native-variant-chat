@@ -58,7 +58,7 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
       padding: 8,
       minHeight: 100,
       alignItems: 'center',
-},
+    },
     pdf: {
       width: 150,
       height: 100,

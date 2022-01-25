@@ -331,13 +331,15 @@ const Chat = (props: VariantChatProps): ReactElement => {
         renderAvatar={renderAvatar}
         parsePatterns={() => {
           if (allowUrlLinks) {
-            return [{
-              pattern:
-                // eslint-disable-next-line no-useless-escape
-                /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
-              style: styles.link,
-              onPress: onLinkPressed,
-            }];
+            return [
+              {
+                pattern:
+                  // eslint-disable-next-line no-useless-escape
+                  /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
+                style: styles.link,
+                onPress: onLinkPressed,
+              },
+            ];
           }
           return [];
         }}

@@ -3,43 +3,53 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
-import { selectFreshchatConversationInfo } from '../store/selectors/freshchatSelectors';
+import { selectInitErrorMessage } from '../store/selectors/freshchatSelectors';
+import { selectInitStatus } from '../store/selectors/freshchatSelectors';
+import { FreshchatInit } from '../types/FreshchatInit.enum';
 import { VariantChatProps } from '../types/VariantChat';
 import Chat from './Chat';
 
 export const VariantChat = (props: VariantChatProps): ReactElement => {
-  const { channelName, NoConversationComponent } = props;
+  const { NoConversationComponent } = props;
 
   const theme = useTheme();
   const styles = localStyleSheet(theme);
 
-  const conversationInfo = useSelector(selectFreshchatConversationInfo);
-  const conversation = conversationInfo?.conversations.find((item) => {
-    return item.channel === channelName;
-  });
+  const initErrorMessage = useSelector(selectInitErrorMessage);
+  const initStatus = useSelector(selectInitStatus);
 
-  if (conversation) {
+  if (initStatus === FreshchatInit.Success) {
+    // Success
     return <Chat {...props} />;
+  } else if (initStatus === FreshchatInit.Fail) {
+    // Failed
+    if (NoConversationComponent) {
+      return NoConversationComponent;
+    } else if (initErrorMessage) {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.textNoConversation}>{initErrorMessage}</Text>
+        </View>
+      );
+    }
   }
 
-  if (NoConversationComponent) {
-    return NoConversationComponent;
-  } else {
-    return (
-      <View style={styles.container}>
-        <Text>{`Conversation '${channelName}' could not be loaded.`}</Text>
-      </View>
-    );
-  }
+  // Loading...
+  return <View style={styles.container} />;
 };
 
 function localStyleSheet(theme: ReactNativePaper.Theme) {
   return StyleSheet.create({
     container: {
+      flexGrow: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      flexGrow: 1,
-      backgroundColor: theme.colors.common.white,
+      paddingHorizontal: 16,
+      backgroundColor: theme.colors.chat.primary,
+    },
+    textNoConversation: {
+      color: theme.colors.common.white,
+      textAlign: 'center',
     },
   });
-}
+};
