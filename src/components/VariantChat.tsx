@@ -4,6 +4,8 @@ import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
 import { selectInitErrorMessage } from '../store/selectors/freshchatSelectors';
+import { selectInitStatus } from '../store/selectors/freshchatSelectors';
+import { FreshchatInit } from '../types/FreshchatInit.enum';
 import { VariantChatProps } from '../types/VariantChat';
 import Chat from './Chat';
 
@@ -14,11 +16,16 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
   const styles = localStyleSheet(theme);
 
   const initErrorMessage = useSelector(selectInitErrorMessage);
+  const initStatus = useSelector(selectInitStatus);
 
-  if (initErrorMessage) {
+  if (initStatus === FreshchatInit.Success) {
+    // Success
+    return <Chat {...props} />;
+  } else if (initStatus === FreshchatInit.Fail) {
+    // Failed
     if (NoConversationComponent) {
       return NoConversationComponent;
-    } else {
+    } else if (initErrorMessage) {
       return (
         <View style={styles.container}>
           <Text style={styles.textNoCoversation}>{initErrorMessage}</Text>
@@ -27,7 +34,8 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
     }
   }
 
-  return <Chat {...props} />;
+  // Loading...
+  return <View style={styles.container} />;
 };
 
 function localStyleSheet(theme: ReactNativePaper.Theme) {
@@ -44,4 +52,4 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
       textAlign: 'center',
     },
   });
-}
+};

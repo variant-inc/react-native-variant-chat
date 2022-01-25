@@ -55,6 +55,7 @@ import {
   freshchatSetSendingMessageId,
   variantChatReset,
   variantChatSetInitErrorMessage,
+  variantChatSetInitStatus,
 } from '../store/slices/chat/chat';
 import {
   reopenedMessageMark,
@@ -107,6 +108,7 @@ export const useFreshchatInit = (
   const initializedRef = useRef(FreshchatInit.None);
 
   const setInitErrorMessage = useFreshchatSetInitErrorMessage();
+  const setInitStatus = useFreshchatSetInitStatus();
 
   const init = async (providerConfig: ChatProviderConfig) => {
     // reset reducer
@@ -222,6 +224,7 @@ export const useFreshchatInit = (
       reportInitializationComplete(conversationInfo);
 
       initializedRef.current = FreshchatInit.Success;
+      setInitStatus(initializedRef.current);
     }
 
     Tts.getInitStatus();
@@ -243,6 +246,7 @@ export const useFreshchatInit = (
   const driverError = (message: string) => {
     initializedRef.current = FreshchatInit.Fail;
     setInitErrorMessage(message);
+    setInitStatus(initializedRef.current);
 
     EventRegister.emit(EventName.Error, {
       type: EventMessageType.NoDriver,
@@ -255,6 +259,7 @@ export const useFreshchatInit = (
   const conversationError = (message: string) => {
     initializedRef.current = FreshchatInit.Fail;
     setInitErrorMessage(message);
+    setInitStatus(initializedRef.current);
 
     EventRegister.emit(EventName.Error, {
       type: EventMessageType.NoConversation,
@@ -267,6 +272,7 @@ export const useFreshchatInit = (
   const serviceError = (message: string) => {
     initializedRef.current = FreshchatInit.Fail;
     setInitErrorMessage(message);
+    setInitStatus(initializedRef.current);
 
     EventRegister.emit(EventName.Error, {
       type: EventMessageType.Service,
@@ -290,6 +296,7 @@ export const useFreshchatInit = (
     } catch (error: any) {
       initializedRef.current = FreshchatInit.Fail;
       setInitErrorMessage(error.message);
+      setInitStatus(initializedRef.current);
 
       if (error instanceof FreshchatCommunicationError) {
         serviceError(
@@ -305,6 +312,7 @@ export const useFreshchatInit = (
     return () => {
       initializedRef.current = FreshchatInit.None;
       setInitErrorMessage(null);
+      setInitStatus(initializedRef.current);
     };
   }, [driverId]);
 
@@ -739,4 +747,17 @@ export const useFreshchatSetInitErrorMessage = (): ((
   );
 
   return setInitErrorMessage;
+};
+
+export const useFreshchatSetInitStatus = (): ((
+  initStatus: FreshchatInit
+) => void) => {
+  const setInitStatus = useCallback(
+    async (initStatus: FreshchatInit): Promise<void> => {
+      dispatch(variantChatSetInitStatus({ initStatus }));
+    },
+    [dispatch]
+  );
+
+  return setInitStatus;
 };

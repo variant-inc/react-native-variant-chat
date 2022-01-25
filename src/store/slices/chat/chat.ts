@@ -5,6 +5,7 @@ import { DriverStatus } from '../../../types/DriverStatus';
 import { FreshchatChannel } from '../../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../../types/FreshchatConversation';
 import { FreshchatConversationInfo } from '../../../types/FreshchatConversationInfo';
+import { FreshchatInit } from '../../../types/FreshchatInit.enum';
 import {
   FreshchatGetMessages,
   FreshchatMessage,
@@ -24,6 +25,7 @@ export const initialVariantChatState = Object.freeze<VariantChatState>({
   sendingMessageId: null,
   driverStatus: DriverStatus.Unknown,
   initErrorMessage: null,
+  initStatus: FreshchatInit.None,
 });
 
 const resetChatState: CaseReducer<VariantChatState, PayloadAction> = () => {
@@ -251,6 +253,16 @@ const handleSetInitErrorMessage: CaseReducer<
   };
 };
 
+const handleSetInitStatus: CaseReducer<
+  VariantChatState,
+  PayloadAction<{ initStatus: FreshchatInit }>
+> = (state: VariantChatState, { payload }) => {
+  return {
+    ...state,
+    initStatus: payload.initStatus,
+  };
+};
+
 const freshchatSlice = createSlice({
   name: 'freshchat',
   initialState: initialVariantChatState,
@@ -269,6 +281,7 @@ const freshchatSlice = createSlice({
     setSendingMessageId: handleSetSendingMessageId,
     setDriverStatus: handleSetDriverStatus,
     setInitErrorMessage: handleSetInitErrorMessage,
+    setInitStatus: handleSetInitStatus,
     setReset: resetChatState,
   },
   extraReducers: {},
@@ -296,4 +309,5 @@ export const variantChatSetDriverStatus =
   freshchatSlice.actions.setDriverStatus;
 export const variantChatSetInitErrorMessage =
   freshchatSlice.actions.setInitErrorMessage;
+export const variantChatSetInitStatus = freshchatSlice.actions.setInitStatus;
 export const variantChatReset = freshchatSlice.actions.setReset;
