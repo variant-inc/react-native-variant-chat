@@ -522,8 +522,13 @@ const CustomBubble = (
     );
   };
 
-  const { position, containerStyle, wrapperStyle, bottomContainerStyle, currentMessage } =
-    props;
+  const {
+    position,
+    containerStyle,
+    wrapperStyle,
+    bottomContainerStyle,
+    currentMessage,
+  } = props;
   const messages = parseMessage();
   const isHasUrgent =
     messages.findIndex((message: FreshchatMessagePart) => message.urgent) > -1;
@@ -541,8 +546,8 @@ const CustomBubble = (
     left: {},
     right: {
       backgroundColor: currentMessage?.sent
-      ? theme.colors.chat.bubbleSent
-      : theme.colors.chat.bubbleNotSent,
+        ? theme.colors.chat.bubbleSent
+        : theme.colors.chat.bubbleNotSent,
     },
   };
 
