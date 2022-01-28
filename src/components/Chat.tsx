@@ -205,9 +205,11 @@ const Chat = (props: VariantChatProps): ReactElement => {
   );
 
   const onLinkPressed = (url: string) => {
-    Linking.openURL(
-      url.toLowerCase().startsWith('http') ? url : `https://${url}`
-    ).catch(() => Alert.alert(`Couldn't load page`));
+    if (allowUrlLinks) {
+      Linking.openURL(
+        url.toLowerCase().startsWith('http') ? url : `https://${url}`
+      ).catch(() => Alert.alert(`Couldn't load page`));
+    }
   };
 
   const handleFailedSend = useCallback(
@@ -330,18 +332,15 @@ const Chat = (props: VariantChatProps): ReactElement => {
         renderSend={renderSend}
         renderAvatar={renderAvatar}
         parsePatterns={() => {
-          if (allowUrlLinks) {
-            return [
-              {
-                pattern:
-                  // eslint-disable-next-line no-useless-escape
-                  /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
-                style: styles.link,
-                onPress: onLinkPressed,
-              },
-            ];
-          }
-          return [];
+          return [
+            {
+              pattern:
+                // eslint-disable-next-line no-useless-escape
+                /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
+              style: allowUrlLinks ? styles.link : theme.colors.chat.message,
+              onPress: onLinkPressed,
+            },
+          ];
         }}
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
