@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.27 (1/28/2022)
+- Properly prevent browser launch on url tap when applicable [#64](https://github.com/variant-inc/react-native-variant-chat/pull/64) 
+
 ### v1.0.26 (1/25/2022)
 - RGR-688 Error messages within the ops chat on PS tablet not consistent with ACs [#63](https://github.com/variant-inc/react-native-variant-chat/pull/63) 
 
