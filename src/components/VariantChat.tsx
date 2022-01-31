@@ -52,4 +52,4 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
       textAlign: 'center',
     },
   });
-};
+}

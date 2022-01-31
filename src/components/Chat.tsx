@@ -8,6 +8,7 @@ import {
   TextStyle,
   View,
 } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
@@ -21,6 +22,7 @@ import {
 } from 'react-native-gifted-chat/lib/Models';
 import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import { FreshchatMessageType } from 'types/FreshchatMessageType.enum';
 
 import {
   useFreshchatGetMoreMessages,
@@ -196,10 +198,30 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const handleDidHideKeyboard = () => setIsDidShowKeyboard(false);
 
   const handleSend = useCallback(
-    (sendMessages: IMessage[] = []) => {
+    (messageType: FreshchatMessageType, messageData: any) => {
       Keyboard.dismiss();
-      const newMessage = sendMessages[0].text;
-      sendMessage(newMessage);
+
+      let newMessage = null;
+      if (messageType === FreshchatMessageType.Text) {
+        newMessage = [{ text: { content: messageData[0].text } }];
+      } else if (messageType === FreshchatMessageType.File) {
+        newMessage = [
+          {
+            file: {
+              name: messageData.name,
+              url: '',
+              file_size_in_bytes: messageData.size,
+              content_type: messageData.type,
+            },
+          },
+        ];
+      } else if (messageType === FreshchatMessageType.Image) {
+        // Image
+      }
+
+      if (newMessage) {
+        sendMessage(newMessage);
+      }
     },
     [currentUser, currentChannel]
   );
@@ -224,6 +246,14 @@ const Chat = (props: VariantChatProps): ReactElement => {
     getMoreMessages();
   }, [moreMessages]);
 
+  const handlePickDocument = async () => {
+    const pickerResult = await DocumentPicker.pickSingle();
+
+    // Upload file...
+
+    handleSend(FreshchatMessageType.File, pickerResult);
+  };
+
   const renderAccessory = (): JSX.Element => <Accessory />;
 
   const renderComposer = (composerProps: ComposerProps): JSX.Element => (
@@ -235,6 +265,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
       {...actionsProps}
       containerStyle={actionsContainerStyle}
       wrapperStyle={actionWrapperSyle}
+      onOpenAttachment={handlePickDocument}
     />
   );
 
@@ -342,7 +373,9 @@ const Chat = (props: VariantChatProps): ReactElement => {
             },
           ];
         }}
-        onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
+        onSend={(sendMessages: IMessage[]) =>
+          handleSend(FreshchatMessageType.Text, sendMessages)
+        }
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
         textStyle={{ ...styles.textGeneral, ...(textStyle as TextStyle) }}
