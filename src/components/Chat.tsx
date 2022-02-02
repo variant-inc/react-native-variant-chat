@@ -205,10 +205,13 @@ const Chat = (props: VariantChatProps): ReactElement => {
   );
 
   const onLinkPressed = (url: string) => {
-    if (allowUrlLinks) {
-      Linking.openURL(
-        url.toLowerCase().startsWith('http') ? url : `https://${url}`
-      ).catch(() => Alert.alert(`Couldn't load page`));
+    const urlFormatted = url.toLowerCase().startsWith('http')
+      ? url
+      : `https://${url}`;
+    if (allowUrlLinks && Linking.canOpenURL(urlFormatted)) {
+      Linking.openURL(urlFormatted).catch(() =>
+        Alert.alert(`Couldn't load page`)
+      );
     } else {
       Alert.alert('Alert', 'Hyperlinks are not supported on this device', [
         { text: 'Dismiss', style: 'cancel' },
