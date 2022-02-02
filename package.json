@@ -36,10 +36,6 @@
   "peerDependencies": {
     "react-native": "*"
   },
-  "engines": {
-    "node": "14.x",
-    "npm": "6.x"
-  },
   "dependencies": {
     "@apollo/client": "^3.3.9",
     "@react-native-async-storage/async-storage": "^1.12.0",

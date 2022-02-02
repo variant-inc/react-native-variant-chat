@@ -54,12 +54,15 @@ MessagePdf.defaultProps = {
 
 function localStyleSheet(theme: ReactNativePaper.Theme) {
   return StyleSheet.create({
-    container: {},
+    container: {
+      padding: 8,
+      minHeight: 100,
+      alignItems: 'center',
+    },
     pdf: {
       width: 150,
       height: 100,
       borderRadius: 13,
-      margin: 3,
       backgroundColor: theme.colors.chat.bubbleReceive,
     },
     pdfActive: {
