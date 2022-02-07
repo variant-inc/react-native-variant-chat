@@ -346,7 +346,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
                 /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
               style: allowUrlLinks ? styles.link : theme.colors.chat.message,
               onPress: onLinkPressed,
-            }];
+            },
+          ];
         }}
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
