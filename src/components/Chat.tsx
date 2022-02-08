@@ -64,6 +64,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
     defaultAvatarUrl,
     UrgentMessageComponent,
     allowUrlLinks,
+    onErrorLink,
   } = props;
   const {
     containerStyle = {},
@@ -213,9 +214,13 @@ const Chat = (props: VariantChatProps): ReactElement => {
         Alert.alert(`Couldn't load page`)
       );
     } else {
-      Alert.alert('Alert', 'Hyperlinks are not supported on this device', [
-        { text: 'Dismiss', style: 'cancel' },
-      ]);
+      if (onErrorLink) {
+        onErrorLink();
+      } else {
+        Alert.alert('Alert', 'Hyperlinks are not supported on this device', [
+          { text: 'Dismiss', style: 'cancel' },
+        ]);
+      }
     }
   };
 
@@ -346,7 +351,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
                 /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
               style: styles.link,
               onPress: onLinkPressed,
-            }];
+            },
+          ];
         }}
         onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
