@@ -64,7 +64,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
     defaultAvatarUrl,
     UrgentMessageComponent,
     allowUrlLinks,
-    onErrorLink,
+    onErrorUrlLink,
   } = props;
   const {
     containerStyle = {},
@@ -214,8 +214,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
         Alert.alert(`Couldn't load page`)
       );
     } else {
-      if (onErrorLink) {
-        onErrorLink();
+      if (onErrorUrlLink) {
+        onErrorUrlLink();
       } else {
         Alert.alert('Alert', 'Hyperlinks are not supported on this device', [
           { text: 'Dismiss', style: 'cancel' },
