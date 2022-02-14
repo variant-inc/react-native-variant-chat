@@ -5,7 +5,6 @@ import { EventRegister } from 'react-native-event-listeners';
 import Tts from 'react-native-tts';
 import { useSelector } from 'react-redux';
 import { MINUTE } from 'time-constants';
-import { FreshchatMessageParts } from 'types/FreshchatMessageParts.type';
 import { v4 as uuidv4 } from 'uuid';
 
 import { FreshchatCommunicationError } from '../lib/Exception';
@@ -79,6 +78,7 @@ import {
   FreshchatMessage,
   MessageType,
 } from '../types/FreshchatMessage';
+import { FreshchatMessageParts } from '../types/FreshchatMessageParts.type';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { ChatCapabilities, ChatProviderConfig } from '../types/VariantChat';

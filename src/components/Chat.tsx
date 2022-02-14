@@ -22,7 +22,6 @@ import {
 } from 'react-native-gifted-chat/lib/Models';
 import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
-import { FreshchatMessageType } from 'types/FreshchatMessageType.enum';
 
 import {
   useFreshchatGetMoreMessages,
@@ -46,6 +45,7 @@ import {
 } from '../theme/constants';
 import Font from '../theme/fonts';
 import { FreshchatMessage } from '../types/FreshchatMessage';
+import { FreshchatMessageType } from '../types/FreshchatMessageType.enum';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatProps } from '../types/VariantChat';
