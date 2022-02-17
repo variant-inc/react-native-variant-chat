@@ -64,6 +64,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
     defaultAvatarUrl,
     UrgentMessageComponent,
     allowUrlLinks,
+    onErrorUrlLink,
   } = props;
   const {
     containerStyle = {},
@@ -205,10 +206,21 @@ const Chat = (props: VariantChatProps): ReactElement => {
   );
 
   const onLinkPressed = (url: string) => {
-    if (allowUrlLinks) {
-      Linking.openURL(
-        url.toLowerCase().startsWith('http') ? url : `https://${url}`
-      ).catch(() => Alert.alert(`Couldn't load page`));
+    const urlFormatted = url.toLowerCase().startsWith('http')
+      ? url
+      : `https://${url}`;
+    if (allowUrlLinks && Linking.canOpenURL(urlFormatted)) {
+      Linking.openURL(urlFormatted).catch(() =>
+        Alert.alert(`Couldn't load page`)
+      );
+    } else {
+      if (onErrorUrlLink) {
+        onErrorUrlLink();
+      } else {
+        Alert.alert('Alert', 'Hyperlinks are not supported on this device', [
+          { text: 'Dismiss', style: 'cancel' },
+        ]);
+      }
     }
   };
 
@@ -337,7 +349,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
               pattern:
                 // eslint-disable-next-line no-useless-escape
                 /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
-              style: allowUrlLinks ? styles.link : theme.colors.chat.message,
+              style: styles.link,
               onPress: onLinkPressed,
             },
           ];
