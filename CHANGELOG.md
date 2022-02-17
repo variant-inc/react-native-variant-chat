@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.0.28 (2/17/2022)
+- Updates the link format [#68](https://github.com/variant-inc/react-native-variant-chat/pull/68) 
+- [RGR-634] Showing alert if the driver is opening the link in OpsChat [#65](https://github.com/variant-inc/react-native-variant-chat/pull/65) 
+
 ### v1.0.27 (1/28/2022)
 - Properly prevent browser launch on url tap when applicable [#64](https://github.com/variant-inc/react-native-variant-chat/pull/64) 
 
