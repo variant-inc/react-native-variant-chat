@@ -158,6 +158,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
     }
 
     messages.forEach((message: FreshchatMessage) => {
+      if (!message.message_parts || !message.message_parts.length) {
+        return;
+      }
+
       const messageUser = conversationUsers.find(
         (user: FreshchatUser) => user.id === message.actor_id
       );
