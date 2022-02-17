@@ -294,10 +294,6 @@ export const useFreshchatInit = (
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      // initializedRef.current = FreshchatInit.Fail;
-      // setInitErrorMessage(error.message);
-      // setInitStatus(initializedRef.current);
-
       if (error instanceof FreshchatCommunicationError) {
         serviceError(
           `Chat provider error: ${error.message} (driver ${driverId})`
