@@ -1,6 +1,7 @@
 import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 import { useApolloClient } from '../hooks/useApolloClient';
+import { useAws } from '../hooks/useAws';
 import {
   useFreshchatGetNewMessages,
   useFreshchatInit,
@@ -32,6 +33,7 @@ const useVariantChat = (
   dispatch = consumerDispatch;
   useApolloClient(config.variantApi);
   useFreshchatInit(driverId, config.chatProvider, dispatch);
+  useAws(config.awsAccess);
   getNewMessages = useFreshchatGetNewMessages(config.capabilities);
 };
 

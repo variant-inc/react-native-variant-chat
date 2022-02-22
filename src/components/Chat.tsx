@@ -30,6 +30,7 @@ import {
   useFreshchatSetIsFullscreenVideo,
 } from '../hooks/useFreshchat';
 import { removeFreshchatUnreadMessageCounts } from '../lib/Freshchat/Freshchat';
+import { uploadOnS3 } from '../lib/S3/S3Bucket';
 import {
   selectFreshchatChannel,
   selectFreshchatConversationInfo,
@@ -264,10 +265,15 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   const handlePickDocument = async () => {
     const pickerResult = await DocumentPicker.pickSingle();
+    const { name, type, uri } = pickerResult;
 
-    // Upload file...
+    if (!name || !type || !uri) {
+      return;
+    }
 
-    handleSend(FreshchatMessageType.File, pickerResult);
+    uploadOnS3(name, type, uri);
+
+    // handleSend(FreshchatMessageType.File, pickerResult);
   };
 
   const renderAccessory = (): JSX.Element => <Accessory />;
