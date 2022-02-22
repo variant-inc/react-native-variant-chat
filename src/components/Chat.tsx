@@ -215,7 +215,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
           {
             file: {
               name: messageData.name,
-              url: '',
+              url: messageData.uri,
               file_size_in_bytes: messageData.size,
               content_type: messageData.type,
             },
@@ -271,9 +271,14 @@ const Chat = (props: VariantChatProps): ReactElement => {
       return;
     }
 
-    uploadOnS3(name, type, uri);
-
-    // handleSend(FreshchatMessageType.File, pickerResult);
+    uploadOnS3(name, type, uri, (location: string | null) => {
+      if (location) {
+        handleSend(FreshchatMessageType.File, {
+          ...pickerResult,
+          uri: location,
+        });
+      }
+    });
   };
 
   const renderAccessory = (): JSX.Element => <Accessory />;

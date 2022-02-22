@@ -1,5 +1,7 @@
-import S3 from 'aws-sdk/clients/s3';
+import S3, { ManagedUpload } from 'aws-sdk/clients/s3';
 import { decode } from 'base64-arraybuffer';
+import { EventMessageType, EventName } from 'index';
+import { EventRegister } from 'react-native-event-listeners';
 import fs from 'react-native-fs';
 
 import { AwsAccessConfig } from '../../types/VariantChat';
@@ -17,13 +19,14 @@ export const setS3Keys = (awsAccess: AwsAccessConfig): void => {
 export const uploadOnS3 = async (
   name: string,
   type: string,
-  uri: string
+  uri: string,
+  callback: (location: string | null) => void
 ): Promise<void> => {
   // Creating a S3 bucket instance
   const s3bucket = new S3({
     accessKeyId,
     secretAccessKey,
-    Bucket: bucketName,
+    // Bucket: bucketName,
     signatureVersion: 'v4',
   });
 
@@ -36,22 +39,27 @@ export const uploadOnS3 = async (
   s3bucket.createBucket(() => {
     const params = {
       Bucket: bucketName,
-      // If you want to create a folder and then save file(s) in that
-      // do this key:`${folder_name}\${name}`
-      // else
       Key: name,
       Body: arrayBuffer,
       ContentDisposition: contentDeposition,
       ContentType: contentType,
     };
 
-    s3bucket.upload(params, (error: any, data: any) => {
-      console.log(data);
+    s3bucket.upload(params, (error: Error, data: ManagedUpload.SendData) => {
       if (error) {
-        return console.log('Error in callback: ', error);
+        EventRegister.emit(EventName.Error, {
+          type: EventMessageType.Internal,
+          data: {
+            message: error.message,
+          },
+        });
+
+        callback(null);
+        return;
       }
-      console.log('Success');
-      console.log('Response URL : ' + data.Location);
+
+      // Success
+      callback(data?.Location);
     });
   });
 };
