@@ -55,6 +55,7 @@ import Actions from './Actions';
 import Avatar from './Avatar';
 import { Button } from './Button';
 import Composer from './Composer';
+import LoadingIndicator from './LoadingIndicator';
 import Message from './Message';
 import MessageText from './MessageText';
 import MessageVideo from './MessageVideo';
@@ -133,6 +134,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const setIsFullscreenVideo = useFreshchatSetIsFullscreenVideo();
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
@@ -262,7 +264,11 @@ const Chat = (props: VariantChatProps): ReactElement => {
       return;
     }
 
-    uploadOnS3(name, type, uri, (location: string | null) => {
+    setIsUploading(true);
+
+    uploadOnS3(name, type, decodeURI(uri), (location: string | null) => {
+      setIsUploading(false);
+
       if (location) {
         handleSend(FreshchatMessageType.File, {
           ...pickerResult,
@@ -345,6 +351,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   return (
     <View style={[styles.container, containerStyle]}>
+      <LoadingIndicator isLoading={isUploading} />
       <GiftedChat
         messagesContainerStyle={[
           styles.messagesContainer,

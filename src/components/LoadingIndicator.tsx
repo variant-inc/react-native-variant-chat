@@ -3,11 +3,10 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 import Font from '../theme/fonts';
-import { screenHeight } from '../theme/screenSizes';
 
 interface LoadingIndicatorProps {
   isLoading: boolean;
-  message: string;
+  message?: string;
 }
 
 const LoadingIndicator = (
@@ -24,12 +23,14 @@ const LoadingIndicator = (
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator
-        style={styles.activityIndicator}
-        size="large"
-        color={theme.colors.common.white}
-      />
-      <Text style={styles.primaryText}>{message}</Text>
+      <View style={styles.activityIndicatorContainer}>
+        <ActivityIndicator
+          style={styles.activityIndicator}
+          size="large"
+          color={theme.colors.common.white}
+        />
+        {message ? <Text style={styles.primaryText}>{message}</Text> : null}
+      </View>
     </View>
   );
 };
@@ -37,27 +38,22 @@ const LoadingIndicator = (
 function localStyleSheet(theme: ReactNativePaper.Theme) {
   return StyleSheet.create({
     container: {
-      position: 'absolute',
-      width: '20%',
-      alignSelf: 'center',
-      // Locating from the bottom of the screen allows PS to adjust
-      // the app height (menu bar) without affecting the position of
-      // the indicator (PS menu adjustment is async).
-      bottom: screenHeight / 2 - 70, // ~half activity indicator height
+      ...StyleSheet.absoluteFillObject,
       zIndex: 999,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    activityIndicatorContainer: {
+      width: '20%',
       borderRadius: 12,
-      //borderWidth: 3,
-      //borderColor: 'white',
       backgroundColor: theme.colors.transparent.black,
+      paddingVertical: 20,
     },
-    activityIndicator: {
-      marginTop: 20,
-    },
+    activityIndicator: {},
     primaryText: {
       fontSize: Font.Size.extraGiant,
       textAlign: 'center',
-      marginVertical: 20,
-      width: '100%',
+      marginTop: 20,
       color: theme.colors.typography.light,
     },
   });

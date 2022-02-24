@@ -24,42 +24,53 @@ export const uploadOnS3 = async (
   callback: (location: string | null) => void
 ): Promise<void> => {
   // Creating a S3 bucket instance
-  const s3bucket = new S3({
-    accessKeyId,
-    secretAccessKey,
-    signatureVersion: 'v4',
-  });
-
-  // Params to pass in createBucket() funcion
-  const contentType = type;
-  const contentDeposition = 'inline;filename="' + name + '"';
-  const base64 = await fs.readFile(uri, 'base64');
-  const arrayBuffer = decode(base64);
-
-  s3bucket.createBucket(() => {
-    const params = {
-      Bucket: bucketName,
-      Key: name,
-      Body: arrayBuffer,
-      ContentDisposition: contentDeposition,
-      ContentType: contentType,
-    };
-
-    s3bucket.upload(params, (error: Error, data: ManagedUpload.SendData) => {
-      if (error) {
-        EventRegister.emit(EventName.Error, {
-          type: EventMessageType.Internal,
-          data: {
-            message: error.message,
-          },
-        });
-
-        callback(null);
-        return;
-      }
-
-      // Success
-      callback(data?.Location);
+  try {
+    const s3bucket = new S3({
+      accessKeyId,
+      secretAccessKey,
+      signatureVersion: 'v4',
     });
-  });
+
+    // Params to pass in createBucket() funcion
+    const contentType = type;
+    const contentDeposition = 'inline;filename="' + name + '"';
+    const base64 = await fs.readFile(uri, 'base64');
+    const arrayBuffer = decode(base64);
+
+    s3bucket.createBucket(() => {
+      const params = {
+        Bucket: bucketName,
+        Key: name,
+        Body: arrayBuffer,
+        ContentDisposition: contentDeposition,
+        ContentType: contentType,
+      };
+
+      s3bucket.upload(params, (error: Error, data: ManagedUpload.SendData) => {
+        if (error) {
+          callback(null);
+
+          EventRegister.emit(EventName.Error, {
+            type: EventMessageType.Internal,
+            data: {
+              message: error.message,
+            },
+          });
+          return;
+        }
+
+        // Success
+        callback(data?.Location);
+      });
+    });
+  } catch (error: any) {
+    callback(null);
+
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.Internal,
+      data: {
+        message: error.message,
+      },
+    });
+  }
 };

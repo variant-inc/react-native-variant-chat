@@ -35,6 +35,8 @@ npm install react-native-background-timer
 npm install react-native-tts
 npm install react-native-freshchat-sdk
 npm install react-native-video
+npm install react-native-document-picker
+npm install react-native-fs
 ```
 
 ### Android specific installation
@@ -246,6 +248,16 @@ Argument | Description | Type | Default
 **`variantApi`** | Variant API service configuration | ChatProviderConfig | **Required**
 **`capabilities`** | Capability settings | ChatCapabilities | **Optional** undefined
 
+
+### AWS configuration
+
+AWS S3 Bucket configuration `awsAccess: AwsAccessConfig`.
+
+Argument | Description | Type | Default
+------ | ------ | ------ | ------
+**`accessKeyId`** | AWS ACCESS KEY ID | String | **Required**
+**`secretAccessKey`** | AWS SECRET ACCESS KEY | String | **Required**
+**`s3Bucket`** | S3 Bucket Name | String | **Required**
 
 ### Chat provider configuration
 
