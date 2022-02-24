@@ -210,12 +210,13 @@ const Chat = (props: VariantChatProps): ReactElement => {
       Keyboard.dismiss();
 
       let newMessage = null;
-      if (messageType === FreshchatMessageType.Text) {
-        newMessage = [{ text: { content: messageData[0].text } }];
-      } else if (messageType === FreshchatMessageType.File) {
-        newMessage = [{ text: { content: messageData.uri } }];
-      } else if (messageType === FreshchatMessageType.Image) {
-        // Image
+      switch (messageType) {
+        case FreshchatMessageType.Text:
+          newMessage = [{ text: { content: messageData[0].text } }];
+          break;
+        case FreshchatMessageType.File:
+          newMessage = [{ text: { content: messageData.uri } }];
+          break;
       }
 
       if (newMessage) {
