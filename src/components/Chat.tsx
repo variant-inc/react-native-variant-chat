@@ -211,16 +211,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
       if (messageType === FreshchatMessageType.Text) {
         newMessage = [{ text: { content: messageData[0].text } }];
       } else if (messageType === FreshchatMessageType.File) {
-        newMessage = [
-          {
-            file: {
-              name: messageData.name,
-              url: messageData.uri,
-              file_size_in_bytes: messageData.size,
-              content_type: messageData.type,
-            },
-          },
-        ];
+        newMessage = [{ text: { content: messageData.uri } }];
       } else if (messageType === FreshchatMessageType.Image) {
         // Image
       }

@@ -1,9 +1,10 @@
 import S3, { ManagedUpload } from 'aws-sdk/clients/s3';
 import { decode } from 'base64-arraybuffer';
-import { EventMessageType, EventName } from 'index';
 import { EventRegister } from 'react-native-event-listeners';
 import fs from 'react-native-fs';
 
+import { EventMessageType } from '../../types/EventMessageType.enum';
+import { EventName } from '../../types/EventName.enum';
 import { AwsAccessConfig } from '../../types/VariantChat';
 
 let accessKeyId: string;
@@ -26,7 +27,6 @@ export const uploadOnS3 = async (
   const s3bucket = new S3({
     accessKeyId,
     secretAccessKey,
-    // Bucket: bucketName,
     signatureVersion: 'v4',
   });
 
