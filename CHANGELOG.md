@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.30 (2/25/2022)
+- Updates the react-native version [#70](https://github.com/variant-inc/react-native-variant-chat/pull/70) 
+
 ### v1.0.29 (2/25/2022)
 - RGR-693 Implements the File message [#66](https://github.com/variant-inc/react-native-variant-chat/pull/66) 
 
