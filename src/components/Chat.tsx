@@ -8,6 +8,7 @@ import {
   TextStyle,
   View,
 } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
   ActionsProps,
@@ -29,6 +30,7 @@ import {
   useFreshchatSetIsFullscreenVideo,
 } from '../hooks/useFreshchat';
 import { removeFreshchatUnreadMessageCounts } from '../lib/Freshchat/Freshchat';
+import { uploadOnS3 } from '../lib/S3/S3Bucket';
 import {
   selectFreshchatChannel,
   selectFreshchatConversationInfo,
@@ -44,6 +46,7 @@ import {
 } from '../theme/constants';
 import Font from '../theme/fonts';
 import { FreshchatMessage } from '../types/FreshchatMessage';
+import { FreshchatMessageType } from '../types/FreshchatMessageType.enum';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { VariantChatProps } from '../types/VariantChat';
@@ -52,6 +55,7 @@ import Actions from './Actions';
 import Avatar from './Avatar';
 import { Button } from './Button';
 import Composer from './Composer';
+import LoadingIndicator from './LoadingIndicator';
 import Message from './Message';
 import MessageText from './MessageText';
 import MessageVideo from './MessageVideo';
@@ -130,6 +134,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const setIsFullscreenVideo = useFreshchatSetIsFullscreenVideo();
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
@@ -156,6 +161,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
     }
 
     messages.forEach((message: FreshchatMessage) => {
+      if (!message.message_parts || !message.message_parts.length) {
+        return;
+      }
+
       const messageUser = conversationUsers.find(
         (user: FreshchatUser) => user.id === message.actor_id
       );
@@ -197,10 +206,22 @@ const Chat = (props: VariantChatProps): ReactElement => {
   const handleDidHideKeyboard = () => setIsDidShowKeyboard(false);
 
   const handleSend = useCallback(
-    (sendMessages: IMessage[] = []) => {
+    (messageType: FreshchatMessageType, messageData: any) => {
       Keyboard.dismiss();
-      const newMessage = sendMessages[0].text;
-      sendMessage(newMessage);
+
+      let newMessage = null;
+      switch (messageType) {
+        case FreshchatMessageType.Text:
+          newMessage = [{ text: { content: messageData[0].text } }];
+          break;
+        case FreshchatMessageType.File:
+          newMessage = [{ text: { content: messageData.uri } }];
+          break;
+      }
+
+      if (newMessage) {
+        sendMessage(newMessage);
+      }
     },
     [currentUser, currentChannel]
   );
@@ -236,6 +257,28 @@ const Chat = (props: VariantChatProps): ReactElement => {
     getMoreMessages();
   }, [moreMessages]);
 
+  const handlePickDocument = async () => {
+    const pickerResult = await DocumentPicker.pickSingle();
+    const { name, type, uri } = pickerResult;
+
+    if (!name || !type || !uri) {
+      return;
+    }
+
+    setIsUploading(true);
+
+    uploadOnS3(name, type, decodeURI(uri), (location: string | null) => {
+      setIsUploading(false);
+
+      if (location) {
+        handleSend(FreshchatMessageType.File, {
+          ...pickerResult,
+          uri: location,
+        });
+      }
+    });
+  };
+
   const renderAccessory = (): JSX.Element => <Accessory />;
 
   const renderComposer = (composerProps: ComposerProps): JSX.Element => (
@@ -247,6 +290,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
       {...actionsProps}
       containerStyle={actionsContainerStyle}
       wrapperStyle={actionWrapperSyle}
+      onOpenAttachment={handlePickDocument}
     />
   );
 
@@ -308,6 +352,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   return (
     <View style={[styles.container, containerStyle]}>
+      <LoadingIndicator isLoading={isUploading} />
       <GiftedChat
         messagesContainerStyle={[
           styles.messagesContainer,
@@ -354,7 +399,9 @@ const Chat = (props: VariantChatProps): ReactElement => {
             },
           ];
         }}
-        onSend={(sendMessages: IMessage[]) => handleSend(sendMessages)}
+        onSend={(sendMessages: IMessage[]) =>
+          handleSend(FreshchatMessageType.Text, sendMessages)
+        }
         onSendFailedMessage={(message: IMessage) => handleFailedSend(message)}
         onLoadEarlier={() => handleLoadEarlier()}
         textStyle={{ ...styles.textGeneral, ...(textStyle as TextStyle) }}

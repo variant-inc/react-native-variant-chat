@@ -1,5 +1,5 @@
 export type FreshchatMessageParts = {
-  text: {
+  text?: {
     content: string;
   };
   image?: {
@@ -8,6 +8,7 @@ export type FreshchatMessageParts = {
   file?: {
     name: string;
     url: string;
+    file_size_in_bytes: number;
     content_type: string;
   };
 };
