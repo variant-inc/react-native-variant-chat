@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.0.29 (2/25/2022)
+- RGR-693 Implements the File message [#66](https://github.com/variant-inc/react-native-variant-chat/pull/66) 
+
 ### v1.0.28 (2/17/2022)
 - Updates the link format [#68](https://github.com/variant-inc/react-native-variant-chat/pull/68) 
 - [RGR-634] Showing alert if the driver is opening the link in OpsChat [#65](https://github.com/variant-inc/react-native-variant-chat/pull/65) 
