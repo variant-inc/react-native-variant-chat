@@ -16,6 +16,7 @@ import {
   FreshchatGetMessages,
   FreshchatMessage,
 } from '../../types/FreshchatMessage';
+import { FreshchatMessageParts } from '../../types/FreshchatMessageParts.type';
 import { FreshchatUser } from '../../types/FreshchatUser';
 import { ChatProviderConfig } from '../../types/VariantChat';
 import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
@@ -186,7 +187,7 @@ export async function getFreshchatConversation(
 export async function setFreshchatMessage(
   userId: string,
   conversationId: string,
-  message: string
+  messageParts: FreshchatMessageParts[]
 ): Promise<FreshchatMessage> {
   try {
     const response = await instance.post(
@@ -195,7 +196,7 @@ export async function setFreshchatMessage(
         actor_type: 'user',
         actor_id: userId,
         message_type: 'normal',
-        message_parts: [{ text: { content: message } }],
+        message_parts: messageParts,
       }
     );
     if (response.status !== 200) {

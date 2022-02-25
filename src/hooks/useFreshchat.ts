@@ -78,6 +78,7 @@ import {
   FreshchatMessage,
   MessageType,
 } from '../types/FreshchatMessage';
+import { FreshchatMessageParts } from '../types/FreshchatMessageParts.type';
 import { FreshchatUser } from '../types/FreshchatUser';
 import { IOpsMessage } from '../types/Message.interface';
 import { ChatCapabilities, ChatProviderConfig } from '../types/VariantChat';
@@ -350,17 +351,17 @@ const getMessages = async (
 
 export const useFreshchatSendMessage = (
   conversationId: string
-): ((message: string) => void) => {
+): ((messageParts: FreshchatMessageParts[]) => void) => {
   const currentUser = useSelector(selectFreshchatCurrentUser);
 
-  const storeFailedMessage = (message: string) => {
+  const storeFailedMessage = (messageParts: FreshchatMessageParts[]) => {
     if (!currentUser || !conversationId) {
       return;
     }
 
     // Fail
     const failedMessage = {
-      message_parts: [{ text: { content: message } }],
+      message_parts: messageParts,
       actor_id: currentUser.id,
       id: uuidv4(),
       conversation_id: conversationId,
@@ -381,7 +382,7 @@ export const useFreshchatSendMessage = (
   };
 
   const sendMessage = useCallback(
-    async (message: string): Promise<void> => {
+    async (messageParts: FreshchatMessageParts[]): Promise<void> => {
       if (!currentUser || !conversationId) {
         return;
       }
@@ -390,7 +391,7 @@ export const useFreshchatSendMessage = (
         const response = await setFreshchatMessage(
           currentUser.id,
           conversationId,
-          message
+          messageParts
         );
 
         if (response) {
@@ -402,11 +403,11 @@ export const useFreshchatSendMessage = (
             })
           );
         } else {
-          storeFailedMessage(message);
+          storeFailedMessage(messageParts);
         }
       } catch (error) {
         // Fail
-        storeFailedMessage(message);
+        storeFailedMessage(messageParts);
       }
     },
     [currentUser, conversationId, dispatch]
@@ -443,7 +444,7 @@ export const useFreshchatSendFailedMessage = (
         return;
       }
 
-      const message = sendMessage.messages[0].text.content;
+      const messageParts = sendMessage.messages;
 
       isSending.current = true;
 
@@ -453,7 +454,7 @@ export const useFreshchatSendFailedMessage = (
         const response = await setFreshchatMessage(
           currentUser.id,
           currentConversation.conversation_id,
-          message
+          messageParts
         );
 
         if (response) {

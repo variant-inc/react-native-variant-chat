@@ -163,7 +163,7 @@ const CustomBubble = (
         item.image = messagePart.image.url;
       } else if (
         messagePart.file &&
-        messagePart.file.content_type.toLowerCase().includes('image')
+        messagePart.file.content_type?.toLowerCase().includes('image')
       ) {
         // image (attachment)
         // we don't feel the need to show image file name
@@ -171,7 +171,7 @@ const CustomBubble = (
         item.image = messagePart.file.url;
       } else if (
         messagePart.file &&
-        messagePart.file.content_type.toLowerCase().includes('video')
+        messagePart.file.content_type?.toLowerCase().includes('video')
       ) {
         // video (attachment)
         // we don't feel the need to show video file name
@@ -179,7 +179,7 @@ const CustomBubble = (
         item.video = messagePart.file.url;
       } else if (
         messagePart.file &&
-        messagePart.file.content_type.toLowerCase().includes('pdf')
+        messagePart.file.content_type?.toLowerCase().includes('pdf')
       ) {
         // pdf document (attachment)
         // we don't feel the need to show pdf file name

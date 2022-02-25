@@ -13,6 +13,12 @@ export interface VariantApiConfig {
   url: string;
 }
 
+export interface AwsAccessConfig {
+  accessKeyId: string;
+  secretAccessKey: string;
+  s3Bucket: string;
+}
+
 export interface ChatCapabilities {
   messagePolling: {
     Driving: number;
@@ -26,6 +32,7 @@ export interface ChatCapabilities {
 export interface VariantChatConfig {
   chatProvider: ChatProviderConfig;
   variantApi: VariantApiConfig;
+  awsAccess: AwsAccessConfig;
   capabilities?: ChatCapabilities;
 }
 
