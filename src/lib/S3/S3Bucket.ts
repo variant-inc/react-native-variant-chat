@@ -9,12 +9,26 @@ import { AwsAccessConfig } from '../../types/VariantChat';
 
 let accessKeyId: string;
 let secretAccessKey: string;
-let bucketName: string;
+let s3Bucket: string;
 
 export const setS3Keys = (awsAccess: AwsAccessConfig): void => {
-  accessKeyId = awsAccess.accessKeyId;
-  secretAccessKey = awsAccess.secretAccessKey;
-  bucketName = awsAccess.s3Bucket;
+  if (awsAccess) {
+    accessKeyId = awsAccess.accessKeyId;
+    secretAccessKey = awsAccess.secretAccessKey;
+    s3Bucket = awsAccess.s3Bucket;
+  }
+};
+
+export const getS3Keys = (): AwsAccessConfig | null => {
+  if (secretAccessKey && secretAccessKey && s3Bucket) {
+    return {
+      accessKeyId,
+      secretAccessKey,
+      s3Bucket,
+    };
+  }
+
+  return null;
 };
 
 export const uploadOnS3 = async (
@@ -39,7 +53,7 @@ export const uploadOnS3 = async (
 
     s3bucket.createBucket(() => {
       const params = {
-        Bucket: bucketName,
+        Bucket: s3Bucket,
         Key: name,
         Body: arrayBuffer,
         ContentDisposition: contentDeposition,

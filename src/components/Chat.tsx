@@ -30,7 +30,7 @@ import {
   useFreshchatSetIsFullscreenVideo,
 } from '../hooks/useFreshchat';
 import { removeFreshchatUnreadMessageCounts } from '../lib/Freshchat/Freshchat';
-import { uploadOnS3 } from '../lib/S3/S3Bucket';
+import { getS3Keys, uploadOnS3 } from '../lib/S3/S3Bucket';
 import {
   selectFreshchatChannel,
   selectFreshchatConversationInfo,
@@ -258,6 +258,11 @@ const Chat = (props: VariantChatProps): ReactElement => {
   }, [moreMessages]);
 
   const handlePickDocument = async () => {
+    if (!getS3Keys()) {
+      Alert.alert('Add attachments coming soon.');
+      return;
+    }
+
     const pickerResult = await DocumentPicker.pickSingle();
     const { name, type, uri } = pickerResult;
 
