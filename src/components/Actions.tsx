@@ -25,9 +25,10 @@ const CustomAction = (
   };
 
   const handleOpenAttachment = () => {
-    if (onOpenAttachment) {
-      onOpenAttachment();
-    }
+    Alert.alert('Add attachment coming soon.');
+    // if (onOpenAttachment) {
+    //   onOpenAttachment();
+    // }
   };
 
   return (
