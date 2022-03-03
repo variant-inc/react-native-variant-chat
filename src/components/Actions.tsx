@@ -13,7 +13,7 @@ type CustomActionProps = {
 const CustomAction = (
   props: ActionsProps & CustomActionProps
 ): ReactElement => {
-  const { containerStyle, wrapperStyle, onOpenCamera, onOpenAttachment } =
+  const { containerStyle, wrapperStyle, onOpenCamera /*onOpenAttachment*/ } =
     props;
   const styles = localStyleSheet();
 
