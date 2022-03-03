@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.0.31 (3/3/2022)
+- RGR-693 Disable add attachment [#72](https://github.com/variant-inc/react-native-variant-chat/pull/72) 
+- Updates the AWS S3 [#71](https://github.com/variant-inc/react-native-variant-chat/pull/71) 
+
 ### v1.0.30 (2/25/2022)
 - Updates the react-native version [#70](https://github.com/variant-inc/react-native-variant-chat/pull/70) 
 
