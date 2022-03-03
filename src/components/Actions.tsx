@@ -13,7 +13,7 @@ type CustomActionProps = {
 const CustomAction = (
   props: ActionsProps & CustomActionProps
 ): ReactElement => {
-  const { containerStyle, wrapperStyle, onOpenCamera, onOpenAttachment } =
+  const { containerStyle, wrapperStyle, onOpenCamera /*onOpenAttachment*/ } =
     props;
   const styles = localStyleSheet();
 
@@ -25,9 +25,10 @@ const CustomAction = (
   };
 
   const handleOpenAttachment = () => {
-    if (onOpenAttachment) {
-      onOpenAttachment();
-    }
+    Alert.alert('Add attachment coming soon.');
+    // if (onOpenAttachment) {
+    //   onOpenAttachment();
+    // }
   };
 
   return (
