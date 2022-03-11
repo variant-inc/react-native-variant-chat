@@ -50,11 +50,12 @@ export const uploadOnS3 = async (
     const contentDeposition = 'inline;filename="' + name + '"';
     const base64 = await fs.readFile(uri, 'base64');
     const arrayBuffer = decode(base64);
+    const currentTime = new Date().toISOString().replace(/[^0-9]/gi, '-');
 
     s3bucket.createBucket(() => {
       const params = {
         Bucket: s3Bucket,
-        Key: name,
+        Key: `${currentTime}${name}`,
         Body: arrayBuffer,
         ContentDisposition: contentDeposition,
         ContentType: contentType,
