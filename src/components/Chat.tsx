@@ -320,25 +320,29 @@ const Chat = (props: VariantChatProps): ReactElement => {
   };
 
   const handlePickDocument = async () => {
-    const pickerResult = await DocumentPicker.pickSingle();
-    const { name, type, uri } = pickerResult;
+    try {
+      const pickerResult = await DocumentPicker.pickSingle();
+      const { name, type, uri } = pickerResult;
 
-    if (!name || !type || !uri) {
-      return;
-    }
-
-    setIsUploading(true);
-
-    uploadOnS3(name, type, decodeURI(uri), (location: string | null) => {
-      setIsUploading(false);
-
-      if (location) {
-        handleSend(FreshchatMessageType.File, {
-          ...pickerResult,
-          uri: location,
-        });
+      if (!name || !type || !uri) {
+        return;
       }
-    });
+
+      setIsUploading(true);
+
+      uploadOnS3(name, type, decodeURI(uri), (location: string | null) => {
+        setIsUploading(false);
+
+        if (location) {
+          handleSend(FreshchatMessageType.File, {
+            ...pickerResult,
+            uri: location,
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const renderAccessory = (): JSX.Element => <Accessory />;
@@ -484,8 +488,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
       />
       <ActionSheet
         ref={attachmentActionSheetRef}
-        title="Which one do you like?"
-        options={['File', 'Photo / Video', 'Cancel']}
+        title=" Add attachment "
+        options={['File', 'Photo / Video', ' Cancel ']}
         cancelButtonIndex={2}
         onPress={handleSelectAttachment}
       />
