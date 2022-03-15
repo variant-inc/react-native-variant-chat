@@ -30,6 +30,7 @@ import {
 } from 'react-native-gifted-chat/lib/Models';
 import QuickReplies from 'react-native-gifted-chat/lib/QuickReplies';
 import { isSameDay, isSameUser } from 'react-native-gifted-chat/lib/utils';
+import * as mime from 'react-native-mime-types';
 import { useTheme } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
 import { useSelector } from 'react-redux';
@@ -158,6 +159,21 @@ const CustomBubble = (
 
         item.urgent = urgent;
         item.text = messageText;
+
+        const filename = messageText.split('/').pop();
+        const mimeType = mime.lookup(filename);
+        if (mimeType) {
+          if (mimeType?.toLowerCase().includes('image')) {
+            // image (link)
+            item.image = messageText;
+          } else if (mimeType?.toLowerCase().includes('video')) {
+            // video (link)
+            item.video = messageText;
+          } else if (mimeType?.toLowerCase().includes('pdf')) {
+            // pdf document (link)
+            item.pdf = messageText;
+          }
+        }
       } else if (messagePart.image) {
         // image
         item.image = messagePart.image.url;

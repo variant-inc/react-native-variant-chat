@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { ReactElement, useCallback, useEffect, useState } from 'react';
+import React, {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   Alert,
   Keyboard,
@@ -8,6 +14,7 @@ import {
   TextStyle,
   View,
 } from 'react-native';
+import ActionSheet from 'react-native-actionsheet';
 import DocumentPicker from 'react-native-document-picker';
 import { GiftedChat } from 'react-native-gifted-chat';
 import {
@@ -20,6 +27,7 @@ import {
   MessageVideoProps,
   SendProps,
 } from 'react-native-gifted-chat/lib/Models';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 
@@ -60,6 +68,12 @@ import Message from './Message';
 import MessageText from './MessageText';
 import MessageVideo from './MessageVideo';
 import Send from './Send';
+
+enum AddAttachment {
+  File = 0,
+  Media = 1,
+  Cancel = 2,
+}
 
 const Chat = (props: VariantChatProps): ReactElement => {
   const {
@@ -135,6 +149,8 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+
+  const attachmentActionSheetRef = useRef<ActionSheet>(null);
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', handleDidShowKeyboard);
@@ -257,31 +273,82 @@ const Chat = (props: VariantChatProps): ReactElement => {
     getMoreMessages();
   }, [moreMessages]);
 
-  const handlePickDocument = async () => {
+  const handleAttachment = async () => {
     if (!getS3Keys()) {
       Alert.alert('Add attachments coming soon.');
       return;
     }
 
-    const pickerResult = await DocumentPicker.pickSingle();
-    const { name, type, uri } = pickerResult;
-
-    if (!name || !type || !uri) {
-      return;
+    if (attachmentActionSheetRef.current) {
+      attachmentActionSheetRef.current.show();
     }
+  };
 
-    setIsUploading(true);
+  const handleSelectAttachment = (index: number) => {
+    switch (index) {
+      case AddAttachment.File:
+        handlePickDocument();
+        break;
+      case AddAttachment.Media:
+        handlePickMedia();
+        break;
+    }
+  };
 
-    uploadOnS3(name, type, decodeURI(uri), (location: string | null) => {
-      setIsUploading(false);
-
-      if (location) {
-        handleSend(FreshchatMessageType.File, {
-          ...pickerResult,
-          uri: location,
-        });
-      }
+  const handlePickMedia = async () => {
+    const response = await launchImageLibrary({
+      includeBase64: false,
+      mediaType: 'mixed',
     });
+
+    if (response && response.assets && response.assets.length > 0) {
+      const result = response.assets[0];
+
+      const { fileName, type, uri } = result;
+
+      if (!fileName || !type || !uri) {
+        return;
+      }
+
+      setIsUploading(true);
+
+      uploadOnS3(fileName, type, decodeURI(uri), (location: string | null) => {
+        setIsUploading(false);
+
+        if (location) {
+          handleSend(FreshchatMessageType.File, {
+            ...result,
+            uri: location,
+          });
+        }
+      });
+    }
+  };
+
+  const handlePickDocument = async () => {
+    try {
+      const pickerResult = await DocumentPicker.pickSingle();
+      const { name, type, uri } = pickerResult;
+
+      if (!name || !type || !uri) {
+        return;
+      }
+
+      setIsUploading(true);
+
+      uploadOnS3(name, type, decodeURI(uri), (location: string | null) => {
+        setIsUploading(false);
+
+        if (location) {
+          handleSend(FreshchatMessageType.File, {
+            ...pickerResult,
+            uri: location,
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const renderAccessory = (): JSX.Element => <Accessory />;
@@ -295,7 +362,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
       {...actionsProps}
       containerStyle={actionsContainerStyle}
       wrapperStyle={actionWrapperSyle}
-      onOpenAttachment={handlePickDocument}
+      onOpenAttachment={handleAttachment}
     />
   );
 
@@ -424,6 +491,13 @@ const Chat = (props: VariantChatProps): ReactElement => {
           },
           ...lightboxProps,
         }}
+      />
+      <ActionSheet
+        ref={attachmentActionSheetRef}
+        title=" Add attachment "
+        options={['File', 'Photo / Video', ' Cancel ']}
+        cancelButtonIndex={AddAttachment.Cancel}
+        onPress={handleSelectAttachment}
       />
     </View>
   );
