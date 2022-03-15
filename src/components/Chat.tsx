@@ -69,6 +69,12 @@ import MessageText from './MessageText';
 import MessageVideo from './MessageVideo';
 import Send from './Send';
 
+enum AddAttachment {
+  File = 0,
+  Media = 1,
+  Cancel = 2,
+}
+
 const Chat = (props: VariantChatProps): ReactElement => {
   const {
     chatStyles = {},
@@ -280,10 +286,10 @@ const Chat = (props: VariantChatProps): ReactElement => {
 
   const handleSelectAttachment = (index: number) => {
     switch (index) {
-      case 0:
+      case AddAttachment.File:
         handlePickDocument();
         break;
-      case 1:
+      case AddAttachment.Media:
         handlePickMedia();
         break;
     }
@@ -490,7 +496,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         ref={attachmentActionSheetRef}
         title=" Add attachment "
         options={['File', 'Photo / Video', ' Cancel ']}
-        cancelButtonIndex={2}
+        cancelButtonIndex={AddAttachment.Cancel}
         onPress={handleSelectAttachment}
       />
     </View>
