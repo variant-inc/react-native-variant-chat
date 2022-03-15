@@ -1,6 +1,6 @@
 ## Change Log
 
-### v1.0.32 (3/15/2022)
+### v1.1.0 (3/15/2022)
 - RGR-693 Roger Chat App not supporting attachments anymore [#73](https://github.com/variant-inc/react-native-variant-chat/pull/73) 
 
 ### v1.0.31 (3/3/2022)
