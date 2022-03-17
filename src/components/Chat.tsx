@@ -10,6 +10,7 @@ import {
   Alert,
   Keyboard,
   Linking,
+  Platform,
   StyleSheet,
   TextStyle,
   View,
@@ -422,6 +423,24 @@ const Chat = (props: VariantChatProps): ReactElement => {
     <Avatar {...avatarProps} />
   );
 
+  const renderActionSheet = () => {
+    const moreActionsheetProps: Record<string, unknown> = {};
+    if (Platform.OS === 'android') {
+      moreActionsheetProps.styles = actionsheetStyles;
+    }
+
+    return (
+      <ActionSheet
+        ref={attachmentActionSheetRef}
+        {...moreActionsheetProps}
+        title="Add attachment"
+        options={['File', 'Photo / Video', 'Cancel']}
+        cancelButtonIndex={AddAttachment.Cancel}
+        onPress={handleSelectAttachment}
+      />
+    );
+  };
+
   return (
     <View style={[styles.container, containerStyle]}>
       <LoadingIndicator isLoading={isUploading} />
@@ -492,13 +511,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
           ...lightboxProps,
         }}
       />
-      <ActionSheet
-        ref={attachmentActionSheetRef}
-        title=" Add attachment "
-        options={['File', 'Photo / Video', ' Cancel ']}
-        cancelButtonIndex={AddAttachment.Cancel}
-        onPress={handleSelectAttachment}
-      />
+      {renderActionSheet()}
     </View>
   );
 };
@@ -540,5 +553,30 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
     },
   });
 }
+
+const actionsheetStyles = StyleSheet.create({
+  titleBox: {
+    height: 40,
+    alignItems: 'flex-start',
+  },
+  titleText: {
+    width: '100%',
+    textAlign: 'center',
+  },
+  buttonBox: {
+    height: 50,
+    marginTop: StyleSheet.hairlineWidth,
+    alignItems: 'flex-start',
+  },
+  buttonText: {
+    width: '100%',
+    textAlign: 'center',
+  },
+  cancelButtonBox: {
+    height: 50,
+    marginTop: 6,
+    alignItems: 'flex-start',
+  },
+});
 
 export default Chat;
