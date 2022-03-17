@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import { TextStyle } from 'react-native';
 import {
   IMessage,
   MessageText,
@@ -18,6 +19,10 @@ const CustomMessageText = (props: MessageTextProps<IMessage>): ReactElement => {
     <MessageText
       {...props}
       customTextStyle={[styles.textMessage, customTextStyle]}
+      linkStyle={{
+        left: styles.link as TextStyle,
+        right: styles.link as TextStyle,
+      }}
     />
   );
 };
@@ -29,6 +34,10 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
       fontSize: Font.Size.normal,
       lineHeight: Font.LineHeight.extraLarge,
       color: theme.colors.chat.message,
+    },
+    link: {
+      color: theme.colors.orange,
+      textDecorationLine: 'underline',
     },
   };
 }
