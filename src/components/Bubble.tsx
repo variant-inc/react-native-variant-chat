@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { decode } from 'html-entities';
 import React from 'react';
 import {
   StyleProp,
@@ -158,7 +159,7 @@ const CustomBubble = (
         }
 
         item.urgent = urgent;
-        item.text = messageText;
+        item.text = decode(messageText);
 
         const filename = messageText.split('/').pop();
         const mimeType = mime.lookup(filename);
