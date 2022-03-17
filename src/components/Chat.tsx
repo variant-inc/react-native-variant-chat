@@ -424,15 +424,15 @@ const Chat = (props: VariantChatProps): ReactElement => {
   );
 
   const renderActionSheet = () => {
-    const moreActionsheet: Record<string, unknown> = {};
+    const moreActionsheetProps: Record<string, unknown> = {};
     if (Platform.OS === 'android') {
-      moreActionsheet.styles = actionsheeStyles;
+      moreActionsheetProps.styles = actionsheetStyles;
     }
 
     return (
       <ActionSheet
         ref={attachmentActionSheetRef}
-        {...moreActionsheet}
+        {...moreActionsheetProps}
         title="Add attachment"
         options={['File', 'Photo / Video', 'Cancel']}
         cancelButtonIndex={AddAttachment.Cancel}
@@ -554,7 +554,7 @@ function localStyleSheet(theme: ReactNativePaper.Theme) {
   });
 }
 
-const actionsheeStyles = StyleSheet.create({
+const actionsheetStyles = StyleSheet.create({
   titleBox: {
     height: 40,
     alignItems: 'flex-start',
