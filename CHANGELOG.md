@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.1.1 (3/17/2022)
+- Set message text link style [#76](https://github.com/variant-inc/react-native-variant-chat/pull/76) 
+- Fix the style issue in Android ActionSheet [#75](https://github.com/variant-inc/react-native-variant-chat/pull/75) 
+- RDP-9 Roger chat: unencoded non-ascii glyphs crashes the Roger App [#74](https://github.com/variant-inc/react-native-variant-chat/pull/74) 
+
 ### v1.1.0 (3/15/2022)
 - RGR-693 Roger Chat App not supporting attachments anymore [#73](https://github.com/variant-inc/react-native-variant-chat/pull/73) 
 
