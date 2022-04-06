@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.1.2 (4/6/2022)
+- Removed the console.log [#77](https://github.com/variant-inc/react-native-variant-chat/pull/77) 
+
 ### v1.1.1 (3/17/2022)
 - Set message text link style [#76](https://github.com/variant-inc/react-native-variant-chat/pull/76) 
 - Fix the style issue in Android ActionSheet [#75](https://github.com/variant-inc/react-native-variant-chat/pull/75) 
