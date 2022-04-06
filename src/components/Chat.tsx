@@ -327,29 +327,30 @@ const Chat = (props: VariantChatProps): ReactElement => {
   };
 
   const handlePickDocument = async () => {
-    try {
-      const pickerResult = await DocumentPicker.pickSingle();
-      const { name, type, uri } = pickerResult;
+    DocumentPicker.pickSingle()
+      .then((pickerResult) => {
+        const { name, type, uri } = pickerResult;
 
-      if (!name || !type || !uri) {
-        return;
-      }
-
-      setIsUploading(true);
-
-      uploadOnS3(name, type, decodeURI(uri), (location: string | null) => {
-        setIsUploading(false);
-
-        if (location) {
-          handleSend(FreshchatMessageType.File, {
-            ...pickerResult,
-            uri: location,
-          });
+        if (!name || !type || !uri) {
+          return;
         }
+
+        setIsUploading(true);
+
+        uploadOnS3(name, type, decodeURI(uri), (location: string | null) => {
+          setIsUploading(false);
+
+          if (location) {
+            handleSend(FreshchatMessageType.File, {
+              ...pickerResult,
+              uri: location,
+            });
+          }
+        });
+      })
+      .catch(() => {
+        // cancels the document picker
       });
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const renderAccessory = (): JSX.Element => <Accessory />;
