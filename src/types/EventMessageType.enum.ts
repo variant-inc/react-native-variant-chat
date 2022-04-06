@@ -7,4 +7,5 @@ export enum EventMessageType {
   NoDriver = 'no-driver',
   Background = 'background',
   UnreadMessageCounts = 'unreadMessageCounts',
+  NotAuthenticated = 'not-authenticated',
 }

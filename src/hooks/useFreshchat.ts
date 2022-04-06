@@ -142,7 +142,11 @@ export const useFreshchatInit = (
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        serviceError(`${error.message} (driver ${driverId})`);
+        if (error.message.toLowercase().includes('not authenticated')) {
+          authError(`${error.message} (driver ${driverId})`);
+        } else {
+          serviceError(`${error.message} (driver ${driverId})`);
+        }
         throw error;
       }
 
@@ -283,6 +287,19 @@ export const useFreshchatInit = (
     });
   };
 
+  const authError = (message: string) => {
+    initializedRef.current = FreshchatInit.Fail;
+    setInitErrorMessage(message);
+    setInitStatus(initializedRef.current);
+
+    EventRegister.emit(EventName.Error, {
+      type: EventMessageType.NotAuthenticated,
+      data: {
+        message: `Authentication error: ${message} (authentication token has likely expired)`,
+      },
+    });
+  };
+
   useEffect(() => {
     try {
       if (
@@ -302,6 +319,10 @@ export const useFreshchatInit = (
       if (error instanceof FreshchatCommunicationError) {
         serviceError(
           `Chat provider error: ${error.message} (driver ${driverId})`
+        );
+      } else if (error.message.toLowercase().includes('Not authenticated')) {
+        authError(
+          `Authentication failure: ${error.message} (driver ${driverId})`
         );
       } else {
         serviceError(
