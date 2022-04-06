@@ -142,7 +142,7 @@ export const useFreshchatInit = (
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        if (error.message.toLowercase().includes('not authenticated')) {
+        if (error.message.toLowerCase().includes('not authenticated')) {
           authError(`${error.message} (driver ${driverId})`);
         } else {
           serviceError(`${error.message} (driver ${driverId})`);
@@ -320,7 +320,7 @@ export const useFreshchatInit = (
         serviceError(
           `Chat provider error: ${error.message} (driver ${driverId})`
         );
-      } else if (error.message.toLowercase().includes('Not authenticated')) {
+      } else if (error.message.toLowerCase().includes('Not authenticated')) {
         authError(
           `Authentication failure: ${error.message} (driver ${driverId})`
         );
