@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.1.3 (4/6/2022)
+- Add error detection for an invalid PS token [#79](https://github.com/variant-inc/react-native-variant-chat/pull/79) 
+
 ### v1.1.2 (4/6/2022)
 - Removed the console.log [#77](https://github.com/variant-inc/react-native-variant-chat/pull/77) 
 
