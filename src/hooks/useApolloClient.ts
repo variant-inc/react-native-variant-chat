@@ -39,7 +39,7 @@ export const useApolloClient = (
   const errorLink = onError(({ operation, networkError }) => {
     if (networkError) {
       EventRegister.emit(EventName.Error, {
-        type: EventMessageType.Internal,
+        type: EventMessageType.Service,
         data: {
           message: `GraphQL network error: ${operation.operationName} - ${networkError.message}`,
         },

@@ -1,25 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import axios, { AxiosInstance } from 'axios';
-import { EventRegister } from 'react-native-event-listeners';
-import {
-  Freshchat,
-  FreshchatConfig as FreshchatSDKConfig,
-} from 'react-native-freshchat-sdk';
-import { SECOND } from 'time-constants';
+import {FirebaseMessagingTypes} from '@react-native-firebase/messaging';
+import axios, {AxiosInstance} from 'axios';
+import {EventRegister} from 'react-native-event-listeners';
+import {Freshchat, FreshchatConfig as FreshchatSDKConfig,} from 'react-native-freshchat-sdk';
+import {SECOND} from 'time-constants';
 
-import { EventMessageType } from '../../types/EventMessageType.enum';
-import { EventName } from '../../types/EventName.enum';
-import { FreshchatChannel } from '../../types/FreshchatChannel.type';
-import { FreshchatConversation } from '../../types/FreshchatConversation';
-import {
-  FreshchatGetMessages,
-  FreshchatMessage,
-} from '../../types/FreshchatMessage';
-import { FreshchatMessageParts } from '../../types/FreshchatMessageParts.type';
-import { FreshchatUser } from '../../types/FreshchatUser';
-import { ChatProviderConfig } from '../../types/VariantChat';
-import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
+import {EventMessageType} from '../../types/EventMessageType.enum';
+import {EventName} from '../../types/EventName.enum';
+import {FreshchatChannel} from '../../types/FreshchatChannel.type';
+import {FreshchatConversation} from '../../types/FreshchatConversation';
+import {FreshchatGetMessages, FreshchatMessage,} from '../../types/FreshchatMessage';
+import {FreshchatMessageParts} from '../../types/FreshchatMessageParts.type';
+import {FreshchatUser} from '../../types/FreshchatUser';
+import {ChatProviderConfig} from '../../types/VariantChat';
+import {FreshchatBadStatus, FreshchatCommunicationError} from '../Exception';
 
 const FRESHCHAT_FAILED_MESSAGES = 'freshchat-failed-messages';
 const FRESHCHAT_UNREAD_MESSAGE_COUNTS = 'freshchat-unread-message-counts';
@@ -78,7 +72,7 @@ export const initFreshchatSDK = async (
     freshchatUser.restore_id,
     (error: string) => {
       EventRegister.emit(EventName.Error, {
-        type: EventMessageType.Internal,
+        type: EventMessageType.Service,
         data: {
           message: `Freshchat user identification failed: ${error} (user id ${freshchatUser?.id}, restore id ${freshchatUser?.restore_id})`,
         },
@@ -434,9 +428,7 @@ export const setDriverId = async (driverId: string): Promise<void> => {
 
 export const getDriverId = async (): Promise<string | null> => {
   try {
-    const driverId = await AsyncStorage.getItem(VARIANT_DRIVER_ID);
-
-    return driverId;
+    return await AsyncStorage.getItem(VARIANT_DRIVER_ID);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     EventRegister.emit(EventName.Error, {
