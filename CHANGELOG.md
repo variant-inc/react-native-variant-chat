@@ -1,6 +1,6 @@
 ## Change Log
 
-### v1.1.5 (4/11/2022)
+### v1.1.5, v1.1.6 (4/11/2022)
 - ErrorType : Changed the error type from internal to service. [#82](https://github.com/variant-inc/react-native-variant-chat/pull/82) 
 
 ### v1.1.3 (4/6/2022)

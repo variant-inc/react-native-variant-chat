@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ActionsProps } from 'react-native-gifted-chat';
 import { SvgXml } from 'react-native-svg';
 
@@ -13,16 +13,8 @@ type CustomActionProps = {
 const CustomAction = (
   props: ActionsProps & CustomActionProps
 ): ReactElement => {
-  const { containerStyle, wrapperStyle, onOpenCamera, onOpenAttachment } =
-    props;
+  const { containerStyle, wrapperStyle, onOpenAttachment } = props;
   const styles = localStyleSheet();
-
-  const handleOpenCamera = () => {
-    if (onOpenCamera) {
-      onOpenCamera();
-    }
-    Alert.alert('Take a picture coming soon.');
-  };
 
   const handleOpenAttachment = () => {
     if (onOpenAttachment) {
@@ -32,13 +24,6 @@ const CustomAction = (
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <TouchableOpacity
-        style={[styles.actionButton, wrapperStyle]}
-        activeOpacity={0.8}
-        onPress={handleOpenCamera}
-      >
-        <SvgXml xml={getSvg('iconCamera')} accessibilityLabel="camera" />
-      </TouchableOpacity>
       <TouchableOpacity
         style={[styles.actionButton, wrapperStyle]}
         activeOpacity={0.8}
