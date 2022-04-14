@@ -43,5 +43,6 @@ export interface VariantChatProps {
   UrgentMessageComponent?: JSX.Element;
   chatStyles?: VariantChatStyles;
   allowUrlLinks?: boolean;
+  allowAttachments?: boolean;
   onErrorUrlLink?: () => void;
 }

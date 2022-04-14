@@ -83,6 +83,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
     defaultAvatarUrl,
     UrgentMessageComponent,
     allowUrlLinks,
+    allowAttachments = false,
     onErrorUrlLink,
   } = props;
   const {
@@ -476,7 +477,7 @@ const Chat = (props: VariantChatProps): ReactElement => {
         renderMessageText={renderMessageText}
         // @ts-ignore
         renderMessageVideo={renderMessageVideo} // Gifted chat needs an NPM package update (pending pr) to create type visibilty for this.
-        renderActions={renderActions}
+        renderActions={allowAttachments ? renderActions : undefined}
         renderComposer={renderComposer}
         renderSend={renderSend}
         renderAvatar={renderAvatar}
