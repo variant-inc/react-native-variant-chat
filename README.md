@@ -155,14 +155,15 @@ export const ChatScreen: React.FC = () => {
 
 ## UI Component
 
-Prop | Description | Type | Default
------- | ------ | ------ | ------
-**`channelName`** | The channel name for which a conversation is presented | String | **Required**
-**`chatStyles`** | Styles for the user interface | VariantChatStyles  | **Default styles**
-**`allowUrlLinks`** | Allow URL links in chat messages to be touchable | boolean | **false**
-**`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar | String | **The chat users initials**
+Prop | Description                                                             | Type | Default
+------ |-------------------------------------------------------------------------| ------ | ------
+**`channelName`** | The channel name for which a conversation is presented                  | String | **Required**
+**`chatStyles`** | Styles for the user interface                                           | VariantChatStyles  | **Default styles**
+**`allowUrlLinks`** | Allow URL links in chat messages to be touchable                        | boolean | **false**
+**`allowAttachments`** | Allow the user to upload attachments                                    | boolean | **false**
+**`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar                 | String | **The chat users initials**
 **`NoConversationComponent`** | Rendered if the specified `channelName` does not resolve a conversation | Component, Element | **Text stating the conversation does not exist**
-**`UrgentMessageComponent`** | Rendered if the message begins with the [URGENT] tag |Component, Element | **Text specifying whether the message is audible**
+**`UrgentMessageComponent`** | Rendered if the message begins with the [URGENT] tag                    |Component, Element | **Text specifying whether the message is audible**
 
 ### ChatStyles
 
