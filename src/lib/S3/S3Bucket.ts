@@ -6,6 +6,7 @@ import fs from 'react-native-fs';
 import { EventMessageType } from '../../types/EventMessageType.enum';
 import { EventName } from '../../types/EventName.enum';
 import { AwsAccessConfig } from '../../types/VariantChat';
+import { getDriverId } from '../Freshchat/Freshchat';
 
 let accessKeyId: string;
 let secretAccessKey: string;
@@ -39,6 +40,7 @@ export const uploadOnS3 = async (
 ): Promise<void> => {
   // Creating a S3 bucket instance
   try {
+    const driverId = await getDriverId();
     const s3bucket = new S3({
       accessKeyId,
       secretAccessKey,
@@ -55,7 +57,7 @@ export const uploadOnS3 = async (
     s3bucket.createBucket(() => {
       const params = {
         Bucket: s3Bucket,
-        Key: `${currentTime}${name}`,
+        Key: `${driverId}/${currentTime}_${name}`,
         Body: arrayBuffer,
         ContentDisposition: contentDeposition,
         ContentType: contentType,
