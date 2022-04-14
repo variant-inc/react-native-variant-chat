@@ -1,5 +1,13 @@
 ## Change Log
 
+### v1.2.0 (4/14/2022)
+- Attachment file name and Attachments disabled by default [#84](https://github.com/variant-inc/react-native-variant-chat/pull/84) 
+- Bump moment from 2.29.1 to 2.29.2 [#81](https://github.com/variant-inc/react-native-variant-chat/pull/81) 
+- Bump minimist from 1.2.5 to 1.2.6 [#78](https://github.com/variant-inc/react-native-variant-chat/pull/78) 
+
+### v1.1.6 (4/12/2022)
+- RemovedCameraIcon : Removed the camera icon [#83](https://github.com/variant-inc/react-native-variant-chat/pull/83) 
+
 ### v1.1.5 (4/11/2022)
 - ErrorType : Changed the error type from internal to service. [#82](https://github.com/variant-inc/react-native-variant-chat/pull/82) 
 
