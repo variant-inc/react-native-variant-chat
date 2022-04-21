@@ -154,7 +154,7 @@ export async function getFreshchatUser(userId: string): Promise<FreshchatUser> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `getFreshchatUser: ${error.toJSON()}`
+      `getFreshchatUser: ${JSON.stringify(error.toJSON())}`
     );
   }
 }
@@ -171,7 +171,7 @@ export async function getFreshchatAgent(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `getFreshchatAgent: ${error.toJSON()}`
+      `getFreshchatAgent: ${JSON.stringify(error.toJSON())}`
     );
   }
 }
@@ -186,7 +186,7 @@ export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `getFreshchatChannels: ${error.toJSON()}`
+      `getFreshchatChannels: ${JSON.stringify(error.toJSON())}`
     );
   }
 }
@@ -203,7 +203,7 @@ export async function getFreshchatConversation(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `getFreshchatConversation: ${error.toJSON()}`
+      `getFreshchatConversation: ${JSON.stringify(error.toJSON())}`
     );
   }
 }
@@ -230,7 +230,7 @@ export async function setFreshchatMessage(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `setFreshchatMessage: ${error.toJSON()}`
+      `setFreshchatMessage: ${JSON.stringify(error.toJSON())}`
     );
   }
 }
@@ -255,7 +255,7 @@ export async function getFreshchatMessages(
       error.toJSON()
     );
     throw new FreshchatCommunicationError(
-      `getFreshchatMessages: ${error.toJSON()}`
+      `getFreshchatMessages: ${JSON.stringify(error.toJSON())}`
     );
   }
 }
@@ -272,7 +272,7 @@ export async function getFreshchatMoreMessages(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `getFreshchatMoreMessages: ${error.toJSON()}`
+      `getFreshchatMoreMessages: ${JSON.stringify(error.toJSON())}`
     );
   }
 }
