@@ -1,19 +1,25 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {FirebaseMessagingTypes} from '@react-native-firebase/messaging';
-import axios, {AxiosInstance} from 'axios';
-import {EventRegister} from 'react-native-event-listeners';
-import {Freshchat, FreshchatConfig as FreshchatSDKConfig,} from 'react-native-freshchat-sdk';
-import {SECOND} from 'time-constants';
+import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import axios, { AxiosInstance } from 'axios';
+import { EventRegister } from 'react-native-event-listeners';
+import {
+  Freshchat,
+  FreshchatConfig as FreshchatSDKConfig,
+} from 'react-native-freshchat-sdk';
+import { SECOND } from 'time-constants';
 
-import {EventMessageType} from '../../types/EventMessageType.enum';
-import {EventName} from '../../types/EventName.enum';
-import {FreshchatChannel} from '../../types/FreshchatChannel.type';
-import {FreshchatConversation} from '../../types/FreshchatConversation';
-import {FreshchatGetMessages, FreshchatMessage,} from '../../types/FreshchatMessage';
-import {FreshchatMessageParts} from '../../types/FreshchatMessageParts.type';
-import {FreshchatUser} from '../../types/FreshchatUser';
-import {ChatProviderConfig} from '../../types/VariantChat';
-import {FreshchatBadStatus, FreshchatCommunicationError} from '../Exception';
+import { EventMessageType } from '../../types/EventMessageType.enum';
+import { EventName } from '../../types/EventName.enum';
+import { FreshchatChannel } from '../../types/FreshchatChannel.type';
+import { FreshchatConversation } from '../../types/FreshchatConversation';
+import {
+  FreshchatGetMessages,
+  FreshchatMessage,
+} from '../../types/FreshchatMessage';
+import { FreshchatMessageParts } from '../../types/FreshchatMessageParts.type';
+import { FreshchatUser } from '../../types/FreshchatUser';
+import { ChatProviderConfig } from '../../types/VariantChat';
+import { FreshchatBadStatus, FreshchatCommunicationError } from '../Exception';
 
 const FRESHCHAT_FAILED_MESSAGES = 'freshchat-failed-messages';
 const FRESHCHAT_UNREAD_MESSAGE_COUNTS = 'freshchat-unread-message-counts';
@@ -53,6 +59,30 @@ export async function initAxios(config: ChatProviderConfig): Promise<void> {
       },
     });
     return request;
+  });
+
+  instance.interceptors.response.use((response) => {
+    const responseData = {
+      url: response.config.url,
+      method: response.config.method,
+      data: {
+        headers: {
+          'x-server': response.headers['x-server'],
+          'x-trace-id': response.headers['x-trace-id'],
+          'x-request-id': response.headers['x-request-id'],
+          'x-envoy-upstream-service-time':
+            response.headers['x-envoy-upstream-service-time'],
+        },
+      },
+    };
+
+    EventRegister.emit(EventName.Info, {
+      type: EventMessageType.Performance,
+      data: {
+        message: `Freshchat response: ${JSON.stringify(responseData)}`,
+      },
+    });
+    return response;
   });
 }
 
@@ -124,7 +154,7 @@ export async function getFreshchatUser(userId: string): Promise<FreshchatUser> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat user: ${error.message}`
+      `getFreshchatUser: ${error.toJSON()}`
     );
   }
 }
@@ -141,7 +171,7 @@ export async function getFreshchatAgent(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat agent: ${error.message}`
+      `getFreshchatAgent: ${error.toJSON()}`
     );
   }
 }
@@ -156,7 +186,7 @@ export async function getFreshchatChannels(): Promise<FreshchatChannel[]> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat channels: ${error.message}`
+      `getFreshchatChannels: ${error.toJSON()}`
     );
   }
 }
@@ -173,7 +203,7 @@ export async function getFreshchatConversation(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get freshchat conversation: ${error.message}`
+      `getFreshchatConversation: ${error.toJSON()}`
     );
   }
 }
@@ -200,7 +230,7 @@ export async function setFreshchatMessage(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not set freshchat message: ${error.message}`
+      `setFreshchatMessage: ${error.toJSON()}`
     );
   }
 }
@@ -220,8 +250,12 @@ export async function getFreshchatMessages(
     return response.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
+    console.error(
+      `getFreshchatMessage: ${JSON.stringify(error.toJSON())}`,
+      error.toJSON()
+    );
     throw new FreshchatCommunicationError(
-      `Could not get freshchat messages: ${error.message}`
+      `getFreshchatMessages: ${error.toJSON()}`
     );
   }
 }
@@ -238,7 +272,7 @@ export async function getFreshchatMoreMessages(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new FreshchatCommunicationError(
-      `Could not get more freshchat conversation: ${error.message}`
+      `getFreshchatMoreMessages: ${error.toJSON()}`
     );
   }
 }
