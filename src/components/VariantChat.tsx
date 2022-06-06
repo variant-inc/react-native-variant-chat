@@ -19,7 +19,8 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
   const initStatus = useSelector(selectInitStatus);
 
   if (initStatus === FreshchatInit.Success) {
-    // Success
+    // TODO
+    // dispatch(variantDrivingModeStatus({ isInDrivingMode: isInDrivingMode }));
     return <Chat {...props} />;
   } else if (initStatus === FreshchatInit.Fail) {
     // Failed

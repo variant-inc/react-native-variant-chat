@@ -19,4 +19,5 @@ export interface VariantChatState {
   driverStatus: DriverStatus;
   initErrorMessage: string | null;
   initStatus: FreshchatInit;
+  isInDrivingMode: boolean;
 }

@@ -45,4 +45,5 @@ export interface VariantChatProps {
   allowUrlLinks?: boolean;
   allowAttachments?: boolean;
   onErrorUrlLink?: () => void;
+  isInDrivingMode: boolean;
 }

@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { StoreState } from '../../store/initialStoreState';
 import { DriverStatus } from '../../types/DriverStatus';
 import { FreshchatChannel } from '../../types/FreshchatChannel.type';
 import { FreshchatConversation } from '../../types/FreshchatConversation';
@@ -12,6 +11,7 @@ import {
 } from '../../types/FreshchatMessage';
 import { FreshchatUser } from '../../types/FreshchatUser';
 import { VariantChatState } from '../../types/VariantChatState';
+import { StoreState } from '../initialStoreState';
 
 export const selectFreshchatState = (state: StoreState): VariantChatState => {
   return state.chat;
@@ -148,4 +148,12 @@ export const selectInitStatus = createSelector<
   FreshchatInit | null
 >(selectFreshchatState, (variantChatState) => {
   return variantChatState?.initStatus;
+});
+
+export const selectDrivingModeStatus = createSelector<
+  StoreState,
+  VariantChatState,
+  boolean
+>(selectFreshchatState, (variantChatState) => {
+  return variantChatState?.isInDrivingMode;
 });
