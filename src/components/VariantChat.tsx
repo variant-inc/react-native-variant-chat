@@ -1,26 +1,27 @@
 import React, { ReactElement } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import { selectInitErrorMessage } from '../store/selectors/freshchatSelectors';
 import { selectInitStatus } from '../store/selectors/freshchatSelectors';
 import { FreshchatInit } from '../types/FreshchatInit.enum';
 import { VariantChatProps } from '../types/VariantChat';
 import Chat from './Chat';
+import {variantDrivingModeStatus} from "../store/slices/chat/chat";
 
 export const VariantChat = (props: VariantChatProps): ReactElement => {
   const { NoConversationComponent } = props;
 
   const theme = useTheme();
   const styles = localStyleSheet(theme);
+  const dispatch = useDispatch()
 
   const initErrorMessage = useSelector(selectInitErrorMessage);
   const initStatus = useSelector(selectInitStatus);
 
   if (initStatus === FreshchatInit.Success) {
-    // TODO
-    // dispatch(variantDrivingModeStatus({ isInDrivingMode: isInDrivingMode }));
+    dispatch(variantDrivingModeStatus({ isInDrivingMode: false }));
     return <Chat {...props} />;
   } else if (initStatus === FreshchatInit.Fail) {
     // Failed
