@@ -11,7 +11,7 @@ import Chat from './Chat';
 import {variantDrivingModeStatus} from "../store/slices/chat/chat";
 
 export const VariantChat = (props: VariantChatProps): ReactElement => {
-  const { NoConversationComponent } = props;
+  const { NoConversationComponent, isInDrivingMode } = props;
 
   const theme = useTheme();
   const styles = localStyleSheet(theme);
@@ -21,7 +21,8 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
   const initStatus = useSelector(selectInitStatus);
 
   if (initStatus === FreshchatInit.Success) {
-    dispatch(variantDrivingModeStatus({ isInDrivingMode: false }));
+    // TODO
+    dispatch(variantDrivingModeStatus({ isInDrivingMode: isInDrivingMode }));
     return <Chat {...props} />;
   } else if (initStatus === FreshchatInit.Fail) {
     // Failed
