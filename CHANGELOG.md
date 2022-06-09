@@ -1,5 +1,12 @@
 ## Change Log
 
+### v1.2.2 (6/9/2022)
+- MSG-2 : Added the TTS part. [#92](https://github.com/variant-inc/react-native-variant-chat/pull/92) 
+- MSG-2 : Read message out loud in driving mode [#91](https://github.com/variant-inc/react-native-variant-chat/pull/91) 
+
+### v1.2.1 (4/21/2022)
+- Improve Sentry Logging [#87](https://github.com/variant-inc/react-native-variant-chat/pull/87) 
+
 ### v1.2.0 (4/14/2022)
 - Attachment file name and Attachments disabled by default [#84](https://github.com/variant-inc/react-native-variant-chat/pull/84) 
 - Bump moment from 2.29.1 to 2.29.2 [#81](https://github.com/variant-inc/react-native-variant-chat/pull/81) 
