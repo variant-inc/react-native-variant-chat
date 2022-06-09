@@ -164,6 +164,7 @@ Prop | Description                                                             |
 **`defaultAvatarUrl`** | A URL resolving an image to be used as the users avatar                 | String | **The chat users initials**
 **`NoConversationComponent`** | Rendered if the specified `channelName` does not resolve a conversation | Component, Element | **Text stating the conversation does not exist**
 **`UrgentMessageComponent`** | Rendered if the message begins with the [URGENT] tag                    |Component, Element | **Text specifying whether the message is audible**
+**`isInDrivingMode`** | States if the driver is in driving mode or not                    | boolean | **false**
 
 ### ChatStyles
 
