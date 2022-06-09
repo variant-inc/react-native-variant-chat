@@ -32,6 +32,7 @@ import { getFreshchatConversations } from '../lib/Freshchat/FreshchatConversatio
 import { filterNewMessages } from '../lib/Freshchat/Utils';
 import {
   selectDriverStatus,
+  selectDrivingModeStatus,
   selectFreshchatAllMessages,
   selectFreshchatConversation,
   selectFreshchatConversationInfo,
@@ -561,6 +562,7 @@ export const useFreshchatGetNewMessages = (
   const allMessages = useSelector(selectFreshchatAllMessages);
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
   const driverStatus = useSelector(selectDriverStatus);
+  const isInDrivingMode = useSelector(selectDrivingModeStatus);
 
   const allMessagesRef = useRef(allMessages);
 
@@ -664,39 +666,39 @@ export const useFreshchatGetNewMessages = (
       checkConversationUsers(dispatch, response.messages);
       setFreshchatUnreadMessageCounts(conversation.channel, newMessages.length);
 
-      if (appState.current === 'background' && !isFullscreenVideo) {
-        const lastMessage = newMessages[newMessages.length - 1];
+      const lastMessage = newMessages[newMessages.length - 1];
+      let newMessageText = lastMessage?.message_parts[0]?.text?.content || '';
 
+      if (appState.current === 'background' && !isFullscreenVideo) {
         if (lastBackgroundMessage.current === lastMessage.id) {
           return;
         }
 
         lastBackgroundMessage.current = lastMessage?.id;
 
-        let newMessage = lastMessage?.message_parts[0]?.text?.content || '';
-
-        if (newMessage.includes(urgentMessageMark)) {
-          // urgent message
-          Tts.stop();
-          newMessage = newMessage
-            .replace(urgentMessageMark, '')
-            .replace('&nbsp;', '');
-          Tts.speak(newMessage);
-        }
-
         if (
-          !resolvedMessageMark.some((s) => newMessage.includes(s)) &&
-          !reopenedMessageMark.some((s) => newMessage.includes(s)) &&
-          !systemMessageMark.some((s) => newMessage.includes(s))
+          !resolvedMessageMark.some((s) => newMessageText.includes(s)) &&
+          !reopenedMessageMark.some((s) => newMessageText.includes(s)) &&
+          !systemMessageMark.some((s) => newMessageText.includes(s))
         ) {
           EventRegister.emit(EventName.MessageReceived, {
             type: EventMessageType.Background,
             data: {
               channelName: conversation.channel,
-              message: newMessage,
+              message: newMessageText,
             },
           });
         }
+      }
+
+      if (newMessageText.includes(urgentMessageMark) || isInDrivingMode) {
+        // urgent message
+        Tts.stop();
+        newMessageText = newMessageText
+          .replace(urgentMessageMark, '')
+          .replace('&nbsp;', '');
+        Tts.setDucking(true);
+        Tts.speak(newMessageText);
       }
     }
   };
@@ -746,40 +748,34 @@ const checkConversationUsers = (
 export const useFreshchatSetIsFullscreenVideo = (): ((
   isFullscreenVideo: boolean
 ) => void) => {
-  const setIsFullscreenVideo = useCallback(
-    async (isFullscreenVideo: boolean): Promise<void> => {
-      dispatch(
-        freshchatSetIsFullscreenVideo({ isFullscreen: isFullscreenVideo })
-      );
-    },
-    [dispatch]
+  return useCallback(
+      async (isFullscreenVideo: boolean): Promise<void> => {
+        dispatch(
+            freshchatSetIsFullscreenVideo({isFullscreen: isFullscreenVideo})
+        );
+      },
+      [dispatch]
   );
-
-  return setIsFullscreenVideo;
 };
 
 export const useFreshchatSetInitErrorMessage = (): ((
   initErrorMessage: string | null
 ) => void) => {
-  const setInitErrorMessage = useCallback(
-    async (initErrorMessage: string | null): Promise<void> => {
-      dispatch(variantChatSetInitErrorMessage({ initErrorMessage }));
-    },
-    [dispatch]
+  return useCallback(
+      async (initErrorMessage: string | null): Promise<void> => {
+        dispatch(variantChatSetInitErrorMessage({initErrorMessage}));
+      },
+      [dispatch]
   );
-
-  return setInitErrorMessage;
 };
 
 export const useFreshchatSetInitStatus = (): ((
   initStatus: FreshchatInit
 ) => void) => {
-  const setInitStatus = useCallback(
-    async (initStatus: FreshchatInit): Promise<void> => {
-      dispatch(variantChatSetInitStatus({ initStatus }));
-    },
-    [dispatch]
+  return useCallback(
+      async (initStatus: FreshchatInit): Promise<void> => {
+        dispatch(variantChatSetInitStatus({initStatus}));
+      },
+      [dispatch]
   );
-
-  return setInitStatus;
 };
