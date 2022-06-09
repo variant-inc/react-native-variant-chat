@@ -26,6 +26,7 @@ export const initialVariantChatState = Object.freeze<VariantChatState>({
   driverStatus: DriverStatus.Unknown,
   initErrorMessage: null,
   initStatus: FreshchatInit.None,
+  isInDrivingMode: false,
 });
 
 const resetChatState: CaseReducer<VariantChatState, PayloadAction> = () => {
@@ -263,6 +264,16 @@ const handleSetInitStatus: CaseReducer<
   };
 };
 
+const handleDrivingModeStatus: CaseReducer<
+  VariantChatState,
+  PayloadAction<{ isInDrivingMode: boolean }>
+> = (state: VariantChatState, { payload }) => {
+  return {
+    ...state,
+    isInDrivingMode: payload.isInDrivingMode,
+  };
+};
+
 const freshchatSlice = createSlice({
   name: 'freshchat',
   initialState: initialVariantChatState,
@@ -282,6 +293,7 @@ const freshchatSlice = createSlice({
     setDriverStatus: handleSetDriverStatus,
     setInitErrorMessage: handleSetInitErrorMessage,
     setInitStatus: handleSetInitStatus,
+    setDrivingModeStatus: handleDrivingModeStatus,
     setReset: resetChatState,
   },
   extraReducers: {},
@@ -310,4 +322,6 @@ export const variantChatSetDriverStatus =
 export const variantChatSetInitErrorMessage =
   freshchatSlice.actions.setInitErrorMessage;
 export const variantChatSetInitStatus = freshchatSlice.actions.setInitStatus;
+export const variantDrivingModeStatus =
+  freshchatSlice.actions.setDrivingModeStatus;
 export const variantChatReset = freshchatSlice.actions.setReset;
