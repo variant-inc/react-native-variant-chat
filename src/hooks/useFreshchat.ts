@@ -86,6 +86,7 @@ import { ChatCapabilities, ChatProviderConfig } from '../types/VariantChat';
 
 let dispatch: any;
 let allSimpleChatUsers: Record<string, string>[] = [];
+let isInDrivingMode = false;
 
 const NEW_MESSAGES_POLL_INTERVAL = 15 * MINUTE;
 
@@ -562,7 +563,7 @@ export const useFreshchatGetNewMessages = (
   const allMessages = useSelector(selectFreshchatAllMessages);
   const isFullscreenVideo = useSelector(selectFreshchatIsFullscreenVideo);
   const driverStatus = useSelector(selectDriverStatus);
-  const isInDrivingMode = useSelector(selectDrivingModeStatus);
+  isInDrivingMode = useSelector(selectDrivingModeStatus);
 
   const allMessagesRef = useRef(allMessages);
 

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, {ReactElement, useEffect} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,10 +20,15 @@ export const VariantChat = (props: VariantChatProps): ReactElement => {
   const initErrorMessage = useSelector(selectInitErrorMessage);
   const initStatus = useSelector(selectInitStatus);
 
+  useEffect(() => {
+    if (initStatus === FreshchatInit.Success) {
+      dispatch(
+        variantDrivingModeStatus({ isInDrivingMode: isInDrivingMode ?? false })
+      );
+    }
+  }, [isInDrivingMode, initStatus, dispatch]);
+
   if (initStatus === FreshchatInit.Success) {
-    dispatch(
-      variantDrivingModeStatus({ isInDrivingMode: isInDrivingMode ?? false })
-    );
     return <Chat {...props} />;
   } else if (initStatus === FreshchatInit.Fail) {
     // Failed
